@@ -1,0 +1,40 @@
+# Compiler
+
+CC = g++
+
+# Directories
+SRC_DIR = src
+BIN_DIR = bin
+
+# Output executable
+TARGET = $(BIN_DIR)/heliumc
+
+# Source files
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+
+# Object files
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
+
+# Compiler flags
+CFLAGS = -DGLIBCXX_DEBUG -Wall -Wextra -O2 -std=c++20 -g 
+
+# Linker flags
+LDFLAGS =
+
+# Default target
+all: $(TARGET)
+
+# Build the target
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+# Build object files
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Clean up build files
+clean:
+	rm -rf $(BIN_DIR)/*.o $(TARGET)
+
+.PHONY: all clean

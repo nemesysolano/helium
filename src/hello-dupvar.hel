@@ -1,0 +1,9 @@
+program
+var
+    houses: integer
+    houses: bigint
+    income: float
+    married: boolean
+    country: text
+begin
+end
