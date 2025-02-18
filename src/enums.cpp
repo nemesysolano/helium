@@ -40,3 +40,7 @@ size_t data_type_size(DataType data_type) {
         
     }
 }
+
+bool is_statement_token_type(TokenType token_type) {
+    return token_type == TokenType::RETURN /* || token->getType() == TokenType::IDENTIFIER*/ ; 
+}

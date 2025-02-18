@@ -21,7 +21,9 @@ class Parser {
         std::stack<std::unique_ptr<std::map<std::string, std::unique_ptr<SyntaticObject>>>> scopes;
         std::unique_ptr<Target> target;
 
-        bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
+        bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statements_group(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         void push_scope();
         void pop_scope();

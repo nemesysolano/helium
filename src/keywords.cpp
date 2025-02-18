@@ -6,6 +6,7 @@ const char * PROGRAM = "PROGRAM";
 const char * BEGIN = "BEGIN";
 const char * END = "END";
 const char * VAR = "VAR";
+const char * RETURN = "RETURN";
 const char * INTEGER = "INTEGER";
 const char * BIGINT = "BIGINT";
 const char * FLOAT = "FLOAT";
@@ -28,7 +29,7 @@ const char * empty_string = "";
 using namespace std;
 const char * multi_char_keywords[] = { 
     PROGRAM, BEGIN, END,  
-    VAR, INTEGER , BIGINT, FLOAT , TEXT, BOOLEAN,
+    VAR, RETURN, INTEGER , BIGINT, FLOAT , TEXT, BOOLEAN,
 };
 
 const char * built_type_tokens [] = {

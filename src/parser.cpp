@@ -27,6 +27,10 @@ bool is_type_token(const unique_ptr<Token> & token) {
     return is_built_type_token(token->getValue());
 }
 
+bool is_statement_token(const unique_ptr<Token> & token) {
+    auto type = token->getType();
+    return is_statement_token_type(type);
+}
 
 
 void Parser::push_scope() {
@@ -72,25 +76,64 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
     }
 }
 
-bool Parser::parse_statements_group(
-    Tokenizer & tokenizer, 
-    vector<unique_ptr<Token>> & tokens
-) {
+bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
+        return print_expected_token(LEFT_PARENT, tokenizer);        
+    }
+
+    tokens.push_back(move(tokenizer.next()));
+    if(
+        tokens.back()->getType() != TokenType::INTEGER_LITERAL || 
+        tokens.back()->getType() != TokenType::HEX_LITERAL
+    ) {
+        print_parse_error(MSG_INVALID_EXPRESSION, tokenizer);
+    }   
+    
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
+        return print_expected_token(RIGHT_PARENT, tokenizer); 
+    }
+
+    return true;
+}
+
+bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+
+    if(!is_statement_token(tokens.back())) {
+        return print_parse_error(MSG_INVALID_STATEMENT, tokenizer);
+    }
+
+    if(tokens.back()->getType() == TokenType::RETURN) {
+        return parse_return(tokenizer, tokens);
+    }
+
+    return false; //TODO: Implement other statements
+}
+
+bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
     tokens.push_back(move(tokenizer.next()));
 
     if(tokens.back()->getType() == TokenType::BEGIN) {
-
-        tokens.push_back(move(tokenizer.next()));
-        if(tokens.back()->getType() == TokenType::END) {
-            
-            tokens.push_back(move(tokenizer.next()));
-            //TODO: Process statements            
-            
-            return true;
-        }
+        bool is_valid_statement;
         
+        tokens.push_back(move(tokenizer.next()));
+
+        while(tokens.back()->getType() != TokenType::END) {
+            //TODO: Process statement 
+            is_valid_statement = parse_statement(tokenizer, tokens);
+            tokens.push_back(move(tokenizer.next()));                      
+
+            if(!is_valid_statement) {
+                return false;
+            }
+        }
+
+        return true;
+        
+    } else {
+        return print_expected_token(BEGIN, tokenizer);
     }
-    return false;
 }
 
 bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {

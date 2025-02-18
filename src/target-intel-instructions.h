@@ -8,4 +8,5 @@ extern const char * NASM_SUB;
 extern const char * NASM_XOR;
 extern const char * NASM_RET;
 extern const char * NASM_NOP;
+extern const char * NASM_JMP;
 #endif

@@ -7,15 +7,34 @@
 #include <memory>
 extern const char * SEP;
 extern const char * COMMENT;
+extern const char * GLOBAL_SCOPE_NAME;
+extern const char * EXIT_SUFFIX;
+
+struct TargetObject {
+    std::string name;
+    DataType data_type;
+    size_t size;
+};
+
+struct Scope {
+    DataType data_type;
+    std::string name;
+    std::map<std::string, std::unique_ptr<TargetObject>> objects;
+    Scope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
+};
 
 struct TargetContext {
-
     const std::vector<std::unique_ptr<Token>> & tokens;
+    const std::stack <std::unique_ptr<Scope>> & scopes;
     size_t index;
-    inline Token * next() {return tokens[index++].get();}    ;
+    inline Token * next() {return tokens[index++].get();};
+    inline Token * current() {return tokens[index].get();}
     inline bool end() {return index >= tokens.size();}
     inline void push_back() {index --;}
 };
+
+int64_t to_bigint(const std::string & value, TokenType token_type);
+int32_t to_integer(const std::string & value, TokenType token_type);
 
 class Target {
     public:

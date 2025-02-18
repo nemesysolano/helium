@@ -7,3 +7,4 @@ const char * NASM_SUB = "SUB";
 const char * NASM_XOR = "XOR";
 const char * NASM_RET = "RET";
 const char * NASM_NOP = "NOP";
+const char * NASM_JMP = "JMP";
