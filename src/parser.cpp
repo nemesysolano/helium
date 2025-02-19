@@ -32,9 +32,11 @@ bool is_statement_token(const unique_ptr<Token> & token) {
     return is_statement_token_type(type);
 }
 
-
-void Parser::push_scope() {
-    scopes.push(make_unique<map<string, unique_ptr<ParsedObject>>>());
+void Parser::push_scope(const std::string name, DataType data_type) {
+    scopes.push(move(make_unique<ParsedScope>(
+        data_type,
+        name
+    )));
 }
 void Parser::pop_scope() {
     scopes.pop();
@@ -47,7 +49,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
     
 
     if(tokens.back()->getType() == TokenType::PROGRAM) {
-        push_scope();
+        push_scope(GLOBAL_SCOPE_NAME, DataType::BIGINT);
         bool has_valid_variable_declarations = variable_declarations(tokenizer, tokens);
         
         // true when there are no variable declarations or the variable declarations are valid
@@ -144,10 +146,11 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
         token = move(tokenizer.next());
         string name;
         DataType data_type;
+        std::map<std::string, std::unique_ptr<ParsedObject>> & scope_objects = scopes.top()->objects; 
 
         while(token->getType() == TokenType::IDENTIFIER) {
             name = token->getValue();
-            if(scopes.top()->find(name) != scopes.top()->end()) {
+            if(scope_objects.find(name) != scope_objects.end()) {
                 print_duplicated_object(name, tokenizer);
                 return false;
             }
@@ -173,7 +176,7 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
                 return false;
             }  
             tokens.push_back(move(token));
-            scopes.top()->insert({name, make_unique<ParsedObject>(ParsedObject{name, ObjectType::VARIABLE, data_type})});
+            scope_objects.insert({name, make_unique<ParsedObject>(ParsedObject{name, ObjectType::VARIABLE, data_type})});
             token = move(tokenizer.next());
         }
     } 
