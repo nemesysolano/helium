@@ -34,7 +34,7 @@ bool is_statement_token(const unique_ptr<Token> & token) {
 
 
 void Parser::push_scope() {
-    scopes.push(make_unique<map<string, unique_ptr<SyntaticObject>>>());
+    scopes.push(make_unique<map<string, unique_ptr<ParsedObject>>>());
 }
 void Parser::pop_scope() {
     scopes.pop();
@@ -173,7 +173,7 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
                 return false;
             }  
             tokens.push_back(move(token));
-            scopes.top()->insert({name, make_unique<SyntaticObject>(SyntaticObject{name, ObjectType::VARIABLE, data_type})});
+            scopes.top()->insert({name, make_unique<ParsedObject>(ParsedObject{name, ObjectType::VARIABLE, data_type})});
             token = move(tokenizer.next());
         }
     } 

@@ -10,15 +10,21 @@
 #include <map>
 #include "enums.h"
 
-struct SyntaticObject {
+struct ParsedObject {
     std::string name;
     ObjectType object_type;
     DataType data_type;
 };
 
+struct ParsedScope {
+    DataType data_type;
+    std::string name;
+    std::map<std::string, std::unique_ptr<ParsedObject>> objects;
+};
+
 class Parser {
     private:
-        std::stack<std::unique_ptr<std::map<std::string, std::unique_ptr<SyntaticObject>>>> scopes;
+        std::stack<std::unique_ptr<std::map<std::string, std::unique_ptr<ParsedObject>>>> scopes;
         std::unique_ptr<Target> target;
 
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        

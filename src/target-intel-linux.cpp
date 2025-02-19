@@ -65,10 +65,10 @@ void TargetIntelLinux::statements(TargetContext & target_context, std::ostream &
 }
 
 bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens) {
-    stack <unique_ptr<Scope>> scopes;
+    stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
     
-    scopes.push(move(make_unique<Scope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
+    scopes.push(move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
 
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);

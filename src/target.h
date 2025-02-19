@@ -16,16 +16,16 @@ struct TargetObject {
     size_t size;
 };
 
-struct Scope {
+struct TargetScope {
     DataType data_type;
     std::string name;
     std::map<std::string, std::unique_ptr<TargetObject>> objects;
-    Scope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
+    TargetScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
 
 struct TargetContext {
     const std::vector<std::unique_ptr<Token>> & tokens;
-    const std::stack <std::unique_ptr<Scope>> & scopes;
+    const std::stack <std::unique_ptr<TargetScope>> & scopes;
     size_t index;
     inline Token * next() {return tokens[index++].get();};
     inline Token * current() {return tokens[index].get();}
