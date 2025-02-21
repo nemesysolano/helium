@@ -6,6 +6,8 @@ using namespace std;
 
 void TargetIntelLinux::variable_declarations(TargetContext & target_context, std::ostream & out) {
     Token * token = target_context.next();
+    const auto & current_scope = target_context.scopes.top();
+    size_t offset = 0;
 
     if(token->getType() == TokenType::VAR) {
 
@@ -14,14 +16,17 @@ void TargetIntelLinux::variable_declarations(TargetContext & target_context, std
 
         while(token->getType() == TokenType::IDENTIFIER) {
             const string & name = token->getValue();
-            DataType type;
+            DataType data_type;
             
             assert((token = target_context.next())->getType() == TokenType::COLON);
-            assert((type = to_data_type((token = target_context.next())->getType())) != DataType::UNDEFINED);
+            assert((data_type = to_data_type((token = target_context.next())->getType())) != DataType::UNDEFINED);
 
             const string & type_name = token->getValue();
-            const size_t size = data_type_size(type);
+            const size_t size = data_type_size(data_type);
 
+            offset += size;
+            current_scope->objects.insert({name, make_shared<TargetObject>(name, data_type, ObjectType::VARIABLE, size, offset)});
+            
             out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RSP << SEP << size << COMMENT << name << ':' << ' ' << type_name << endl;
 
             token = target_context.next();
@@ -32,6 +37,20 @@ void TargetIntelLinux::variable_declarations(TargetContext & target_context, std
    
 }
 
+void TargetIntelLinux::evaluate_expression(TargetContext & target_context, std::ostream & out) {
+    Token & expression = * target_context.current();
+
+    if(expression.getType() == TokenType::IDENTIFIER) { //Variable or Function
+        size_t offset = target_context.scopes.top()->objects.at(expression.getValue())->offset;
+        out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << '[' << NASM_RBP << '-' << offset <<  ']' << endl;
+    } else { //Literal
+        out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << expression.getValue() << endl;
+    }
+    
+    
+
+}
+
 void TargetIntelLinux::return_statement(TargetContext & target_context, std::ostream & out) {
     assert(target_context.current()->getType() == TokenType::RETURN);
 
@@ -39,10 +58,9 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
     target_context.next();
-    Token & value = * target_context.current();
-    auto current_scope = target_context.scopes.top().get();    
-    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << value.getValue() << endl;
-    out << '\t' << '\t' << NASM_JMP << ' ' << current_scope->name << EXIT_SUFFIX << endl;
+    const auto & scope_name = target_context.scopes.top().get()->name;    
+    evaluate_expression(target_context, out);   
+    out << '\t' << '\t' << NASM_JMP << ' ' << scope_name << EXIT_SUFFIX << endl;
     target_context.push_back();
 }
 

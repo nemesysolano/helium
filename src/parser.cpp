@@ -23,6 +23,12 @@ bool print_duplicated_object(const string & name, Tokenizer & tokenizer) {
     return false;
 }
 
+bool print_undefined_object(const string & name, const Tokenizer & tokenizer) {
+    cout << " Undefined Object: " << name << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << " is duplicated" << endl;
+    return false;
+}
+
+
 bool is_type_token(const unique_ptr<Token> & token) {
     return is_built_type_token(token->getValue());
 }
@@ -30,6 +36,56 @@ bool is_type_token(const unique_ptr<Token> & token) {
 bool is_statement_token(const unique_ptr<Token> & token) {
     auto type = token->getType();
     return is_statement_token_type(type);
+}
+
+bool literal_matches_type(const unique_ptr<Token> & token, DataType data_type) {
+    auto type = token->getType();
+    switch(data_type) {
+        case DataType::BIGINT:
+            return type == TokenType::INTEGER_LITERAL || type == TokenType::HEX_LITERAL;
+        case DataType::INTEGER:
+            return type == TokenType::INTEGER_LITERAL;
+        case DataType::FLOAT:
+            return type == TokenType::FLOAT_LITERAL;
+        case DataType::TEXT:
+            return type == TokenType::TEXT_LITERAL;
+        case DataType::BOOLEAN:
+            return type == TokenType::BOOLEAN_LITERAL;
+        default:
+            return false;
+    }
+}
+
+bool object_matches_type(
+    const unique_ptr<ParsedScope> & scope,
+    const unique_ptr<Token> & token,
+    const Tokenizer & tokenizer
+) {    
+    auto name = token->getValue();
+    cout << name << endl;
+
+    for (const auto &pair : scope->objects) {
+        cout << "Object name: " << pair.first << endl;
+    }
+    
+    if(scope->objects.count(name) == 0) {
+        print_undefined_object(name, tokenizer);
+        return false;
+    }
+
+    DataType data_type = scope->data_type;    
+    const shared_ptr<ParsedObject> & object = scope->objects.at(name);
+
+    //TODO: Implement full expression evaluation. 
+    return object->data_type == data_type;    
+}
+
+bool expression_matches_return_type(
+    const unique_ptr<ParsedScope> & scope,
+    const unique_ptr<Token> & token,
+    const Tokenizer & tokenizer
+) {
+    return literal_matches_type(token, scope->data_type) || object_matches_type(scope, token, tokenizer);
 }
 
 void Parser::push_scope(const std::string name, DataType data_type) {
@@ -85,11 +141,9 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
     }
 
     tokens.push_back(move(tokenizer.next()));
-    if(
-        tokens.back()->getType() != TokenType::INTEGER_LITERAL || 
-        tokens.back()->getType() != TokenType::HEX_LITERAL
-    ) {
-        print_parse_error(MSG_INVALID_EXPRESSION, tokenizer);
+        
+    if(!expression_matches_return_type(scopes.top(), tokens.back(), tokenizer)) {
+        print_parse_error(RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
     
     tokens.push_back(move(tokenizer.next()));
@@ -140,13 +194,14 @@ bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Tok
 
 bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     unique_ptr<Token> token(move(tokenizer.next()));
- 
+    size_t offset = 0;
+
     if(token->getType() == TokenType::VAR) {
         tokens.push_back(move(token));
         token = move(tokenizer.next());
         string name;
         DataType data_type;
-        std::map<std::string, std::unique_ptr<ParsedObject>> & scope_objects = scopes.top()->objects; 
+        std::map<std::string, std::shared_ptr<ParsedObject>> & scope_objects = scopes.top()->objects; 
 
         while(token->getType() == TokenType::IDENTIFIER) {
             name = token->getValue();
@@ -176,7 +231,8 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
                 return false;
             }  
             tokens.push_back(move(token));
-            scope_objects.insert({name, make_unique<ParsedObject>(ParsedObject{name, ObjectType::VARIABLE, data_type})});
+            scope_objects.insert({name, make_shared<ParsedObject>(ParsedObject{offset, name, ObjectType::VARIABLE, data_type})});
+            offset += data_type_size(data_type);
             token = move(tokenizer.next());
         }
     } 

@@ -19,7 +19,6 @@ const char * LEFT_PARENT = "(";
 const char * SEMICOLON = ";";
 const char * COLON = ":";
 const char * COMMA = ",";
-const char * DOT = ".";
 const char * END_OF_FILE="<EOF>";
 //Chararacter are regarded as single character tokens.
 const char * single_char_tokens = "()[];:,.";

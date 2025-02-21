@@ -1,10 +1,11 @@
 program
 var
-    houses: integer
     population: bigint
+    records: bigint
+    houses: integer
     income: float
     married: boolean
     country: text
 begin
-    return( 83) 
+    return(records)     
 end

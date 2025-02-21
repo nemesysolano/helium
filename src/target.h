@@ -12,14 +12,19 @@ extern const char * EXIT_SUFFIX;
 
 struct TargetObject {
     std::string name;
-    DataType data_type;
+    DataType data_type;    
+    ObjectType object_type;
     size_t size;
-};
+    size_t offset;
+
+    inline TargetObject(const std::string & name, DataType data_type, ObjectType object_type, size_t size, size_t offset)
+        : name(name), data_type(data_type), object_type(object_type), size(size), offset(offset) {}
+};;
 
 struct TargetScope {
     DataType data_type;
     std::string name;
-    std::map<std::string, std::unique_ptr<TargetObject>> objects;
+    std::map<std::string, std::shared_ptr<TargetObject>> objects;
     TargetScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
 

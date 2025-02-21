@@ -36,7 +36,6 @@ enum class TokenType {
     SEMICOLON,
     COLON,
     COMMA,
-    DOT,
     // Flags
     INVALID,
     END_OF_FILE,

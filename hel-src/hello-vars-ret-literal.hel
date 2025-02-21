@@ -1,0 +1,10 @@
+program
+var
+    population: bigint
+    houses: integer
+    income: float
+    married: boolean
+    country: text
+begin
+    return(2)     
+end

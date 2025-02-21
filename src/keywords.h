@@ -21,7 +21,6 @@ extern const char * LEFT_PARENT;
 extern const char * SEMICOLON;
 extern const char * COLON;
 extern const char * COMMA;
-extern const char * DOT;
 extern const char * empty_string ;
 extern const char * END_OF_FILE;
 

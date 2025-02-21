@@ -67,7 +67,8 @@ unique_ptr<Token> Tokenizer::next() {
     while(
         index < source.size() && (
             isalnum(source[index]) ||
-            source[index] == '_'
+            source[index] == '_' ||
+            source[index] == '.'
         )
     ) {
         buffer.push_back(source[index]);
@@ -143,8 +144,6 @@ TokenType get_keyword_type(const string & buffer) {
         return TokenType::COLON;
     } else if(iequals(buffer, COMMA)) {
         return TokenType::COMMA;
-    } else if(iequals(buffer, DOT)) {
-        return TokenType::DOT;
     } else if (buffer == empty_string) {
         return TokenType::END_OF_FILE;
     } else {

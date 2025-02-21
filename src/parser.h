@@ -11,6 +11,7 @@
 #include "enums.h"
 
 struct ParsedObject {
+    size_t offset;
     std::string name;
     ObjectType object_type;
     DataType data_type;
@@ -19,8 +20,9 @@ struct ParsedObject {
 struct ParsedScope {
     DataType data_type;
     std::string name;
-    std::map<std::string, std::unique_ptr<ParsedObject>> objects;
-    ParsedScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
+    std::map<std::string, std::shared_ptr<ParsedObject>> objects;
+  
+    inline ParsedScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
 
 class Parser {

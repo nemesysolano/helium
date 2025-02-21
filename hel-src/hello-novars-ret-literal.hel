@@ -1,4 +1,4 @@
 program
 begin
-    return(2)
+    return(23)
 end
