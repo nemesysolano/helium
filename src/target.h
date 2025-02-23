@@ -24,12 +24,12 @@ struct TargetObject {
 struct TargetScope {
     DataType data_type;
     std::string name;
-    std::map<std::string, std::shared_ptr<TargetObject>> objects;
+    std::map<std::string, std::shared_ptr<TargetObject>> objects;    
     TargetScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
 
 struct TargetContext {
-    const std::vector<std::unique_ptr<Token>> & tokens;
+    const std::vector<std::unique_ptr<Token>> & tokens;    
     const std::stack <std::unique_ptr<TargetScope>> & scopes;
     size_t index;
     inline Token * next() {return tokens[index++].get();};
