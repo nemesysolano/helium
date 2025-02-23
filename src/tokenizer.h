@@ -56,5 +56,12 @@ class Tokenizer {
         size_t get_column() const { return column; }
         void push_back(std::unique_ptr<Token> token) { current_token = std::move(token); }
 } ;
+
+
 TokenType get_keyword_type(const std::string & buffer);
+bool is_type_token(const std::unique_ptr<Token> & token);
+bool is_statement_token(const std::unique_ptr<Token> & token);
+bool is_literal_token_type(TokenType type);
+bool is_literal_token(const std::unique_ptr<Token> & token);
+bool literal_matches_type(const std::unique_ptr<Token> & token, DataType data_type);
 #endif

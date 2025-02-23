@@ -169,3 +169,42 @@ TokenType get_keyword_type(const string & buffer) {
         return TokenType::INVALID;
     }
 }
+
+bool is_type_token(const unique_ptr<Token> & token) {
+    return is_built_type_token(token->getValue());
+}
+
+bool is_statement_token(const unique_ptr<Token> & token) {
+    auto type = token->getType();
+    return is_statement_token_type(type);
+}
+
+bool is_literal_token_type(TokenType type) {
+    return type == TokenType::INTEGER_LITERAL || type == TokenType::FLOAT_LITERAL || type == TokenType::TEXT_LITERAL || type == TokenType::BOOLEAN_LITERAL || type == TokenType::HEX_LITERAL || type == TokenType::BOOLEAN_LITERAL;  
+}
+
+bool is_literal_token(const unique_ptr<Token> & token) {
+    auto type = token->getType();
+    auto matches = is_literal_token_type(type);
+
+    return matches;
+}
+
+bool literal_matches_type(const unique_ptr<Token> & token, DataType data_type) {
+    auto type = token->getType();
+
+    switch(data_type) {
+        case DataType::BIGINT:
+            return type == TokenType::INTEGER_LITERAL || type == TokenType::HEX_LITERAL;
+        case DataType::INTEGER:
+            return type == TokenType::INTEGER_LITERAL;
+        case DataType::FLOAT:
+            return type == TokenType::FLOAT_LITERAL;
+        case DataType::TEXT:
+            return type == TokenType::TEXT_LITERAL;
+        case DataType::BOOLEAN:
+            return type == TokenType::BOOLEAN_LITERAL;
+        default:
+            return false;
+    }
+}
