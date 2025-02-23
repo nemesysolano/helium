@@ -23,3 +23,7 @@ bool iequals(const string & a, const char * text) {
     }
     return true;
 }
+
+bool is_c_escaped_char(char c) {
+    return c == '\\' || c == '\'' || c == '\"' || c == '?' || c == 'a' || c == 'b' || c == 'f' || c == 'n' || c == 'r' || c == 't' || c == 'v';
+}

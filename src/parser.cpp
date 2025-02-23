@@ -38,8 +38,20 @@ bool is_statement_token(const unique_ptr<Token> & token) {
     return is_statement_token_type(type);
 }
 
+bool is_literal_token_type(TokenType type) {
+    return type == TokenType::INTEGER_LITERAL || type == TokenType::FLOAT_LITERAL || type == TokenType::TEXT_LITERAL || type == TokenType::BOOLEAN_LITERAL || type == TokenType::HEX_LITERAL || type == TokenType::BOOLEAN_LITERAL;  
+}
+
+bool is_literal_token(const unique_ptr<Token> & token) {
+    auto type = token->getType();
+    auto matches = is_literal_token_type(type);
+
+    return matches;
+}
+
 bool literal_matches_type(const unique_ptr<Token> & token, DataType data_type) {
     auto type = token->getType();
+
     switch(data_type) {
         case DataType::BIGINT:
             return type == TokenType::INTEGER_LITERAL || type == TokenType::HEX_LITERAL;
@@ -56,17 +68,12 @@ bool literal_matches_type(const unique_ptr<Token> & token, DataType data_type) {
     }
 }
 
-bool object_matches_type(
+bool object_matches_return_type(
     const unique_ptr<ParsedScope> & scope,
     const unique_ptr<Token> & token,
     const Tokenizer & tokenizer
 ) {    
     auto name = token->getValue();
-    cout << name << endl;
-
-    for (const auto &pair : scope->objects) {
-        cout << "Object name: " << pair.first << endl;
-    }
     
     if(scope->objects.count(name) == 0) {
         print_undefined_object(name, tokenizer);
@@ -80,12 +87,20 @@ bool object_matches_type(
     return object->data_type == data_type;    
 }
 
+
 bool expression_matches_return_type(
     const unique_ptr<ParsedScope> & scope,
     const unique_ptr<Token> & token,
     const Tokenizer & tokenizer
 ) {
-    return literal_matches_type(token, scope->data_type) || object_matches_type(scope, token, tokenizer);
+
+    if(is_literal_token(token)) {
+        return literal_matches_type(token, scope->data_type);
+    } else if (token->getType() == TokenType::IDENTIFIER) {
+        return object_matches_return_type(scope, token, tokenizer);
+    } else {
+        return false;
+    }
 }
 
 void Parser::push_scope(const std::string name, DataType data_type) {
@@ -134,16 +149,80 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
     }
 }
 
+
+
+bool expression_matches_call_type(
+    const shared_ptr<ParsedObject> &root_target, 
+    unique_ptr<ParsedScope> & scope,
+    unique_ptr<Token> & token,
+    Tokenizer & tokenizer
+) {
+
+    if(is_literal_token(token)) {
+        return literal_matches_type(token, root_target->data_type);
+    } else if (token->getType() == TokenType::IDENTIFIER) {
+
+        auto name = token->getValue();
+
+        if(scope->objects.count(name) == 0) {
+            print_undefined_object(name, tokenizer);
+            return false;
+        }
+    
+        const shared_ptr<ParsedObject> & object = scope->objects.at(name);
+    
+        //TODO: Implement full expression evaluation. 
+        return object->data_type == root_target->data_type;  
+
+    } else {
+        return false;
+    }
+}
+
+bool Parser::parse_call(const shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   
+    auto & current_scope = scopes.top();
+
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
+        return print_expected_token(LEFT_PARENT, tokenizer);        
+    }    
+
+    tokens.push_back(move(tokenizer.next()));
+    if(!expression_matches_call_type(root_target, current_scope, tokens.back(), tokenizer)) {
+        return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
+    }   
+
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
+        return print_expected_token(RIGHT_PARENT, tokenizer); 
+    }
+
+    return true;
+}
+
+bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   
+    auto & current_scope = scopes.top();
+    auto const & target_name = tokens.back()->getValue();
+
+    if(current_scope->objects.count(target_name) == 0) {
+        print_parse_error(MSG_INVALID_CALL_TARGET, tokenizer);
+    }
+
+    auto const & root_target = current_scope->objects.at(target_name);
+
+    return parse_call(root_target, tokenizer, tokens);
+    
+}
+
 bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);        
     }
 
-    tokens.push_back(move(tokenizer.next()));
-        
+    tokens.push_back(move(tokenizer.next()));        
     if(!expression_matches_return_type(scopes.top(), tokens.back(), tokenizer)) {
-        print_parse_error(RETURN_DATATYPE_MISTMATCH, tokenizer);
+        print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
     
     tokens.push_back(move(tokenizer.next()));
@@ -155,21 +234,26 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
 }
 
 bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
-
     if(!is_statement_token(tokens.back())) {
         return print_parse_error(MSG_INVALID_STATEMENT, tokenizer);
     }
 
-    if(tokens.back()->getType() == TokenType::RETURN) {
-        return parse_return(tokenizer, tokens);
-    }
+    auto type = tokens.back()->getType();
 
-    return false; //TODO: Implement other statements
+    switch(type) {
+        case TokenType::RETURN: 
+            return parse_return(tokenizer, tokens);
+        case TokenType::IDENTIFIER:
+            return parse_call(tokenizer, tokens);
+        default:
+            return false;
+    }
+    
 }
 
 bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
     tokens.push_back(move(tokenizer.next()));
-
+    
     if(tokens.back()->getType() == TokenType::BEGIN) {
         bool is_valid_statement;
         

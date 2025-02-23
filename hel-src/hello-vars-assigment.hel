@@ -1,0 +1,30 @@
+program
+var
+    records: bigint
+    houses: integer
+    income: float
+    married: boolean
+    country: text
+
+    registros: bigint
+    casas: integer
+    ingreso: float
+    casado: boolean
+    pais: text    
+    
+begin
+    
+    records(223)
+    houses(1)
+    income(3.141529)
+    married(true)
+    country("Rafael solano")
+
+    registros(records)
+    casas(houses)
+    ingreso(income)
+    casado(married)
+    pais(country)
+
+    return(records)     
+end

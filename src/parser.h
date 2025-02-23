@@ -32,6 +32,8 @@ class Parser {
 
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
         bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool parse_call(const std::shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statements_group(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         void push_scope(const std::string name, DataType data_type);
