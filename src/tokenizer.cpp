@@ -41,6 +41,8 @@ void Tokenizer::next_char() {
 }
 
 unique_ptr<Token> Tokenizer::next() {
+    std::smatch match;
+
     if(current_token.get() != nullptr) {
         auto value = move(current_token);
         current_token.reset();
@@ -56,54 +58,71 @@ unique_ptr<Token> Tokenizer::next() {
         return make_unique<Token>(TokenType::END_OF_FILE, empty_string);
     }
 
-
+    bool is_string = source[index] == '"';
     buffer.push_back(source[index]);
     next_char();
 
-    if(get_keyword_type(buffer) != TokenType::INVALID) {
-        return move(make_unique<Token>(get_keyword_type(buffer), buffer));
-    }
+    if(is_string) {
+        // Try to read a C string literal taking into account escaped characters (e.g. '\r', '\n', '\t' and '\'", etc.)
+        while (index < source.size() && source[index] != '"') {
+            if(source[index] == '\\') {
+                next_char();
+                if(index == source.size() || !is_c_escaped_char(source[index])) {
+                    break;
+                }
+            }
+            buffer.push_back(source[index]);
+            next_char();
+        }
 
-    while(
-        index < source.size() && (
-            isalnum(source[index]) ||
-            source[index] == '_' ||
-            source[index] == '.'
-        )
-    ) {
-        buffer.push_back(source[index]);
-        next_char();
-    }
-
-    // check if buffer contains a valid C++ identifier
-    if (!buffer.empty()) {
-        std::smatch match;
-        if(is_multi_char_keyword(buffer)) {
-            return move(make_unique<Token>(get_keyword_type(buffer), buffer));
-
-        } else if(regex_match(buffer, match, identifier_regex)) {
-            return move(make_unique<Token>(TokenType::IDENTIFIER, buffer));
-
-        } else if(regex_match(buffer, match, string_regex)) {
+        if(index < source.size() && source[index] == '"') {
+            buffer.push_back(source[index]);
+            next_char();
+        }
+        
+        if(regex_match(buffer, match, string_regex)) {        
             return move(make_unique<Token>(TokenType::TEXT_LITERAL, buffer));
-
-        } else if(regex_match(buffer, match, integer_regex)) {
-            return move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer));
-
-        } else if(regex_match(buffer, match, hex_integer_regex)) {
-            return move(make_unique<Token>(TokenType::HEX_LITERAL, buffer));
-
-        } else if(regex_match(buffer, match, float_regex)) {
-            return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
-
-        } else if(regex_match(buffer, match, char_regex)) {
-            return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
-
-        } else if(regex_match(buffer, match, boolean_regex)) {
-            return move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer));
-
         } 
+        
+    } else {
+        
+        if(get_keyword_type(buffer) != TokenType::INVALID) {
+            return move(make_unique<Token>(get_keyword_type(buffer), buffer));
+        }
+         
+        while(index < source.size() && (isalnum(source[index]) || source[index] == '_' || source[index] == '.')) {
+            buffer.push_back(source[index]);
+            next_char();
+        }
+    
+        // check if buffer contains a valid C++ identifier
+        if (!buffer.empty()) {
+            
+            if(regex_match(buffer, match, integer_regex)) {
+                return move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer));
+    
+            } else if(regex_match(buffer, match, hex_integer_regex)) {
+                return move(make_unique<Token>(TokenType::HEX_LITERAL, buffer));
+    
+            } else if(regex_match(buffer, match, float_regex)) {
+                return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+    
+            } else if(regex_match(buffer, match, char_regex)) {
+                return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+    
+            } else if(regex_match(buffer, match, boolean_regex)) {
+                return move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer));
+    
+            } else if(is_multi_char_keyword(buffer)) {
+                return move(make_unique<Token>(get_keyword_type(buffer), buffer));
+    
+            } else if (regex_match(buffer, match, identifier_regex)) {
+                return move(make_unique<Token>(TokenType::IDENTIFIER, buffer));
+    
+            } 
+        }        
     }
+
 
     return move(make_unique<Token>(TokenType::INVALID, buffer));
 

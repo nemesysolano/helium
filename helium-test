@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 SCRIPT_DIR=$(dirname $0)
+WITH_LEAK_CHECK=0
 
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <source>"
@@ -26,7 +27,13 @@ if [ $STATUS -ne 0 ]; then
 fi
 
 echo "Compiling $SOURCE into $TARGET"
-valgrind $SCRIPT_DIR/bin/heliumc $SOURCE $TARGET
+
+if [ $WITH_LEAK_CHECK -eq 1 ]; then
+    valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes $SCRIPT_DIR/bin/heliumc $SOURCE $TARGET
+else
+    $SCRIPT_DIR/bin/heliumc $SOURCE $TARGET
+fi
+
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Failed to compile $SOURCE"
