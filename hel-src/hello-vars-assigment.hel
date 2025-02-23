@@ -5,7 +5,7 @@ var
     income: float
     married: boolean
     country: text
-
+    city: text
     registros: bigint
     casas: integer
     ingreso: float
@@ -18,7 +18,8 @@ begin
     houses(1)
     income(3.141529)
     married(true)
-    country("Rafael solano")
+    country("Dominican Republic")
+    city("Santo Domingo")
 
     registros(records)
     casas(houses)

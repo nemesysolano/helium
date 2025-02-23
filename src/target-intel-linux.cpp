@@ -82,7 +82,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, std::ostream &
 
 }
 
-bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens) {
+bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) {
     stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
     
@@ -117,6 +117,9 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     out << '\t' << '\t' << NASM_NOP << endl;
 
     out << "segment .data" << endl;
+    for(const auto & static_data_entry : static_data) {
+        out << "\t _static_" << static_data_entry.second << ':' << ' ' << NASM_DB << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
+    }
     out << "segment .bss" << endl;
     scopes.pop();
     out.flush();

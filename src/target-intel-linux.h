@@ -16,7 +16,7 @@ class TargetIntelLinux: public Target {
         void evaluate_expression(TargetContext & target_context, std::ostream & out);
         void return_statement(TargetContext & target_context, std::ostream & out);        
     public:
-        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens) override;
+        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) override;
 
 };
 #endif // __TARGET_INTEL_LINUX_H__

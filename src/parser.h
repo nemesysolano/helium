@@ -21,7 +21,6 @@ struct ParsedScope {
     DataType data_type;
     std::string name;
     std::map<std::string, std::shared_ptr<ParsedObject>> objects;
-    std::map<std::string, size_t> static_data;
     inline ParsedScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
 
@@ -29,6 +28,8 @@ class Parser {
     private:
         std::stack<std::unique_ptr<ParsedScope>> scopes;
         std::unique_ptr<Target> target;
+        std::map<std::string, size_t> static_data;
+        
         bool object_matches_return_type(const std::unique_ptr<ParsedScope> & scope, const std::unique_ptr<Token> & token, const Tokenizer & tokenizer);
         bool expression_matches_return_type(const std::unique_ptr<ParsedScope> & scope, const std::unique_ptr<Token> & token, const Tokenizer & tokenizer);
         bool expression_matches_call_type(const std::shared_ptr<ParsedObject> &root_target, std::unique_ptr<ParsedScope> & scope, std::unique_ptr<Token> & token, Tokenizer & tokenizer);

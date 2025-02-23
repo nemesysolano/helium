@@ -3,6 +3,7 @@
 #include <iostream>
 #include "keywords.h"
 #include "error-messages.h"
+#include "text.h"
 
 using namespace std;
 
@@ -51,7 +52,12 @@ bool Parser::expression_matches_call_type(
 ) {
 
     if(is_literal_token(token)) {
-        return literal_matches_type(token, root_target->data_type);
+        bool matches = literal_matches_type(token, root_target->data_type);
+        if(matches && root_target->data_type == DataType::TEXT) {
+            static_data.insert({token->getValue(), hash_string(token->getValue())});
+        }
+
+        return matches;
     } else if (token->getType() == TokenType::IDENTIFIER) {
 
         auto name = token->getValue();
@@ -110,7 +116,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
             return print_expected_token(END_OF_FILE, tokenizer);
         }
 
-        target->write(out, tokens);
+        target->write(out, tokens, static_data);
         return true;
     } else {
         print_expected_token(PROGRAM, tokenizer);
