@@ -61,7 +61,6 @@ class Tokenizer {
 TokenType get_keyword_type(const std::string & buffer);
 bool is_type_token(const std::unique_ptr<Token> & token);
 bool is_statement_token(const std::unique_ptr<Token> & token);
-bool is_literal_token_type(TokenType type);
 bool is_literal_token(const std::unique_ptr<Token> & token);
 bool literal_matches_type(const std::unique_ptr<Token> & token, DataType data_type);
 #endif

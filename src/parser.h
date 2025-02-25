@@ -9,7 +9,7 @@
 #include <stack>
 #include <map>
 #include "enums.h"
-
+#include "text.h"
 struct ParsedObject {
     size_t offset;
     std::string name;
@@ -29,7 +29,8 @@ class Parser {
         std::stack<std::unique_ptr<ParsedScope>> scopes;
         std::unique_ptr<Target> target;
         std::map<std::string, size_t> static_data;
-        
+        CyclicHash cyclic_hash;
+
         bool object_matches_return_type(const std::unique_ptr<ParsedScope> & scope, const std::unique_ptr<Token> & token, const Tokenizer & tokenizer);
         bool expression_matches_return_type(const std::unique_ptr<ParsedScope> & scope, const std::unique_ptr<Token> & token, const Tokenizer & tokenizer);
         bool expression_matches_call_type(const std::shared_ptr<ParsedObject> &root_target, std::unique_ptr<ParsedScope> & scope, std::unique_ptr<Token> & token, Tokenizer & tokenizer);

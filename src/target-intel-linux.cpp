@@ -3,6 +3,7 @@
 
 using namespace std;
 
+const char * STATIC_PREFIX = "_static_";
 
 void TargetIntelLinux::variable_declarations(TargetContext & target_context, std::ostream & out) {
     Token * token = target_context.next();
@@ -118,10 +119,12 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
 
     out << "segment .data" << endl;
     for(const auto & static_data_entry : static_data) {
-        out << "\t _static_" << static_data_entry.second << ':' << ' ' << NASM_DB << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
+        const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;
+        out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
     }
     out << "segment .bss" << endl;
     scopes.pop();
     out.flush();
     return true;
 }
+

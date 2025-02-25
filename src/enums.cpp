@@ -44,3 +44,7 @@ size_t data_type_size(DataType data_type) {
 bool is_statement_token_type(TokenType token_type) {
     return token_type == TokenType::RETURN  || token_type == TokenType::IDENTIFIER ; 
 }
+
+bool is_literal_token_type(TokenType token_type) {
+    return token_type == TokenType::INTEGER_LITERAL || token_type == TokenType::HEX_LITERAL || token_type == TokenType::FLOAT_LITERAL || token_type == TokenType::TEXT_LITERAL || token_type == TokenType::BOOLEAN_LITERAL;
+}

@@ -53,4 +53,5 @@ enum class TokenType {
 DataType to_data_type(TokenType token_type) ;
 size_t data_type_size(DataType data_type);
 bool is_statement_token_type(TokenType token_type);
+bool is_literal_token_type(TokenType type);
 #endif

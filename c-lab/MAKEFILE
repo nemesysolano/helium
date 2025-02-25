@@ -1,0 +1,49 @@
+# Compiler
+
+CC = gcc
+
+# Directories
+SRC_DIR = src
+BIN_DIR = bin
+ASM_DIR = asm
+
+# Output executable
+TARGET = $(BIN_DIR)/clab
+
+# Source files
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+
+# Object files
+OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BIN_DIR)/%.o)
+
+# Assembly files
+ASMS = $(SRCS:$(SRC_DIR)/%.cpp=$(ASM_DIR)/%.s)
+
+# Compiler flags
+CFLAGS = -Wall -fno-asynchronous-unwind-tables -s -c  -Wextra -O2 -std=c++20
+
+# Linker flags
+LDFLAGS =
+
+# Default target
+all: $(TARGET) $(ASMS)
+
+# Build the target
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+# Build object files
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Generate assembly files
+$(ASM_DIR)/%.s: $(SRC_DIR)/%.cpp
+	@mkdir -p $(ASM_DIR)
+	$(CC) $(CFLAGS) -S -o $@ $<
+
+# Clean up build files
+clean:
+	rm -rf $(BIN_DIR)/*.o $(TARGET) $(ASM_DIR)/*.s
+
+.PHONY: all clean

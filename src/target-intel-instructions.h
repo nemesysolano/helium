@@ -10,4 +10,5 @@ extern const char * NASM_RET;
 extern const char * NASM_NOP;
 extern const char * NASM_JMP;
 extern const char * NASM_DB;
+extern const char * NASM_DQ;
 #endif

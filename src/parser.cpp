@@ -53,8 +53,8 @@ bool Parser::expression_matches_call_type(
 
     if(is_literal_token(token)) {
         bool matches = literal_matches_type(token, root_target->data_type);
-        if(matches && root_target->data_type == DataType::TEXT) {
-            static_data.insert({token->getValue(), hash_string(token->getValue())});
+        if(matches && root_target->data_type == DataType::TEXT || root_target->data_type == DataType::FLOAT) {
+            static_data.insert({token->getValue(), cyclic_hash(token->getValue())});
         }
 
         return matches;

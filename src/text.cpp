@@ -6,6 +6,7 @@
 #include <cstring>      // std::string
 #include <string>
 #include <iostream> 
+#include "text.h"
 
 using namespace std;
 
@@ -31,14 +32,15 @@ bool is_c_escaped_char(char c) {
     return c == '\\' || c == '\'' || c == '\"' || c == '?' || c == 'a' || c == 'b' || c == 'f' || c == 'n' || c == 'r' || c == 't' || c == 'v';
 }
 
-size_t hash_string(const std::string & string) {
+size_t CyclicHash::operator()(const std::string & string) {
     size_t hash = 0;
-    size_t prime_index = 0;
     
     for(char c : string) {
-        hash = c + (hash << 6) + (hash << 16) - hash;
+        hash = c + (hash << prime_list_below_100[second_index]) + (hash << prime_list_below_100[third_index]) - hash;
         hash = hash ^ prime_list_below_100[prime_index];
         prime_index = (prime_index + 1) % prime_list_below_100_size;
+        second_index = (second_index + 1) % prime_list_below_100_size;
+        third_index = (third_index + 1) % prime_list_below_100_size;
     }
     
     return hash;

@@ -179,10 +179,6 @@ bool is_statement_token(const unique_ptr<Token> & token) {
     return is_statement_token_type(type);
 }
 
-bool is_literal_token_type(TokenType type) {
-    return type == TokenType::INTEGER_LITERAL || type == TokenType::FLOAT_LITERAL || type == TokenType::TEXT_LITERAL || type == TokenType::BOOLEAN_LITERAL || type == TokenType::HEX_LITERAL || type == TokenType::BOOLEAN_LITERAL;  
-}
-
 bool is_literal_token(const unique_ptr<Token> & token) {
     auto type = token->getType();
     auto matches = is_literal_token_type(type);
