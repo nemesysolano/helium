@@ -14,7 +14,7 @@ var
     
 begin
     
-    records(223)
+    records(101)
     houses(1)
     income(3.141529)
     married(true)
@@ -27,5 +27,5 @@ begin
     casado(married)
     pais(country)
 
-    return(records)     
+    return(registros)     
 end

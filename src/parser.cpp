@@ -21,7 +21,8 @@ bool Parser::object_matches_return_type(
         return false;
     }
 
-    DataType data_type = scope->data_type;    
+    DataType data_type = scope->data_type; 
+   //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;    
     const shared_ptr<ParsedObject> & object = scope->objects.at(name);
 
     //TODO: Implement full expression evaluation. 
@@ -66,7 +67,8 @@ bool Parser::expression_matches_call_type(
             print_undefined_object(name, tokenizer);
             return false;
         }
-    
+
+       //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
         const shared_ptr<ParsedObject> & object = scope->objects.at(name);
     
         //TODO: Implement full expression evaluation. 
@@ -153,7 +155,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
     if(current_scope->objects.count(target_name) == 0) {
         print_parse_error(MSG_INVALID_CALL_TARGET, tokenizer);
     }
-
+   //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
     auto const & root_target = current_scope->objects.at(target_name);
 
     return parse_call(root_target, tokenizer, tokens);

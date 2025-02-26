@@ -11,4 +11,7 @@ extern const char * NASM_NOP;
 extern const char * NASM_JMP;
 extern const char * NASM_DB;
 extern const char * NASM_DQ;
+extern const char * NASM_LEA;
+extern const char * DWORD;
+extern const char * QWORD;
 #endif

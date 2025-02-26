@@ -5,6 +5,7 @@
 
 bool iequals(const std::string & a, const char * text);
 bool is_c_escaped_char(char c);
+bool parse_boolean(const std::string & text);
 
 class CyclicHash {
     size_t prime_index;

@@ -11,16 +11,16 @@ ASM_DIR = asm
 TARGET = $(BIN_DIR)/clab
 
 # Source files
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
 # Object files
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BIN_DIR)/%.o)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
 
 # Assembly files
-ASMS = $(SRCS:$(SRC_DIR)/%.cpp=$(ASM_DIR)/%.s)
+ASMS = $(SRCS:$(SRC_DIR)/%.c=$(ASM_DIR)/%.s)
 
 # Compiler flags
-CFLAGS = -Wall -fno-asynchronous-unwind-tables -s -c  -Wextra -O2 -std=c++20
+CFLAGS = -Wall -fno-asynchronous-unwind-tables -s -c  -Wextra
 
 # Linker flags
 LDFLAGS =
@@ -33,12 +33,12 @@ $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 # Build object files
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Generate assembly files
-$(ASM_DIR)/%.s: $(SRC_DIR)/%.cpp
+$(ASM_DIR)/%.s: $(SRC_DIR)/%.c
 	@mkdir -p $(ASM_DIR)
 	$(CC) $(CFLAGS) -S -o $@ $<
 

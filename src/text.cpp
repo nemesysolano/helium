@@ -32,6 +32,10 @@ bool is_c_escaped_char(char c) {
     return c == '\\' || c == '\'' || c == '\"' || c == '?' || c == 'a' || c == 'b' || c == 'f' || c == 'n' || c == 'r' || c == 't' || c == 'v';
 }
 
+bool parse_boolean(const std::string & text) {
+    return iequals(text, "true") || iequals(text, "false");
+}
+
 size_t CyclicHash::operator()(const std::string & string) {
     size_t hash = 0;
     
