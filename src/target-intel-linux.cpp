@@ -161,18 +161,15 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);
 
+    out << "segment .data" << endl;
+    for(const auto & static_data_entry : static_data) {
+        const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;
+        out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
+    }
 
     out << "segment .text" << endl;
-    out << '\t' << "global _start" << endl;
-    out << '\t' << "_start:" << endl;
-    out << '\t' << '\t' << "CALL _bootstrap" << endl;
-    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RBX << SEP << NASM_RBX << endl;
-    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RBX << SEP << NASM_RAX << endl; // Exit status
-    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RAX << SEP << NASM_RAX << endl;
-    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_AL << ", 0x1" << endl;
-    out << '\t' << '\t' << "INT 0x80" << endl;
-
-    out << '\t' << "_bootstrap:" << endl;
+    out << '\t' << "global main" << endl;
+    out << '\t' << "main:" << endl;
     out << '\t' << '\t' << NASM_PUSH << ' ' << NASM_RBP << endl;
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RBP << SEP << NASM_RSP << endl;    
     //
@@ -186,13 +183,6 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     out << '\t' << '\t' << NASM_RET << endl;
     out << '\t' << '\t' << NASM_NOP << endl;
 
-    out << "segment .data" << endl;
-    for(const auto & static_data_entry : static_data) {
-       //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
-        const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;
-        out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
-    }
-    out << "segment .bss" << endl;
     scopes.pop();
     out.flush();
     return true;

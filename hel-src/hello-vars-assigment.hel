@@ -14,7 +14,7 @@ var
     
 begin
     
-    records(101)
+    records(97)
     houses(1)
     income(3.141529)
     married(true)
