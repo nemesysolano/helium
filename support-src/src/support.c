@@ -12,11 +12,11 @@ void print_float(double f, int width, int decimals){
     printf("%*.*f", width, decimals, f);
 }
 
-void print_int(int i) {
+void print_integer(int i) {
     printf("%d", i);
 }
 
-void print_long(long l) {
+void print_bigint(long l) {
     printf("%ld", l);
 }
 
