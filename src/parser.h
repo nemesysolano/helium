@@ -36,6 +36,7 @@ class Parser {
         bool expression_matches_call_type(const std::shared_ptr<ParsedObject> &root_target, std::unique_ptr<ParsedScope> & scope, std::unique_ptr<Token> & token, Tokenizer & tokenizer);
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
         bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(const std::shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);

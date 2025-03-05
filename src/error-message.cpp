@@ -9,6 +9,7 @@ const char * MSG_INVALID_EXPRESSION = "Invalid expression";
 const char * MSG_RETURN_DATATYPE_MISTMATCH = "Return data type does not match the function return type";
 const char * MSG_ASSIGMENT_DATATYPE_MISTMATCH = "Assigned data type does not match the variable type";
 const char * MSG_INVALID_CALL_TARGET = "target (variable or function) doesn't exist in current scope or using a reserved world";
+const char * MSG_INVALID_PRINT_ARGUMENT = "Invalid argument for print statement";
 
 using namespace std;
 bool print_expected_token(const char * expected, Tokenizer & tokenizer) {

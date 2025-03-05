@@ -11,7 +11,7 @@ extern const char * MSG_INVALID_EXPRESSION;
 extern const char * MSG_RETURN_DATATYPE_MISTMATCH;
 extern const char * MSG_ASSIGMENT_DATATYPE_MISTMATCH;
 extern const char * MSG_INVALID_CALL_TARGET;
-
+extern const char * MSG_INVALID_PRINT_ARGUMENT;
 bool print_expected_token(const char * expected, Tokenizer & tokenizer);
 bool print_parse_error(const char * message, Tokenizer & tokenizer);
 bool print_duplicated_object(const std::string & name, Tokenizer & tokenizer);

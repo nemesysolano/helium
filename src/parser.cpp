@@ -162,6 +162,29 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
     
 }
 
+bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+    auto & current_scope = scopes.top();
+
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
+        return print_expected_token(LEFT_PARENT, tokenizer);        
+    }    
+
+    tokens.push_back(move(tokenizer.next()));
+    if(is_statement_token_type(tokens.back()->getType())) {        
+    } else {
+        print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
+    } 
+
+    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;
+    tokens.push_back(move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
+        return print_expected_token(RIGHT_PARENT, tokenizer); 
+    }
+
+    return true;
+}
+
 bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
@@ -193,6 +216,8 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
             return parse_return(tokenizer, tokens);
         case TokenType::IDENTIFIER:
             return parse_call(tokenizer, tokens);
+        case TokenType::PRINT:
+            return parse_print(tokenizer, tokens);
         default:
             return false;
     }

@@ -27,5 +27,6 @@ begin
     casado(married)
     pais(country)
 
+    print(records)
     return(registros)     
 end

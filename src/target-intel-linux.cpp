@@ -68,12 +68,16 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
     target_context.push_back();
 }
 
-void TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Implement recusrive expression evaluation
+ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Implement recusrive expression evaluation
     auto const & called = *target_context.current();
     auto const & called_name = called.getValue();
     auto const called_type = called.getType();
     auto const called_offset = target_context.scopes.top()->objects.at(called_name)->offset;
     auto const called_data_type = target_context.scopes.top()->objects.at(called_name)->data_type;
+    auto const called_data_type_size = data_type_size(called_data_type);
+    const char * size_qualifier = DWORD;
+    const char * size_register = NASM_EAX;
+    bool is_literal = false;
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
@@ -83,36 +87,44 @@ void TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, 
     assert(object.getType() == TokenType::IDENTIFIER || is_literal_token_type(object.getType()));
 
     if(is_literal_token_type(object.getType())){
-        switch(called_data_type) {
-            case DataType::TEXT:
-                out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RDX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
-                out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_RDX << endl;            
-                break;
-            case DataType::BIGINT:
-                out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << object.getValue() << endl;
-                break;
+        is_literal = true;
+        if(called_data_type == DataType::TEXT || called_data_type == DataType::FLOAT || called_data_type == DataType::BIGINT) {
 
-            case DataType::FLOAT:
-                out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
-                break;
+            switch(called_data_type) {
+                case DataType::TEXT:
+                    out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
+                    break;
+                    
+                case DataType::BIGINT:
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << static_data.at(object.getValue()) << endl;
+                    break;
 
-            case DataType::INTEGER:
-                out << '\t' << '\t' << NASM_MOV << ' ' << DWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << object.getValue() << endl;
-                break;
+                case DataType::FLOAT:
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
+                    break;
+            }
 
-            case DataType::BOOLEAN:
-                out << '\t' << '\t' << NASM_MOV << ' ' << DWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << (parse_boolean(object.getValue()) ? 1 : 0) << endl;
-                break;
-        }
+            out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_RAX << endl;
+        } else
 
+            switch(called_data_type) {
+                case DataType::INTEGER:
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EAX << SEP << static_data.at(object.getValue()) << endl;                    
+                    break;
+
+                case DataType::BOOLEAN:
+
+                    out << '\t' << '\t' << NASM_MOV << ' ' <<  NASM_EAX << SEP << (parse_boolean(object.getValue()) ? 1 : 0) << endl;
+                    break;                
+            }
+
+            out << '\t' << '\t' << NASM_MOV << ' ' << DWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_EAX << endl;
     } else {
         auto const object_offset = target_context.scopes.top()->objects.at(object.getValue())->offset;
-        const char * size_qualifier = DWORD;
-        const char * size_register = NASM_EDX;
 
-        if(data_type_size(called_data_type) == __SIZEOF_POINTER__) {
+        if(called_data_type_size == __SIZEOF_POINTER__) {
             size_qualifier = QWORD;
-            size_register = NASM_RDX;
+            size_register = NASM_RAX;
         }
 
         out << '\t' << '\t' << NASM_MOV << ' ' << size_register << SEP << '[' << NASM_RBP << '-' << object_offset <<  ']' << endl;
@@ -122,6 +134,8 @@ void TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, 
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
+
+    return {is_literal, called_data_type, called_data_type_size};
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){
@@ -142,6 +156,11 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
             case TokenType::IDENTIFIER: 
                 call_statement(target_context, out, static_data);
                 break;
+
+            case TokenType::PRINT:
+                print_statement(target_context, out, static_data);
+                break;
+
             default:
                 break;
         }

@@ -147,6 +147,8 @@ TokenType get_keyword_type(const string & buffer) {
         return TokenType::BEGIN;
     } else if(iequals(buffer, END)) {
         return TokenType::END;
+    } else if(iequals(buffer, PRINT)) {
+        return TokenType::PRINT;
     } else if(iequals(buffer, RETURN)) {
         return TokenType::RETURN;
     } else if(iequals(buffer, RIGHT_SQUARE_BRACKET)) {

@@ -21,6 +21,7 @@ enum class TokenType {
     // Kewords
     BEGIN,
     END,
+    PRINT,
     PROGRAM,
     VAR,
     RETURN,

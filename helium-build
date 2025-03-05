@@ -1,0 +1,74 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SUPPORT_SRC_DIR="${SCRIPT_DIR}/support-src"
+
+WITH_LEAK_CHECK=0
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <source>"
+    exit 1
+fi
+
+BIN_DIR="${SCRIPT_DIR}/bin"
+if [ ! -d $BIN_DIR ];
+then
+    echo "Creating the bin directory"
+    mkdir -p $BIN_DIR
+fi
+
+SOURCE=$1
+TARGET=$(basename $SOURCE)
+TARGET="${SCRIPT_DIR}/bin/${TARGET%.*}.asm"
+
+echo "Building the HELLIUM Compiler"
+make -f MAKEFILE
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to build the HELLIUM Compiler"
+    exit $STATUS
+fi
+
+echo "Compiling $SOURCE into $TARGET"
+
+if [ $WITH_LEAK_CHECK -eq 1 ]; then
+    valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes $SCRIPT_DIR/bin/heliumc $SOURCE $TARGET
+else
+    $SCRIPT_DIR/bin/heliumc $SOURCE $TARGET
+fi
+
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to compile $SOURCE"
+    exit $STATUS
+fi
+
+OUTPUT="${TARGET%.*}.o"
+nasm  -f elf64 -o $OUTPUT $TARGET
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to assemble $TARGET"
+    exit $STATUS
+fi
+
+cd $SUPPORT_SRC_DIR
+make -f MAKEFILE
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to build the support library"
+    cd $SCRIPT_DIR
+    exit $STATUS
+fi
+
+cd $SCRIPT_DIR
+
+EXECUTABLE="${TARGET%.*}"
+gcc  -no-pie $OUTPUT "${SUPPORT_SRC_DIR}/bin/support.o" -o "${EXECUTABLE}" 
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to link $OUTPUT"
+    exit $STATUS
+fi
+
+$EXECUTABLE
+STATUS=$?
+echo "Execution status: $STATUS"

@@ -5,11 +5,13 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**
+**statement** ::= _**return**_ | _**call**_ | 
 
 **return** ::= return (_**expression**_)
 
-**call** ::= _**identifier**_(_**expression**_); SCRUM-1
+**print** ::= print(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**call** ::= _**identifier**_(_**expression**_)
 
 **expression** ::= _**literal**_ | _**identifier**_ ; Expression type must match scope's.
 
@@ -25,5 +27,10 @@
 
 ### call ###
 
-1. When _**identifier**_ is a variable, then _**expression**_'s result is assigned to that variable.; (SCRUM-2)
-2. When _**identifier**_ is a function, then the function is called and the final result is stored in RAX register.
+1. When _**identifier**_ is a variable, then _**expression**_'s result is assigned to that variable.
+2. When _**identifier**_ is a function, then the function is called and the final result is stored in RAX register. (not implemented yet)
+
+## print ##
+
+1. When _**identifier**_ is a variable, then call the proper _print\_*_ function from support library.
+2. When _**integer_literal**_ then call  _print\_long_.
