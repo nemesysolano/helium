@@ -46,7 +46,7 @@ void TargetIntelLinux::evaluate_return_expression(TargetContext & target_context
     target_context.next();
     Token & object = * target_context.current(); //TODO: Implement recursive expression evaluation
     if(object.getType() == TokenType::IDENTIFIER) {
-       //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
+
         size_t offset = target_context.scopes.top()->objects.at(object.getValue())->offset;
         out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << '[' << NASM_RBP << '-' << offset <<  ']' << endl;
     } else { //Literal
@@ -78,6 +78,7 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
     const char * size_qualifier = DWORD;
     const char * size_register = NASM_EAX;
     bool is_literal = false;
+    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
@@ -88,40 +89,37 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
 
     if(is_literal_token_type(object.getType())){
         is_literal = true;
-        if(called_data_type == DataType::TEXT || called_data_type == DataType::FLOAT || called_data_type == DataType::BIGINT) {
-
+        cout << "DEBUG: LITERAL TYPE " << called_data_type << ' ' << __LINE__ << ' ' << __FUNCTION__ << endl; 
+        if(called_data_type == DataType::TEXT || called_data_type == DataType::FLOAT || called_data_type == DataType::BIGINT) {            
             switch(called_data_type) {
                 case DataType::TEXT:
                     out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
                     break;
                     
-                case DataType::BIGINT:
-                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << static_data.at(object.getValue()) << endl;
+                case DataType::BIGINT:                    
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << object.getValue() << endl;
                     break;
 
                 case DataType::FLOAT:
                     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
+
                     break;
             }
-
             out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_RAX << endl;
         } else
-
             switch(called_data_type) {
                 case DataType::INTEGER:
-                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EAX << SEP << static_data.at(object.getValue()) << endl;                    
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EAX << SEP << object.getValue() << endl;                    
                     break;
 
                 case DataType::BOOLEAN:
-
                     out << '\t' << '\t' << NASM_MOV << ' ' <<  NASM_EAX << SEP << (parse_boolean(object.getValue()) ? 1 : 0) << endl;
                     break;                
             }
 
             out << '\t' << '\t' << NASM_MOV << ' ' << DWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_EAX << endl;
     } else {
-        auto const object_offset = target_context.scopes.top()->objects.at(object.getValue())->offset;
-
+        auto const object_offset = target_context.scopes.top()->objects.at(object.getValue())->offset;        
         if(called_data_type_size == __SIZEOF_POINTER__) {
             size_qualifier = QWORD;
             size_register = NASM_RAX;
@@ -129,13 +127,20 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
 
         out << '\t' << '\t' << NASM_MOV << ' ' << size_register << SEP << '[' << NASM_RBP << '-' << object_offset <<  ']' << endl;
         out << '\t' << '\t' << NASM_MOV << ' ' << size_qualifier << '[' <<  NASM_RBP << '-' << called_offset <<  ']' << SEP << size_register << endl;
-
+        cout << "DEBUG: IDENTIFIER " << called_data_type << ' ' << __LINE__ << ' ' << __FUNCTION__ << endl;   
     }
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
 
-    return {is_literal, called_data_type, called_data_type_size};
+    return {is_literal, called_data_type, called_data_type_size, called_offset};
+}
+
+void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
+    assert(target_context.current()->getType() == TokenType::PRINT);
+    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << ' ' << target_context.current()->getValue() << endl;
+    ExpressionResult result = evaluate_call_expression(target_context, out, static_data);
+    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){
@@ -148,6 +153,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
     assert(target_context.next()->getType() == TokenType::BEGIN);
    
     while(target_context.current()->getType() != TokenType::END) {
+
         switch(target_context.current()->getType()) {
             case TokenType::RETURN:
                 return_statement(target_context, out);
@@ -157,7 +163,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
                 call_statement(target_context, out, static_data);
                 break;
 
-            case TokenType::PRINT:
+            case TokenType::PRINT:        
                 print_statement(target_context, out, static_data);
                 break;
 
@@ -174,7 +180,6 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) {
     stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
-    
     scopes.push(move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
 
     // Write the tokens to a file

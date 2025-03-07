@@ -22,7 +22,6 @@ bool Parser::object_matches_return_type(
     }
 
     DataType data_type = scope->data_type; 
-   //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;    
     const shared_ptr<ParsedObject> & object = scope->objects.at(name);
 
     //TODO: Implement full expression evaluation. 
@@ -68,7 +67,6 @@ bool Parser::expression_matches_call_type(
             return false;
         }
 
-       //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
         const shared_ptr<ParsedObject> & object = scope->objects.at(name);
     
         //TODO: Implement full expression evaluation. 
@@ -107,18 +105,18 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
 
         bool is_valid_program = parse_statements_group(tokenizer, tokens);
         
-        
         if(!is_valid_program) {
             return print_parse_error(MSG_NOT_END_OF_FILE, tokenizer);
         } 
 
         tokens.push_back(move(tokenizer.next()));
         bool is_eof = tokens.back()->getType() == TokenType::END_OF_FILE;
+
         if(!is_eof) {
             return print_expected_token(END_OF_FILE, tokenizer);
         }
 
-        target->write(out, tokens, static_data);
+        target->write(out, tokens, static_data);        
         return true;
     } else {
         print_expected_token(PROGRAM, tokenizer);
@@ -155,7 +153,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
     if(current_scope->objects.count(target_name) == 0) {
         print_parse_error(MSG_INVALID_CALL_TARGET, tokenizer);
     }
-   //  cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
+
     auto const & root_target = current_scope->objects.at(target_name);
 
     return parse_call(root_target, tokenizer, tokens);
@@ -171,12 +169,11 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
     }    
 
     tokens.push_back(move(tokenizer.next()));
-    if(is_statement_token_type(tokens.back()->getType())) {        
-    } else {
+    if(!is_statement_token_type(tokens.back()->getType())) {        
         print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
     } 
 
-    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;
+    
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
@@ -189,13 +186,13 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);        
-    }
+    }    
 
     tokens.push_back(move(tokenizer.next()));        
     if(!expression_matches_return_type(scopes.top(), tokens.back(), tokenizer)) {
         print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
-    
+
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 

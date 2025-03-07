@@ -1,5 +1,5 @@
 #include "enums.h"
-
+using namespace std;
 DataType to_data_type(TokenType token_type) {
     switch(token_type) {
         case TokenType::INTEGER:
@@ -47,4 +47,30 @@ bool is_statement_token_type(TokenType token_type) {
 
 bool is_literal_token_type(TokenType token_type) {
     return token_type == TokenType::INTEGER_LITERAL || token_type == TokenType::HEX_LITERAL || token_type == TokenType::FLOAT_LITERAL || token_type == TokenType::TEXT_LITERAL || token_type == TokenType::BOOLEAN_LITERAL;
+}
+
+ostream & operator << (ostream & out, DataType data_type) {
+    switch(data_type) {
+        case DataType::USER_DEFINED:
+            out << "USER_DEFINED";
+            break; 
+        case DataType::INTEGER:
+            out << "INTEGER";
+            break;
+        case DataType::BIGINT:
+            out << "BIGINT";
+            break;
+        case DataType::FLOAT:
+            out << "FLOAT";
+            break;
+        case DataType::TEXT:
+            out << "TEXT";
+            break;
+        case DataType::BOOLEAN:
+            out << "BOOLEAN";
+            break;
+        default:
+            out << "UNDEFINED";
+    }
+    return out;
 }
