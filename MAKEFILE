@@ -16,10 +16,10 @@ SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
 
 # Compiler flags
-CFLAGS = -DGLIBCXX_DEBUG -Wall -Wextra -O2 -std=c++20 -g 
+CFLAGS = -DGLIBCXX_DEBUG -Wall -Wextra  -O2 -std=c++20 -g 
 
 # Linker flags
-LDFLAGS =
+LDFLAGS = 
 
 # Default target
 all: $(TARGET)

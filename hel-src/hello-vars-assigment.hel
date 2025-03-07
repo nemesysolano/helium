@@ -28,5 +28,9 @@ begin
     pais(country)
 
     print(records)
+    print(houses)
+    print(married)
+    print(country)
+    print(city)
     return(registros)     
 end

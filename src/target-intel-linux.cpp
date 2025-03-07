@@ -68,8 +68,12 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
     target_context.push_back();
 }
 
-ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Implement recusrive expression evaluation
-    auto const & called = *target_context.current();
+ExpressionResult TargetIntelLinux::evaluate_call_expression(
+    TargetContext & target_context, 
+    ostream & out, 
+    const map<string, size_t> & static_data,
+    const Token & called
+){ 
     auto const & called_name = called.getValue();
     auto const called_type = called.getType();
     auto const called_offset = target_context.scopes.top()->objects.at(called_name)->offset;
@@ -78,7 +82,6 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
     const char * size_qualifier = DWORD;
     const char * size_register = NASM_EAX;
     bool is_literal = false;
-    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl; 
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
@@ -89,7 +92,7 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
 
     if(is_literal_token_type(object.getType())){
         is_literal = true;
-        cout << "DEBUG: LITERAL TYPE " << called_data_type << ' ' << __LINE__ << ' ' << __FUNCTION__ << endl; 
+
         if(called_data_type == DataType::TEXT || called_data_type == DataType::FLOAT || called_data_type == DataType::BIGINT) {            
             switch(called_data_type) {
                 case DataType::TEXT:
@@ -127,7 +130,7 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
 
         out << '\t' << '\t' << NASM_MOV << ' ' << size_register << SEP << '[' << NASM_RBP << '-' << object_offset <<  ']' << endl;
         out << '\t' << '\t' << NASM_MOV << ' ' << size_qualifier << '[' <<  NASM_RBP << '-' << called_offset <<  ']' << SEP << size_register << endl;
-        cout << "DEBUG: IDENTIFIER " << called_data_type << ' ' << __LINE__ << ' ' << __FUNCTION__ << endl;   
+
     }
 
     target_context.next();
@@ -136,11 +139,22 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & targ
     return {is_literal, called_data_type, called_data_type_size, called_offset};
 }
 
+ExpressionResult TargetIntelLinux::evaluate_call_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Implement recusrive expression evaluation
+    auto const & called = *target_context.current();
+    return evaluate_call_expression(target_context, out, static_data, called);
+}
+
 void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
     assert(target_context.current()->getType() == TokenType::PRINT);
-    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << ' ' << target_context.current()->getValue() << endl;
-    ExpressionResult result = evaluate_call_expression(target_context, out, static_data);
-    cout << "DEBUG: " << __LINE__ << ' ' << __FUNCTION__ << endl;
+    target_context.next();
+    
+    assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
+
+    target_context.next();
+    const Token & called = * target_context.current();
+    
+    target_context.push_back(2);
+    ExpressionResult result = evaluate_call_expression(target_context, out, static_data, called);
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){
@@ -184,7 +198,7 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
 
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);
-
+    out << "section .note.GNU-stack noalloc noexec nowrite progbits" << endl;
     out << "segment .data" << endl;
     for(const auto & static_data_entry : static_data) {
         const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;

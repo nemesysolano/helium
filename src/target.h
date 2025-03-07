@@ -36,6 +36,7 @@ struct TargetContext {
     inline Token * current() {return tokens[index].get();}
     inline bool end() {return index >= tokens.size();}
     inline void push_back() {index --;}
+    inline void push_back(size_t steps) {index -= steps;}
 };
 
 int64_t to_bigint(const std::string & value, TokenType token_type);
