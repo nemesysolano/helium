@@ -193,15 +193,20 @@ bool literal_matches_type(const unique_ptr<Token> & token, DataType data_type) {
 
     switch(data_type) {
         case DataType::BIGINT:
-            return type == TokenType::INTEGER_LITERAL || type == TokenType::HEX_LITERAL;
+            return type == TokenType::BIGINT || type == TokenType::HEX_LITERAL;
+
         case DataType::INTEGER:
-            return type == TokenType::INTEGER_LITERAL;
+            return type == TokenType::INTEGER || type == TokenType::INTEGER_LITERAL;
+
         case DataType::FLOAT:
-            return type == TokenType::FLOAT_LITERAL;
-        case DataType::TEXT:
-            return type == TokenType::TEXT_LITERAL;
+            return type == TokenType::FLOAT || type == TokenType::FLOAT_LITERAL;
+
+        case DataType::TEXT:        
+            return type == TokenType::TEXT || type == TokenType::TEXT_LITERAL;
+
         case DataType::BOOLEAN:
-            return type == TokenType::BOOLEAN_LITERAL;
+            return type == TokenType::BOOLEAN || type == TokenType::BOOLEAN_LITERAL;
+
         default:
             return false;
     }

@@ -190,7 +190,7 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
 
     tokens.push_back(move(tokenizer.next()));        
     if(!expression_matches_return_type(scopes.top(), tokens.back(), tokenizer)) {
-        print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
+        return print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
 
     tokens.push_back(move(tokenizer.next()));

@@ -3,15 +3,25 @@ using namespace std;
 DataType to_data_type(TokenType token_type) {
     switch(token_type) {
         case TokenType::INTEGER:
+        case TokenType::INTEGER_LITERAL:
             return DataType::INTEGER;
+
         case TokenType::BIGINT:
+        case TokenType::HEX_LITERAL:
             return DataType::BIGINT;
+
         case TokenType::FLOAT:
+        case TokenType::FLOAT_LITERAL:
             return DataType::FLOAT;
+
         case TokenType::TEXT:
+        case TokenType::TEXT_LITERAL:
             return DataType::TEXT;
+
         case TokenType::BOOLEAN:
+        case TokenType::BOOLEAN_LITERAL:
             return DataType::BOOLEAN;
+
         case TokenType::IDENTIFIER: 
             return DataType::USER_DEFINED;
         default:
