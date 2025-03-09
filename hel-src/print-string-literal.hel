@@ -1,0 +1,5 @@
+program
+begin
+    print("Literal.")
+    return(0x8)     
+end

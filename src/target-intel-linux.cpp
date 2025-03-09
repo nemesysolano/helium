@@ -2,6 +2,8 @@
 #include <cassert>
 #include "text.h"
 #include "log.h"
+#include "target-intel-support-functions.h"
+
 using namespace std;
 
 const char * STATIC_PREFIX = "_static_";
@@ -58,20 +60,20 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
 ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){     
     auto const & object = * target_context.current();
     auto const & object_name = object.getValue();
-    auto const object_type = object.getType();
-    auto const object_data_type = to_data_type(object_type);
-    auto const object_data_type_size = data_type_size(object_data_type);
+    auto object_type = object.getType();
+    auto object_data_type = to_data_type(object_type);
+    auto object_data_type_size = data_type_size(object_data_type);
     const char * size_qualifier = DWORD;
     const char * size_register = NASM_EAX;
     bool is_literal = false;    
 
     if(is_literal_token_type(object.getType())){
         is_literal = true;
-
         if(object_data_type == DataType::TEXT || object_data_type == DataType::FLOAT || object_data_type == DataType::BIGINT) {            
+            
             switch(object_data_type) {
                 case DataType::TEXT:
-                    out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;                    
+                    out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;                                        
                     break;
                     
                 case DataType::BIGINT:                    
@@ -94,9 +96,11 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
                     break;                
             }
         }
-    } else {
-        auto const object_offset = target_context.scopes.top()->objects.at(object_name)->offset;        
-        
+    } else {        
+        auto object_offset = target_context.scopes.top()->objects.at(object_name)->offset;        
+        object_data_type = target_context.scopes.top()->objects.at(object_name)->data_type;
+        object_data_type_size = target_context.scopes.top()->objects.at(object_name)->size;
+
         if(object_data_type_size == __SIZEOF_POINTER__) {
             size_qualifier = QWORD;
             size_register = NASM_RAX;
@@ -111,6 +115,25 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
 }
 
 void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {    
+    const auto & scope_name = target_context.scopes.top().get()->name;    
+    assert(target_context.current()->getType() == TokenType::PRINT);
+    
+    target_context.next();
+    assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
+
+    target_context.next();
+    auto result = evaluate_expression(target_context, out, static_data);
+
+    switch(result.data_type) {
+        case DataType::TEXT:
+            call_print_string(out, NASM_RAX);   
+            break;
+    }
+    
+    target_context.next();
+    assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
+
+    out << '\t' << '\t' << NASM_JMP << ' ' << scope_name << EXIT_SUFFIX << endl;    
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Only handles
@@ -176,6 +199,7 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);
     out << "section .note.GNU-stack noalloc noexec nowrite progbits" << endl;
+    support_functions(out);
     out << "segment .data" << endl;
     for(const auto & static_data_entry : static_data) {
         const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;

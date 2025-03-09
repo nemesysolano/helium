@@ -1,9 +1,0 @@
-program
-var
-    records: bigint
-    registros: bigint
-begin
-    registros(37)
-    records(registros)
-    return(registros)     
-end

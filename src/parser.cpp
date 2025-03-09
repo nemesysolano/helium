@@ -173,12 +173,18 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
         print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
     } 
 
+    if(is_literal_token(tokens.back())) {
+        auto data_type = to_data_type(tokens.back()->getType());
+        if(data_type == DataType::TEXT || data_type == DataType::FLOAT) {
+            static_data.insert({tokens.back()->getValue(), cyclic_hash(tokens.back()->getValue())});
+        }
+    }       
     
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
-
+    
     return true;
 }
 

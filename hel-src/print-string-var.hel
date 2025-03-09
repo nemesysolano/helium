@@ -1,8 +1,0 @@
-program
-var
-    country: text
-begin
-    country("Dominican Republic")
-    print(country)
-    return(registros)     
-end

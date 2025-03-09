@@ -1,9 +1,0 @@
-program
-var
-    houses: integer
-    population: bigint
-    income: float
-    married: boolean
-    country: text
-begin
-end

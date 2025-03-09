@@ -1,0 +1,10 @@
+program
+var
+    country: text
+    pais: text
+begin
+    country("Identifier.")
+    pais(country)
+    print(pais)
+    return(0x8)     
+end

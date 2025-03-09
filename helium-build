@@ -22,8 +22,13 @@ TARGET="${SCRIPT_DIR}/bin/${TARGET%.*}.asm"
 OUTPUT="${TARGET%.*}.o"
 EXECUTABLE="${TARGET%.*}"
 
-rm "${EXECUTABLE}"
-rm "${TARGET}"
+if [ -f $TARGET ]; then
+    rm $TARGET
+fi
+
+if [ -f $EXECUTABLE ]; then
+    rm $EXECUTABLE
+fi  
 
 echo "Building the HELLIUM Compiler"
 make -f MAKEFILE
