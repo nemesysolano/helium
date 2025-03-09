@@ -1,0 +1,27 @@
+#!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SOURCE=$1
+TARGET=$(basename $SOURCE)
+OUTPUT="${SCRIPT_DIR}/bin/${TARGET%.*}.o"
+nasm  -f elf64 -o $OUTPUT $SOURCE
+
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to assemble $TARGET"
+    exit $STATUS
+fi
+
+EXECUTABLE="${SCRIPT_DIR}/bin/${TARGET%.*}"
+gcc  -no-pie $OUTPUT -o "${EXECUTABLE}"
+
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to link $TARGET"
+    exit $STATUS
+fi
+
+$EXECUTABLE
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Failed to execute $EXECUTABLE with status $STATUS"
+    exit $STATUS
+fi

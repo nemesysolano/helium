@@ -13,3 +13,5 @@ const char * NASM_DB = "DB";
 const char * NASM_DQ = "DQ";
 const char * DWORD = "DWORD";
 const char * QWORD = "QWORD";
+const char * NASM_CALL = "CALL";
+const char * EXTERN = "EXTERN";

@@ -1,0 +1,3 @@
+bin/*.o
+bin/clab
+bin/*.asm

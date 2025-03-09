@@ -47,7 +47,10 @@ void TargetIntelLinux::evaluate_return_expression(TargetContext & target_context
     Token & object = * target_context.current(); //TODO: Implement recursive expression evaluation
     if(object.getType() == TokenType::IDENTIFIER) {
 
+        cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
         size_t offset = target_context.scopes.top()->objects.at(object.getValue())->offset;
+        cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
+
         out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << '[' << NASM_RBP << '-' << offset <<  ']' << endl;
     } else { //Literal
         out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << object.getValue() << endl;
@@ -76,13 +79,15 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(
 ){ 
     auto const & called_name = called.getValue();
     auto const called_type = called.getType();
-    auto const called_offset = target_context.scopes.top()->objects.at(called_name)->offset;
+    cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
+    auto const called_offset = target_context.scopes.top()->objects.at(called_name)->offset;    
     auto const called_data_type = target_context.scopes.top()->objects.at(called_name)->data_type;
+    cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
     auto const called_data_type_size = data_type_size(called_data_type);
     const char * size_qualifier = DWORD;
     const char * size_register = NASM_EAX;
-    bool is_literal = false;
-
+    bool is_literal = false;    
+    
     target_context.next();
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
@@ -96,7 +101,9 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(
         if(called_data_type == DataType::TEXT || called_data_type == DataType::FLOAT || called_data_type == DataType::BIGINT) {            
             switch(called_data_type) {
                 case DataType::TEXT:
-                    out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
+                    cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
+                    out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;                    
+                    cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
                     break;
                     
                 case DataType::BIGINT:                    
@@ -109,7 +116,7 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(
                     break;
             }
             out << '\t' << '\t' << NASM_MOV << ' ' << QWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_RAX << endl;
-        } else
+        } else            
             switch(called_data_type) {
                 case DataType::INTEGER:
                     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EAX << SEP << object.getValue() << endl;                    
@@ -122,7 +129,10 @@ ExpressionResult TargetIntelLinux::evaluate_call_expression(
 
             out << '\t' << '\t' << NASM_MOV << ' ' << DWORD << '[' << NASM_RBP << '-' << called_offset <<  ']' << SEP << NASM_EAX << endl;
     } else {
+        cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
         auto const object_offset = target_context.scopes.top()->objects.at(object.getValue())->offset;        
+        cout << "DEBUG: " << __FUNCTION__ << ' ' << __LINE__ << endl;
+        
         if(called_data_type_size == __SIZEOF_POINTER__) {
             size_qualifier = QWORD;
             size_register = NASM_RAX;
@@ -154,6 +164,7 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
     const Token & called = * target_context.current();
     
     target_context.push_back(2);
+
     ExpressionResult result = evaluate_call_expression(target_context, out, static_data, called);
 }
 
