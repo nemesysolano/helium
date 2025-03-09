@@ -1,0 +1,9 @@
+program
+var
+    records: bigint
+    registros: bigint
+begin
+    records(0x7)
+    registros(records)
+    return(records) 
+end
