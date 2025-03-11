@@ -20,6 +20,10 @@ main:
 	call	print_float@PLT
 	movl	$1234567890, %edi
 	call	print_bigint@PLT
+	movl	$1234, %edi
+	call	print_integer@PLT
+	movl	$1, %edi
+	call	print_bool@PLT
 	movl	$0, %eax
 	popq	%rbp
 	ret

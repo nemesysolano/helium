@@ -1,0 +1,10 @@
+program
+var
+    lucky: integer
+    suertudo: integer
+begin
+    lucky(7)
+    suertudo(lucky)
+    print(suertudo)
+    return(0x9)
+end

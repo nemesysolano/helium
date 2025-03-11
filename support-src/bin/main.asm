@@ -1,5 +1,5 @@
 ; Disassembly of file: support-src/bin/main.o
-; Mon Mar 10 17:52:41 2025
+; Tue Mar 11 04:32:06 2025
 ; Mode: 64 bits
 ; Syntax: YASM/NASM
 ; Instruction set: 8086, x64
@@ -8,6 +8,8 @@ default rel
 
 global main: function
 
+extern print_bool                                       ; near
+extern print_integer                                    ; near
 extern print_bigint                                     ; near
 extern print_float                                      ; near
 extern puts                                             ; near
@@ -29,9 +31,13 @@ main:   ; Function begin
         call    print_float                             ; 002D _ E8, 00000000(PLT r)
         mov     edi, 1234567890                         ; 0032 _ BF, 499602D2
         call    print_bigint                            ; 0037 _ E8, 00000000(PLT r)
-        mov     eax, 0                                  ; 003C _ B8, 00000000
-        pop     rbp                                     ; 0041 _ 5D
-        ret                                             ; 0042 _ C3
+        mov     edi, 1234                               ; 003C _ BF, 000004D2
+        call    print_integer                           ; 0041 _ E8, 00000000(PLT r)
+        mov     edi, 1                                  ; 0046 _ BF, 00000001
+        call    print_bool                              ; 004B _ E8, 00000000(PLT r)
+        mov     eax, 0                                  ; 0050 _ B8, 00000000
+        pop     rbp                                     ; 0055 _ 5D
+        ret                                             ; 0056 _ C3
 ; main End of function
 
 

@@ -31,14 +31,11 @@ void call_print_float(std::ostream & out, const char * input_register, size_t si
 }
 
 void call_print_integer(std::ostream & out, const char * input_register) {
-
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EDI << DELIMITER << input_register << endl;
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_bigint << endl;
 }
 
 void call_print_bigint(std::ostream & out, const char * input_register) {
-/* 
-        mov     edi, 1234567890                         ; 0032 _ BF, 499602D2
-        call    print_bigint                            ; 0037 _ E8, 00000000(PLT r)
-*/
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RDI << DELIMITER << input_register << endl;
     out << '\t' << '\t' << NASM_CALL << ' ' << print_bigint << endl;
 }

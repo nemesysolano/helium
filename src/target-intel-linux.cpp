@@ -134,6 +134,9 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
         case DataType::BIGINT:
             call_print_bigint(out, NASM_RAX);
             break;
+        case DataType::INTEGER:
+            call_print_integer(out, NASM_EAX);
+            break;
     }
     
     target_context.next();
