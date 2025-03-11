@@ -12,7 +12,7 @@ if [ $STATUS -ne 0 ]; then
 fi
 
 EXECUTABLE="${SCRIPT_DIR}/bin/${TARGET%.*}"
-gcc  -no-pie $OUTPUT -o "${EXECUTABLE}"
+gcc  -no-pie "${SCRIPT_DIR}/support-src/bin/support.o" $OUTPUT -o "${EXECUTABLE}"
 
 if [ $STATUS -ne 0 ]; then
     echo "Failed to link $TARGET"

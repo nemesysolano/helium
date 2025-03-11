@@ -23,8 +23,11 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << print_newline << endl;
 }
 
-void call_print_float(std::ostream & out, const char * input_register) {
-
+void call_print_float(std::ostream & out, const char * input_register, size_t size, size_t decimals) { // movq    xmm0, rax
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_ESI << DELIMITER << decimals << endl;
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EDI << DELIMITER << size << endl;
+    out << '\t' << '\t' << NASM_MOVQ << ' ' << NASM_XMM0 << DELIMITER << input_register << endl;
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_float << endl;        
 }
 
 void call_print_integer(std::ostream & out, const char * input_register) {
@@ -32,7 +35,12 @@ void call_print_integer(std::ostream & out, const char * input_register) {
 }
 
 void call_print_bigint(std::ostream & out, const char * input_register) {
-
+/* 
+        mov     edi, 1234567890                         ; 0032 _ BF, 499602D2
+        call    print_bigint                            ; 0037 _ E8, 00000000(PLT r)
+*/
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RDI << DELIMITER << input_register << endl;
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_bigint << endl;
 }
 
 void call_print_string(std::ostream & out, const char * input_register) {

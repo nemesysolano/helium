@@ -1,5 +1,5 @@
 program
 begin
     print("Literal.")
-    return(0x8)     
+    return(0x7)     
 end

@@ -80,8 +80,8 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
                     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << object.getValue() << endl;
                     break;
 
-                case DataType::FLOAT:
-                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;
+                case DataType::FLOAT: // // mov     rax, qword [rel pi]  
+                    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RAX << SEP << QWORD << '[' << REL << ' ' << STATIC_PREFIX << static_data.at(object.getValue()) << ']' << endl;
                     break;
             }
             
@@ -128,12 +128,16 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
         case DataType::TEXT:
             call_print_string(out, NASM_RAX);   
             break;
+        case DataType::FLOAT:
+            call_print_float(out, NASM_RAX, 12, 6);
+            break;
+        case DataType::BIGINT:
+            call_print_bigint(out, NASM_RAX);
+            break;
     }
     
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
-
-    out << '\t' << '\t' << NASM_JMP << ' ' << scope_name << EXIT_SUFFIX << endl;    
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Only handles
@@ -198,15 +202,16 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
 
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);
+    out << "default rel" << endl;
     out << "section .note.GNU-stack noalloc noexec nowrite progbits" << endl;
-    support_functions(out);
-    out << "segment .data" << endl;
+    support_functions(out);    
+    out << "section .data   align=8" << endl;
     for(const auto & static_data_entry : static_data) {
         const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;
         out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
     }
 
-    out << "segment .text" << endl;
+    out << "section .text   align=1" << endl;
     out << '\t' << "global main" << endl;
     out << '\t' << "main:" << endl;
     out << '\t' << '\t' << NASM_PUSH << ' ' << NASM_RBP << endl;

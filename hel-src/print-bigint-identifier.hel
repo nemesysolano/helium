@@ -1,0 +1,10 @@
+program
+var
+    lucky: bigint
+    suertudo: bigint
+begin
+    lucky(0x7)
+    suertudo(lucky)
+    print(suertudo)
+    return(0x9)
+end

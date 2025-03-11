@@ -1,0 +1,9 @@
+program
+var
+    pi: float
+    length_over_diameter: float
+begin
+    pi(3.141529)
+    length_over_diameter(pi)
+    return(0x1)
+end

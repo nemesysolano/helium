@@ -37,3 +37,5 @@ const char * NASM_RDI = "RDI";
 // 32 bits Index Registers
 const char * NASM_ESI = "ESI";
 const char * NASM_EDI = "EDI";
+
+const char * NASM_XMM0 = "XMM0";

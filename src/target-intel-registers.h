@@ -36,4 +36,6 @@ extern const char * NASM_RDI;
 // 32 bits Index Registers
 extern const char * NASM_ESI;
 extern const char * NASM_EDI;
+
+extern const char * NASM_XMM0;
 #endif
