@@ -1,0 +1,10 @@
+program
+var
+    lucky: boolean
+    suertudo: boolean
+begin
+    lucky(true)
+    suertudo(lucky)
+    print(suertudo)
+    return(0x9)
+end

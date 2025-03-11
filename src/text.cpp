@@ -33,7 +33,7 @@ bool is_c_escaped_char(char c) {
 }
 
 bool parse_boolean(const std::string & text) {
-    return iequals(text, "true") || iequals(text, "false");
+    return iequals(text, "true");
 }
 
 size_t CyclicHash::operator()(const std::string & string) {

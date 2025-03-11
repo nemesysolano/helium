@@ -46,7 +46,8 @@ void call_print_string(std::ostream & out, const char * input_register) {
 }
 
 void call_print_bool(std::ostream & out, const char * input_register) {
-
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EDI << DELIMITER << input_register << endl;
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_bool << endl;
 }
 
 void call_print_space(std::ostream & out, const char * input_register) {

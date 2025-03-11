@@ -137,6 +137,9 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
         case DataType::INTEGER:
             call_print_integer(out, NASM_EAX);
             break;
+        case DataType::BOOLEAN:
+            call_print_bool(out, NASM_EAX);
+            break;
     }
     
     target_context.next();
