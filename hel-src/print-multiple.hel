@@ -1,0 +1,15 @@
+program
+var
+    x: integer
+    y: bigint
+    t: text
+    pi: float
+begin
+    x(7)
+    y(0x8)
+    t("texto")
+    pi(3.141529)
+    print("hello, ", 3.141529, " ", true, " ", false, " ", 0x10, " ", 2, " ", x, " ", y, " ", t, " ", pi)
+    
+    return(0x7)     
+end

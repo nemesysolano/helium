@@ -54,6 +54,6 @@ void call_print_space(std::ostream & out, const char * input_register) {
 
 }
 
-void call_print_newline(std::ostream & out, const char * input_register) {
-
+void call_print_newline(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_newline << endl;
 }

@@ -8,6 +8,10 @@ using namespace std;
 
 const char * STATIC_PREFIX = "_static_";
 
+size_t nearest_multiple_of_16(size_t value) {
+    return (value + 15) & ~15;
+}
+
 void TargetIntelLinux::variable_declarations(TargetContext & target_context, std::ostream & out) {
     Token * token = target_context.next();
     const auto & current_scope = target_context.scopes.top();
@@ -30,11 +34,10 @@ void TargetIntelLinux::variable_declarations(TargetContext & target_context, std
 
             offset += size;
             current_scope->objects.insert({name, make_shared<TargetObject>(name, data_type, ObjectType::VARIABLE, size, offset)});
-            
-            out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RSP << SEP << size << COMMENT << name << ':' << ' ' << type_name << endl;
-
             token = target_context.next();
         }
+
+        out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RSP << SEP << nearest_multiple_of_16(offset) << endl;        
     } 
 
     target_context.push_back();
@@ -67,6 +70,7 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
     const char * size_register = NASM_EAX;
     bool is_literal = false;    
 
+    out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RAX << SEP << NASM_RAX << endl;
     if(is_literal_token_type(object.getType())){
         is_literal = true;
         if(object_data_type == DataType::TEXT || object_data_type == DataType::FLOAT || object_data_type == DataType::BIGINT) {            
@@ -114,7 +118,8 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
     return {is_literal, object_data_type, object_data_type_size};
 }
 
-void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {    
+void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {   
+    size_t argc = 0; 
     const auto & scope_name = target_context.scopes.top().get()->name;    
     assert(target_context.current()->getType() == TokenType::PRINT);
     
@@ -122,28 +127,35 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
     target_context.next();
-    auto result = evaluate_expression(target_context, out, static_data);
+    do {        
+        auto result = evaluate_expression(target_context, out, static_data);
 
-    switch(result.data_type) {
-        case DataType::TEXT:
-            call_print_string(out, NASM_RAX);   
-            break;
-        case DataType::FLOAT:
-            call_print_float(out, NASM_RAX, 12, 6);
-            break;
-        case DataType::BIGINT:
-            call_print_bigint(out, NASM_RAX);
-            break;
-        case DataType::INTEGER:
-            call_print_integer(out, NASM_EAX);
-            break;
-        case DataType::BOOLEAN:
-            call_print_bool(out, NASM_EAX);
-            break;
-    }
-    
-    target_context.next();
+        switch(result.data_type) {
+            case DataType::TEXT:
+                call_print_string(out, NASM_RAX);   
+                break;
+            case DataType::FLOAT:
+                call_print_float(out, NASM_RAX, 12, 6);
+                break;
+            case DataType::BIGINT:
+                call_print_bigint(out, NASM_RAX);
+                break;
+            case DataType::INTEGER:
+                call_print_integer(out, NASM_EAX);
+                break;
+            case DataType::BOOLEAN:
+                call_print_bool(out, NASM_EAX);
+                break;
+        }
+        
+        argc++;
+        target_context.next();
+    } while(target_context.current()->getType() != TokenType::RIGHT_PARENT);
+
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
+    if(argc > 1) {
+        call_print_newline(out);
+    }
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Only handles
@@ -213,8 +225,13 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     support_functions(out);    
     out << "section .data   align=8" << endl;
     for(const auto & static_data_entry : static_data) {
-        const char * asm_type = static_data_entry.first.at(0) == '"' ? NASM_DB : NASM_DQ;
-        out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first << endl; //TODO: DB must be a null terminated string
+        const auto is_text = static_data_entry.first.at(0) == '"';
+        const char * asm_type = is_text ? NASM_DB : NASM_DQ;
+        out << '\t' << STATIC_PREFIX << static_data_entry.second << ':' << ' ' << asm_type << ' ' << static_data_entry.first; //TODO: DB must be a null terminated string
+        if(is_text) {
+            out << ',' << 0;
+        }
+        out << endl;
     }
 
     out << "section .text   align=1" << endl;

@@ -161,18 +161,27 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
 
 bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
+    bool has_more = true;
 
     tokens.push_back(move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);        
     }    
 
-    auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
-    if(data_type == DataType::UNDEFINED || data_type == DataType::USER_DEFINED) {
-        return print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
-    }
-    
-    tokens.push_back(move(tokenizer.next()));
+    do {
+        auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
+        if(data_type == DataType::UNDEFINED || data_type == DataType::USER_DEFINED) {
+            return print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
+        }    
+
+        auto token(tokenizer.next());
+        has_more = token->getType() == TokenType::COMMA;
+
+        if(!has_more) {
+            tokens.push_back(move(token));
+        }        
+    } while(has_more);
+
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }

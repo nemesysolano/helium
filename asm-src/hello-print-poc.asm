@@ -11,8 +11,12 @@ section .text
 main: 
     push rbp
     mov rbp, rsp    
-    mov rdi, fmt
-    mov rsi, msg
+    
+    lea rax, fmt
+    mov rdi, rax
+
+    lea rax, msg
+    mov rsi, rax
 
     call printf
 

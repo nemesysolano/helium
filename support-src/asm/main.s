@@ -1,8 +1,23 @@
 	.file	"main.c"
 	.text
+	.globl	A
+	.data
+	.align 8
+	.type	A, @object
+	.size	A, 8
+A:
+	.long	-187466733
+	.long	1074340313
+	.globl	B
 	.section	.rodata
 .LC0:
-	.string	"Support Library Tests"
+	.string	"21"
+	.section	.data.rel.local,"aw"
+	.align 8
+	.type	B, @object
+	.size	B, 8
+B:
+	.quad	.LC0
 	.text
 	.globl	main
 	.type	main, @function
@@ -10,29 +25,31 @@ main:
 	endbr64
 	pushq	%rbp
 	movq	%rsp, %rbp
-	leaq	.LC0(%rip), %rax
-	movq	%rax, %rdi
-	call	puts@PLT
-	movq	.LC1(%rip), %rax
+	subq	$32, %rsp
+	movsd	A(%rip), %xmm0
+	movsd	%xmm0, -24(%rbp)
+	movq	B(%rip), %rax
+	movq	%rax, -16(%rbp)
+	movl	$1234, -28(%rbp)
+	movq	$1234567890, -8(%rbp)
+	movq	-24(%rbp), %rax
 	movl	$6, %esi
 	movl	$12, %edi
 	movq	%rax, %xmm0
 	call	print_float@PLT
-	movl	$1234567890, %edi
-	call	print_bigint@PLT
-	movl	$1234, %edi
+	movq	-16(%rbp), %rax
+	movq	%rax, %rdi
+	call	print_string@PLT
+	movl	-28(%rbp), %eax
+	movl	%eax, %edi
 	call	print_integer@PLT
-	movl	$1, %edi
-	call	print_bool@PLT
+	movq	-8(%rbp), %rax
+	movq	%rax, %rdi
+	call	print_bigint@PLT
 	movl	$0, %eax
-	popq	%rbp
+	leave
 	ret
 	.size	main, .-main
-	.section	.rodata
-	.align 8
-.LC1:
-	.long	-187466733
-	.long	1074340313
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

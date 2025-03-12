@@ -1,10 +1,18 @@
 #include <stdio.h>
 #include "support.h"
+double A = 3.141529;
+char * B = "21";
 int main() {
-    printf("Support Library Tests\n");
-    print_float(3.141529, 12, 6);
-    print_bigint(1234567890);
-    print_integer(1234);
-    print_bool(1);
+    double a = A;
+    char * b = B;
+    int c = 1234;
+    long d = 1234567890;
+
+    print_float(a, 12, 6);
+    print_string(b);
+    print_integer(c);
+    print_bigint(d);    
+    
+    
     return 0;
 }
