@@ -5,13 +5,17 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**_ | 
+**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mult**_
 
 **return** ::= return (_**expression**_)
 
 **print** ::= print(_**expression**_ [, _**expression**_]<sup>*</sup>)
 
 **call** ::= _**identifier**_(_**expression**_)
+
+**sum** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**mult** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
 
 **expression** ::= _**literal**_ | _**identifier**_ ; Expression type must match scope's.
 
@@ -34,3 +38,11 @@
 
 1. When _**identifier**_ is a variable, then call the proper _print\_*_ function from support library.
 2. When _**integer_literal**_ then call  _print\_long_.
+
+## sum, mult ##
+
+Both functions accept a list of numbers of the same type, and the result type matches the type of the arguments.
+
+## subtract, div ##
+
+Both functions are binary (accepting only two arguments of the same type), and the result type matches the type of the arguments.
