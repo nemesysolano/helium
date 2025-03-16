@@ -10,6 +10,7 @@
 #include <map>
 #include "enums.h"
 #include "text.h"
+
 struct ParsedObject {
     size_t offset;
     std::string name;
@@ -37,6 +38,7 @@ class Parser {
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
         bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        bool parse_sum(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(const std::shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);

@@ -133,7 +133,9 @@ TokenType get_keyword_type(const string & buffer) {
         return TokenType::PROGRAM;
     } else if (iequals(buffer, VAR)) {
         return TokenType::VAR;
-    } else if (iequals(buffer, INTEGER)) {
+    }else if (iequals(buffer, SUM)) {
+        return TokenType::SUM;
+    }  else if (iequals(buffer, INTEGER)) {
         return TokenType::INTEGER;
     } else if (iequals(buffer, BIGINT)) {
         return TokenType::BIGINT;

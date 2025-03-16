@@ -22,7 +22,8 @@ class TargetIntelLinux: public Target {
         void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         
         void print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);     
-        void call_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);           
+        void call_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+        void sum_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);           
     public:
         virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) override;
 

@@ -1,6 +1,7 @@
 #include "error-messages.h"
 #include <iostream>
 #include <string>
+using namespace std;
 
 const char * MSG_NOT_END_OF_FILE = "no more content expected beyond this point";
 const char * MSG_INVALID_TYPE = "valid data types tokens are integer, bigint, float, text,  boolean and identifier";
@@ -10,8 +11,10 @@ const char * MSG_RETURN_DATATYPE_MISTMATCH = "Return data type does not match th
 const char * MSG_ASSIGMENT_DATATYPE_MISTMATCH = "Assigned data type does not match the variable type";
 const char * MSG_INVALID_CALL_TARGET = "target (variable or function) doesn't exist in current scope or using a reserved world";
 const char * MSG_INVALID_PRINT_ARGUMENT = "Invalid argument for print statement";
+const char * MSG_INVALID_SUM_ARGUMENT = "Sum arguments must be numeric";
+const char * MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES = "sum arguments must have the same data type";
+const char * MSG_TOO_MANY_SUM_ARGUMENTS = "sum statement can have up to 6 arguments";
 
-using namespace std;
 bool print_expected_token(const char * expected, Tokenizer & tokenizer) {
     cout << "Syntax Error: Expected " << expected << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << endl;        
     return false;

@@ -6,6 +6,7 @@ const char * PROGRAM = "PROGRAM";
 const char * BEGIN = "BEGIN";
 const char * END = "END";
 const char * PRINT = "PRINT";
+const char * SUM = "SUM";
 const char * VAR = "VAR";
 const char * RETURN = "RETURN";
 const char * INTEGER = "INTEGER";
@@ -28,7 +29,7 @@ const char * single_char_tokens = "()[];:,.";
 const char * empty_string = "";
 using namespace std;
 const char * multi_char_keywords[] = { 
-    PROGRAM, BEGIN, END, PRINT,
+    PROGRAM, BEGIN, END, PRINT, SUM,
     VAR, RETURN, INTEGER , BIGINT, FLOAT , TEXT, BOOLEAN,
 };
 

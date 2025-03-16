@@ -1,4 +1,5 @@
 #include "enums.h"
+#include <set>
 using namespace std;
 DataType to_data_type(TokenType token_type) {
     switch(token_type) {
@@ -51,12 +52,14 @@ size_t data_type_size(DataType data_type) {
     }
 }
 
+static set statement_token_types = {TokenType::RETURN, TokenType::IDENTIFIER, TokenType::PRINT, TokenType::SUM};
 bool is_statement_token_type(TokenType token_type) {
-    return token_type == TokenType::RETURN  || token_type == TokenType::IDENTIFIER || token_type == TokenType::PRINT; 
+    return statement_token_types.count(token_type) > 0; 
 }
 
+static set is_literal_token_types = {TokenType::INTEGER_LITERAL, TokenType::HEX_LITERAL, TokenType::FLOAT_LITERAL, TokenType::TEXT_LITERAL, TokenType::BOOLEAN_LITERAL};
 bool is_literal_token_type(TokenType token_type) {
-    return token_type == TokenType::INTEGER_LITERAL || token_type == TokenType::HEX_LITERAL || token_type == TokenType::FLOAT_LITERAL || token_type == TokenType::TEXT_LITERAL || token_type == TokenType::BOOLEAN_LITERAL;
+    return is_literal_token_types.count(token_type) > 0;
 }
 
 ostream & operator << (ostream & out, DataType data_type) {

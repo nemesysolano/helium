@@ -25,24 +25,19 @@ main:
 	endbr64
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$32, %rsp
-	movsd	A(%rip), %xmm0
-	movsd	%xmm0, -24(%rbp)
-	movq	B(%rip), %rax
-	movq	%rax, -16(%rbp)
-	movl	$1234, -28(%rbp)
-	movq	$1234567890, -8(%rbp)
-	movq	-24(%rbp), %rax
-	movl	$6, %esi
-	movl	$12, %edi
-	movq	%rax, %xmm0
-	call	print_float@PLT
-	movq	-16(%rbp), %rax
-	movq	%rax, %rdi
-	call	print_string@PLT
-	movl	-28(%rbp), %eax
-	movl	%eax, %edi
-	call	print_integer@PLT
+	subq	$16, %rsp
+	subq	$8, %rsp
+	pushq	$7
+	movl	$6, %r9d
+	movl	$5, %r8d
+	movl	$4, %ecx
+	movl	$3, %edx
+	movl	$2, %esi
+	movl	$6, %edi
+	movl	$0, %eax
+	call	sum_long@PLT
+	addq	$16, %rsp
+	movq	%rax, -8(%rbp)
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	print_bigint@PLT

@@ -5,6 +5,7 @@ CC = g++
 # Directories
 SRC_DIR = src
 BIN_DIR = bin
+SUPPORT_DIR = support-src
 
 # Output executable
 TARGET = $(BIN_DIR)/heliumc
@@ -13,8 +14,7 @@ TARGET = $(BIN_DIR)/heliumc
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 
 # Object files
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
-
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o) $(SUPPORT_DIR)/bin/numeric.o  $(SUPPORT_DIR)/bin/numeric.o 
 # Compiler flags
 CFLAGS = -DGLIBCXX_DEBUG -Wall -Wextra  -O2 -std=c++20 -g 
 

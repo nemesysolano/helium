@@ -3,20 +3,11 @@
 #include <cstring>
 #include <iostream>
 
-enum ObjectType {
-    VARIABLE,
-    FUNCTION
-};
+enum ObjectType { VARIABLE, FUNCTION };
 
-enum class DataType {
-    USER_DEFINED, 
-    INTEGER,
-    BIGINT,
-    FLOAT,
-    TEXT,
-    BOOLEAN,
-    UNDEFINED
-};
+enum FunctionType { USER_DEFINED_FUNCTION, BUILT_IN_FUNCTION };
+
+enum class DataType { USER_DEFINED,  INTEGER, BIGINT, FLOAT, TEXT, BOOLEAN, UNDEFINED};
 
 enum class TokenType {
     // Kewords
@@ -24,6 +15,7 @@ enum class TokenType {
     END,
     PRINT,
     PROGRAM,
+    SUM,
     VAR,
     RETURN,
     INTEGER,
