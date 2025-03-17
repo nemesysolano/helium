@@ -6,5 +6,5 @@ begin
     lucky(7)
     suertudo(lucky)
     print(suertudo)
-    return(0x9)
+    return(0x21)
 end

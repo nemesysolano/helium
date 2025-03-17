@@ -34,3 +34,8 @@ bool print_undefined_object(const string & name, const Tokenizer & tokenizer) {
     cout << " Undefined Object: " << name << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << " is duplicated" << endl;
     return false;
 }
+
+bool print_builtin_object(const string & name, const Tokenizer & tokenizer) {
+    cout << " Semantic Error: " << name << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << " is builtin object (function, type or variable)" << endl;    
+    return false;
+}

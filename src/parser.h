@@ -32,13 +32,11 @@ class Parser {
         std::map<std::string, size_t> static_data;
         CyclicHash cyclic_hash;
 
-        DataType evaluate_expression(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool object_matches_return_type(const std::unique_ptr<ParsedScope> & scope, const std::unique_ptr<Token> & token, const Tokenizer & tokenizer);
         bool expression_matches_call_type(const std::shared_ptr<ParsedObject> &root_target, std::unique_ptr<ParsedScope> & scope, std::unique_ptr<Token> & token, Tokenizer & tokenizer);
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
         bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
-        bool parse_sum(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_call(const std::shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);

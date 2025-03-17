@@ -3,7 +3,7 @@ var
     records: bigint
     registros: bigint
 begin
-    records(0x7)
+    records(0x21)
     registros(records)
     return(records) 
 end

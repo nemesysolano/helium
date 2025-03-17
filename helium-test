@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SOURCE_FILES_DIR="${SCRIPT_DIR}/hel-src"
+SOURCE_FILES=$(ls ${SOURCE_FILES_DIR})
+
+for FILE in ${SOURCE_FILES}
+do
+    echo "Processing ${FILE}"
+    ./helium-build ${SOURCE_FILES_DIR}/${FILE}
+done

@@ -15,7 +15,6 @@ enum class TokenType {
     END,
     PRINT,
     PROGRAM,
-    SUM,
     VAR,
     RETURN,
     INTEGER,

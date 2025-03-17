@@ -11,5 +11,5 @@ begin
     pi(3.141529)
     print("hello, ", 3.141529, " ", true, " ", false, " ", 0x10, " ", 2, " ", x, " ", y, " ", t, " ", pi)
     
-    return(0x7)     
+    return(0x21)  
 end

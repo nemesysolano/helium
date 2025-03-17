@@ -5,5 +5,5 @@ var
 begin
     pi(3.141529)
     length_over_diameter(pi)
-    return(0x1)
+    return(0x21)
 end

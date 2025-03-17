@@ -5,7 +5,8 @@
 #include "error-messages.h"
 #include "text.h"
 #include "log.h"
-
+#include "builtin-functions.h"
+#include "expression.h"
 using namespace std;
 
 set<TokenType> parser_breaking_tokens = {TokenType::END_OF_FILE, TokenType::INVALID};
@@ -146,7 +147,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
         return print_expected_token(LEFT_PARENT, tokenizer);        
     }    
 
-    auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
+    auto data_type = evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);
     if(data_type != root_target->data_type) {
         return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
     }
@@ -169,7 +170,7 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
     }    
 
     do {
-        auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
+        auto data_type =  evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);
         if(data_type == DataType::UNDEFINED || data_type == DataType::USER_DEFINED) {
             return print_parse_error(MSG_INVALID_PRINT_ARGUMENT, tokenizer);
         }    
@@ -189,50 +190,6 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
     return true;
 }
 
-bool Parser::parse_sum(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
-    auto & current_scope = scopes.top();
-    bool has_more = true;
-    DataType first_data_type = DataType::UNDEFINED;
-    size_t iterations = 0;
-    const size_t max_arguments = 6;
-
-    tokens.push_back(move(tokenizer.next()));
-    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
-        return print_expected_token(LEFT_PARENT, tokenizer);        
-    }    
-
-    do {
-        auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
-        if(!(data_type == DataType::INTEGER || data_type == DataType::BIGINT || data_type == DataType::FLOAT)) {
-            return print_parse_error(MSG_INVALID_SUM_ARGUMENT, tokenizer);
-        }    
-
-        auto token(tokenizer.next());
-
-        has_more = token->getType() == TokenType::COMMA;
-        if(iterations == 0) {
-            first_data_type = data_type;
-        } else if(data_type != first_data_type) {
-            return print_parse_error(MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES, tokenizer);
-        }
-
-        iterations++;
-        if(max_arguments < iterations) {
-            return print_parse_error(MSG_TOO_MANY_SUM_ARGUMENTS, tokenizer);
-        }
-        
-        if(!has_more) {
-            tokens.push_back(move(token));
-        }        
-    } while(has_more);
-
-    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
-        return print_expected_token(RIGHT_PARENT, tokenizer); 
-    }
-    
-    return true;    
-}
-
 bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
     tokens.push_back(move(tokenizer.next()));
@@ -240,7 +197,7 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
         return print_expected_token(LEFT_PARENT, tokenizer);
     }    
 
-    auto data_type = evaluate_expression(current_scope, tokenizer, tokens);    
+    auto data_type = evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);    
     if(data_type != current_scope->data_type) {
         return print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
@@ -253,27 +210,6 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
     return true;
 }
 
-DataType Parser::evaluate_expression(const unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, vector<std::unique_ptr<Token>> & tokens) {
-
-    tokens.push_back(move(tokenizer.next()));
-    const auto & token = tokens.back();
-
-    if(scope->objects.count(token->getValue()) > 0) {
-        return scope->objects.at(token->getValue())->data_type;
-
-    } else if(is_literal_token(token)) {  
-        auto literal_data_type = to_data_type(token->getType());     
-
-        if(literal_data_type == DataType::TEXT || literal_data_type == DataType::FLOAT) {
-            static_data.insert({token->getValue(), cyclic_hash(token->getValue())});
-        }
-        return literal_data_type;
-
-    } else {
-        return DataType::UNDEFINED;
-
-    }
-}
 
 bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     if(!is_statement_token(tokens.back())) {
@@ -288,8 +224,6 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
             return parse_call(tokenizer, tokens);
         case TokenType::PRINT:
             return parse_print(tokenizer, tokens);
-        case TokenType::SUM:
-            return parse_sum(tokenizer, tokens);            
         default:
             return false;
     }
@@ -334,31 +268,31 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
 
         while(token->getType() == TokenType::IDENTIFIER) {
             name = token->getValue();
+            if(is_builtin_function(name)) {
+                return print_builtin_object(name, tokenizer);
+            }
+
             if(scope_objects.find(name) != scope_objects.end()) {
-                print_duplicated_object(name, tokenizer);
-                return false;
+                return print_duplicated_object(name, tokenizer);
             }
 
             tokens.push_back(move(token));
             token = move(tokenizer.next());
             if(token->getType() != TokenType::COLON){
-                print_expected_token(COLON, tokenizer);
-                return false;
+                return print_expected_token(COLON, tokenizer);
             }
 
             tokens.push_back(move(token));
             token = move(tokenizer.next());  
             if(!is_type_token(token)) {
-
-                print_parse_error(MSG_INVALID_TYPE, tokenizer);
-                return false;
+                return print_parse_error(MSG_INVALID_TYPE, tokenizer);
             }
 
             data_type = to_data_type(token->getType());
             if(data_type == DataType::UNDEFINED) {
-                print_parse_error(MSG_INVALID_TYPE, tokenizer);
-                return false;
+                return print_parse_error(MSG_INVALID_TYPE, tokenizer);
             }  
+
             tokens.push_back(move(token));
             scope_objects.insert({name, make_shared<ParsedObject>(ParsedObject{offset, name, ObjectType::VARIABLE, data_type})});
             offset += data_type_size(data_type);

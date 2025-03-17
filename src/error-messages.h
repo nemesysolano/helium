@@ -19,6 +19,6 @@ bool print_expected_token(const char * expected, Tokenizer & tokenizer);
 bool print_parse_error(const char * message, Tokenizer & tokenizer);
 bool print_duplicated_object(const std::string & name, Tokenizer & tokenizer);
 bool print_undefined_object(const std::string & name, const Tokenizer & tokenizer);
-
+bool print_builtin_object(const std::string & name, const Tokenizer & tokenizer);
 
 #endif

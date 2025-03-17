@@ -1,5 +1,5 @@
 program
 begin
     print(10)
-    return(0x9)
+    return(0x21)
 end

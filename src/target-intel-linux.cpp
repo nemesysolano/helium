@@ -186,19 +186,7 @@ void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & 
 }
 
 void TargetIntelLinux::sum_statement(TargetContext & target_context, ostream & out, const map<std::string, size_t> & static_data){
-    const auto & scope_name = target_context.scopes.top().get()->name;    
-    assert(target_context.current()->getType() == TokenType::SUM);
-    
-    target_context.next();
-    assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
-    target_context.next();
-    do {        
-        auto result = evaluate_expression(target_context, out, static_data);
-        target_context.next();
-    } while(target_context.current()->getType() != TokenType::RIGHT_PARENT);
-
-    assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
 } 
 
 void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data) {
@@ -217,10 +205,6 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 
             case TokenType::PRINT:        
                 print_statement(target_context, out, static_data);
-                break;
-
-            case TokenType::SUM:
-                sum_statement(target_context, out, static_data);
                 break;
 
             default:

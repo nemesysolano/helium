@@ -6,7 +6,6 @@ extern const char * PROGRAM;
 extern const char * BEGIN ;
 extern const char * END;
 extern const char * PRINT;
-extern const char * SUM;
 extern const char * VAR;
 extern const char * RETURN;
 extern const char * INTEGER;

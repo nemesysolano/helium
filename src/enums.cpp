@@ -52,7 +52,7 @@ size_t data_type_size(DataType data_type) {
     }
 }
 
-static set statement_token_types = {TokenType::RETURN, TokenType::IDENTIFIER, TokenType::PRINT, TokenType::SUM};
+static set statement_token_types = {TokenType::RETURN, TokenType::IDENTIFIER, TokenType::PRINT};
 bool is_statement_token_type(TokenType token_type) {
     return statement_token_types.count(token_type) > 0; 
 }
