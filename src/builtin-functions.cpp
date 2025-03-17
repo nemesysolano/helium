@@ -6,18 +6,12 @@
 #include "parser.h"
 #include "error-messages.h"
 #include "keywords.h"
+#include "expression.h"
 
 using namespace std;
-extern const std::string BUILTIN_SUM("SUM");
+const std::string BUILTIN_SUM("SUM");
 
-set<string> builtin_functions = {BUILTIN_SUM};
-
-bool is_builtin_function(const string & name) {
-    return builtin_functions.count(name) > 0;
-}
-
-bool parse_sum(unique_ptr<ParsedScope> &current_scope, Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
-    /* *
+bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data) {
     bool has_more = true;
     DataType first_data_type = DataType::UNDEFINED;
     size_t iterations = 0;
@@ -29,7 +23,7 @@ bool parse_sum(unique_ptr<ParsedScope> &current_scope, Tokenizer & tokenizer, ve
     }    
 
     do {
-        auto data_type = evaluate_expression(current_scope, tokenizer, tokens);
+        auto data_type = evaluate_expression(scope, tokenizer, tokens, cyclic_hash, static_data);
         if(!(data_type == DataType::INTEGER || data_type == DataType::BIGINT || data_type == DataType::FLOAT)) {
             return print_parse_error(MSG_INVALID_SUM_ARGUMENT, tokenizer);
         }    
@@ -56,6 +50,5 @@ bool parse_sum(unique_ptr<ParsedScope> &current_scope, Tokenizer & tokenizer, ve
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
-    /* */
     return true;        
 }

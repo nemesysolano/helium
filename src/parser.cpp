@@ -11,58 +11,13 @@ using namespace std;
 
 set<TokenType> parser_breaking_tokens = {TokenType::END_OF_FILE, TokenType::INVALID};
 
-bool Parser::object_matches_return_type(
-    const unique_ptr<ParsedScope> & scope,
-    const unique_ptr<Token> & token,
-    const Tokenizer & tokenizer
-) {    
-    auto name = token->getValue();
-    
-    if(scope->objects.count(name) == 0) {
-        print_undefined_object(name, tokenizer);
-        return false;
-    }
-
-    DataType data_type = scope->data_type; 
-    const shared_ptr<ParsedObject> & object = scope->objects.at(name);
-
-    //TODO: Implement full expression evaluation. 
-    return object->data_type == data_type;    
+void  Parser::init_builtin_functions_map() {
+    builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
 }
 
-bool Parser::expression_matches_call_type(
-    const shared_ptr<ParsedObject> &root_target, 
-    unique_ptr<ParsedScope> & scope,
-    unique_ptr<Token> & token,
-    Tokenizer & tokenizer
-) {
-
-    if(is_literal_token(token)) {
-        bool matches = literal_matches_type(token, root_target->data_type);
-        if(matches && root_target->data_type == DataType::TEXT || root_target->data_type == DataType::FLOAT) {
-            static_data.insert({token->getValue(), cyclic_hash(token->getValue())});
-        }
-
-        return matches;
-    } else if (token->getType() == TokenType::IDENTIFIER) {
-
-        auto name = token->getValue();
-
-        if(scope->objects.count(name) == 0) {
-            print_undefined_object(name, tokenizer);
-            return false;
-        }
-
-        const shared_ptr<ParsedObject> & object = scope->objects.at(name);
-    
-        //TODO: Implement full expression evaluation. 
-        return object->data_type == root_target->data_type;  
-
-    } else {
-        return false;
-    }
+bool Parser::is_builtin_function(const string & name) {
+    return builtin_functions.count(name) > 0;
 }
-
 
 void Parser::push_scope(const std::string name, DataType data_type) {
     scopes.push(move(make_unique<ParsedScope>(
@@ -110,7 +65,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
     }
 }
 
-
+/* *
 bool Parser::parse_call(const shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   //TODO: Deprecate
     auto & current_scope = scopes.top();
 
@@ -131,33 +86,47 @@ bool Parser::parse_call(const shared_ptr<ParsedObject> &root_target, Tokenizer &
 
     return true;
 }
+/* */
+bool Parser::parse_builtin_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+    auto & current_scope = scopes.top();
+    auto const & target_name = tokens.back()->getValue();
+    size_t pointer =  builtin_functions.at(target_name);
+    builtin_parser builtin_function_parser = (builtin_parser)pointer;
+
+    return builtin_function_parser(current_scope, tokenizer, tokens, cyclic_hash, static_data);
+
+}
 
 bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   
     auto & current_scope = scopes.top();
     auto const & target_name = tokens.back()->getValue();
-
-    if(current_scope->objects.count(target_name) == 0) {
+    auto identifier_is_building_function = is_builtin_function(target_name);
+    if(current_scope->objects.count(target_name) == 0 && !identifier_is_building_function) {
         print_parse_error(MSG_INVALID_CALL_TARGET, tokenizer);
     }
 
-    auto const & root_target = current_scope->objects.at(target_name);
+    if(identifier_is_building_function) {
+        return parse_builtin_call(tokenizer, tokens);
+    } else {
+        auto const & root_target = current_scope->objects.at(target_name);
 
-    tokens.push_back(move(tokenizer.next()));
-    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
-        return print_expected_token(LEFT_PARENT, tokenizer);        
-    }    
+        tokens.push_back(move(tokenizer.next()));
+        if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
+            return print_expected_token(LEFT_PARENT, tokenizer);        
+        }    
 
-    auto data_type = evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);
-    if(data_type != root_target->data_type) {
-        return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
+        auto data_type = evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);
+        if(data_type != root_target->data_type) {
+            return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
+        }
+
+        tokens.push_back(move(tokenizer.next()));
+        if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
+            return print_expected_token(RIGHT_PARENT, tokenizer); 
+        }
+        
+        return true;
     }
-
-    tokens.push_back(move(tokenizer.next()));
-    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
-        return print_expected_token(RIGHT_PARENT, tokenizer); 
-    }
-    
-    return true;
 }
 
 bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
