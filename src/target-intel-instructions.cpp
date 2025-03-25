@@ -17,3 +17,4 @@ const char * QWORD = "QWORD";
 const char * REL = "REL";
 const char * NASM_CALL = "CALL";
 const char * EXTERN = "EXTERN";
+const char * STATIC_PREFIX = "_static_";

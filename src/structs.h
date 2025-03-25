@@ -17,4 +17,11 @@ struct ParsedScope {
     std::map<std::string, std::shared_ptr<ParsedObject>> objects;
     inline ParsedScope(DataType data_type, const std::string & name): data_type(data_type), name(name) {}
 };
+
+struct ExpressionResult {
+    bool is_literal;
+    DataType data_type;
+    size_t size;
+};
+
 #endif

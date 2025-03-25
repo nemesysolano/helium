@@ -9,11 +9,7 @@
 #include <map>
 #include <memory>
 #include "target-intel-builtin-functions.h"
-struct ExpressionResult {
-    bool is_literal;
-    DataType data_type;
-    size_t size;
-};
+#include "structs.h"
 
 class TargetIntelLinux: public Target {
         std::map<std::string, size_t> call_builtin_functions;
@@ -25,6 +21,8 @@ class TargetIntelLinux: public Target {
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         
         void print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);     
         void builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
+        void function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);  
+        void assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function); 
         void userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
         void call_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
         void sum_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);           

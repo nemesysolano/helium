@@ -6,8 +6,6 @@
 
 using namespace std;
 
-const char * STATIC_PREFIX = "_static_";
-
 size_t nearest_multiple_of_16(size_t value) {
     return (value + 15) & ~15;
 }
@@ -166,7 +164,11 @@ void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream
     builtin_function(target_context, out, static_data, builtin_functions);
 }
 
-void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+void TargetIntelLinux::function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+
+}
+
+void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
     const auto object_data_type = to_data_type(object.getType());
@@ -190,6 +192,15 @@ void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ost
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
+}
+
+void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+    
+/* if target_context.current() is a variable */
+    assigment_call(target_context, out, static_data, builtin_function);
+/* else */
+    function_call(target_context, out, static_data, builtin_function);
+/* endif */
 }
 
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){ //TODO: Only handles

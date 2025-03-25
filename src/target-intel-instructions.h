@@ -18,4 +18,5 @@ extern const char * QWORD;
 extern const char * NASM_CALL;
 extern const char * REL;
 extern const char * EXTERN;
+extern const char * STATIC_PREFIX;
 #endif
