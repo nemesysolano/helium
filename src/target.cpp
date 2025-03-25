@@ -29,10 +29,10 @@ int32_t to_integer(const std::string & value, TokenType token_type) {
     }
 }
 
-bool Target::write(const char * file, const std::vector<std::unique_ptr<Token>> & tokens, const map<string, size_t> & static_data) {
+bool Target::write(const char * file, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     ofstream out(file);
     if(out.is_open()) {
-        return write(out, tokens, static_data);
+        return write(out, tokens, static_data, builtin_functions);
     }
     return false;
 

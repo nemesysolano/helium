@@ -11,10 +11,6 @@ using namespace std;
 
 set<TokenType> parser_breaking_tokens = {TokenType::END_OF_FILE, TokenType::INVALID};
 
-void  Parser::init_builtin_functions_map() {
-    builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
-}
-
 bool Parser::is_builtin_function(const string & name) {
     return builtin_functions.count(name) > 0;
 }
@@ -57,7 +53,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
             return print_expected_token(END_OF_FILE, tokenizer);
         }
 
-        target->write(out, tokens, static_data);        
+        target->write(out, tokens, static_data, builtin_functions);        
         return true;
     } else {
         print_expected_token(PROGRAM, tokenizer);
@@ -65,28 +61,6 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
     }
 }
 
-/* *
-bool Parser::parse_call(const shared_ptr<ParsedObject> &root_target, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   //TODO: Deprecate
-    auto & current_scope = scopes.top();
-
-    tokens.push_back(move(tokenizer.next()));
-    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
-        return print_expected_token(LEFT_PARENT, tokenizer);        
-    }    
-
-    tokens.push_back(move(tokenizer.next()));
-    if(!expression_matches_call_type(root_target, current_scope, tokens.back(), tokenizer)) {
-        return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
-    }   
-
-    tokens.push_back(move(tokenizer.next()));
-    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
-        return print_expected_token(RIGHT_PARENT, tokenizer); 
-    }
-
-    return true;
-}
-/* */
 bool Parser::parse_builtin_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
     auto const & target_name = tokens.back()->getValue();

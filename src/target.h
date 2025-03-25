@@ -43,9 +43,9 @@ int64_t to_bigint(const std::string & value, TokenType token_type);
 int32_t to_integer(const std::string & value, TokenType token_type);
 
 class Target {
-    public:
-        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) = 0 ;
-        bool write(const char * file, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data);
+    public: // 
+        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) = 0 ;
+        bool write(const char * file, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions);
 };
 
 #endif // __TARGET_H__

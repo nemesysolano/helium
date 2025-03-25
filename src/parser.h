@@ -31,10 +31,9 @@ class Parser {
         void pop_scope();
         bool is_builtin_function(const std::string & name);
         inline bool is_builtin_function(const std::string && name) { const auto name_ = name; return is_builtin_function(name_); }
-        void init_builtin_functions_map();
     public:
-        inline Parser(std::unique_ptr<Target> & target): target(std::move(target)) {init_builtin_functions_map();}
-        inline Parser(std::unique_ptr<Target> && target): target(std::move(target)) {init_builtin_functions_map();}
+        inline Parser(std::unique_ptr<Target> & target): target(std::move(target)) {init_builtin_functions_map(builtin_functions);}
+        inline Parser(std::unique_ptr<Target> && target): target(std::move(target)) {init_builtin_functions_map(builtin_functions);}
         bool parse(Tokenizer & tokenizer, std::ostream & out) ;
         
 };

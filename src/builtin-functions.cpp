@@ -52,3 +52,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
     }
     return true;        
 }
+
+void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions) {
+    builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
+}

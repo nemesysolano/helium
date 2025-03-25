@@ -15,5 +15,6 @@ extern const std::string BUILTIN_SUM;
 
 bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data);
 DataType evaluate_expression(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data);
+void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions);
 
 #endif

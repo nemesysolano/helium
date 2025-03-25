@@ -158,7 +158,15 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
     }
 }
 
-void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Only handles
+void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
+    const auto & object  = * target_context.current();
+    const auto & object_name = object.getValue();
+    size_t pointer =  builtin_functions.at(object_name);
+    intel_builtin_function builtin_function = (intel_builtin_function)pointer;
+    builtin_function(target_context, out, static_data, builtin_functions);
+}
+
+void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
     const auto object_data_type = to_data_type(object.getType());
@@ -182,14 +190,21 @@ void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & 
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
+}
+
+void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){ //TODO: Only handles
+    const auto & object  = * target_context.current();
+    const auto & object_name = object.getValue();
+
+    if(builtin_function.count(object_name) > 0 ) {
+        builtin_call(target_context, out, static_data, builtin_function);
+    } else {
+        userdefined_call(target_context, out, static_data, builtin_function);
+    }
 
 }
 
-void TargetIntelLinux::sum_statement(TargetContext & target_context, ostream & out, const map<std::string, size_t> & static_data){
-
-} 
-
-void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data) {
+void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     assert(target_context.next()->getType() == TokenType::BEGIN);
    
     while(target_context.current()->getType() != TokenType::END) {
@@ -200,7 +215,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
                 break;
 
             case TokenType::IDENTIFIER: 
-                call_statement(target_context, out, static_data);
+                call_statement(target_context, out, static_data, builtin_functions);
                 break;
 
             case TokenType::PRINT:        
@@ -217,7 +232,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 
 }
 
-bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) {
+bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
     scopes.push(move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
@@ -245,7 +260,7 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RBP << SEP << NASM_RSP << endl;    
     //
     variable_declarations(target_context, out);
-    statements(target_context, out, static_data);
+    statements(target_context, out, static_data, builtin_functions);
     //
     out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RAX << SEP << 0 << endl;
     out << '\t' << GLOBAL_SCOPE_NAME << EXIT_SUFFIX << ':' << endl;
