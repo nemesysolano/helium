@@ -17,7 +17,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
     size_t iterations = 0;
     const size_t max_arguments = 6;
 
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);        
     }    
@@ -43,7 +43,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
         }
         
         if(!has_more) {
-            tokens.push_back(move(token));
+            tokens.push_back(std::move(token));
         }        
     } while(has_more);
 

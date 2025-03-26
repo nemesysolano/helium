@@ -12,8 +12,8 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
     auto object_type = object.getType();
     auto object_data_type = to_data_type(object_type);
     auto object_data_type_size = data_type_size(object_data_type);
-    const char * size_qualifier = DWORD;
-    const char * size_register = NASM_EAX;
+    auto const * size_qualifier = DWORD;
+    auto const * size_register = NASM_EAX;
     bool is_literal = false;    
 
     out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RAX << SEP << NASM_RAX << endl;

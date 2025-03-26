@@ -9,7 +9,7 @@
 using namespace std;
 
 unique_ptr<Target> select_target(char ** argv) {  //TODO: Select target based on the command line arguments   
-    return move(make_unique<TargetIntelLinux>());
+    return std::move(make_unique<TargetIntelLinux>());
 }
 
 int main(int argc, char ** argv) {
@@ -22,7 +22,7 @@ int main(int argc, char ** argv) {
     optional<string> content = read_text_file(argv[1]);
     if(content.has_value()) {
         Tokenizer tokenizer(content.value());
-        Parser parser(move(select_target(argv)));
+        Parser parser(std::move(select_target(argv)));
         ostringstream out;
 
         if(!parser.parse(tokenizer, out)) {

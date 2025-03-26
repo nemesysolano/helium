@@ -3,7 +3,7 @@
 #include "text.h"
 using namespace std;
 DataType evaluate_expression(const unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, map<string, size_t> & static_data) {
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     const auto & token = tokens.back();
 
     if(scope->objects.count(token->getValue()) > 0) {

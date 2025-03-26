@@ -15,7 +15,7 @@ class TargetIntelLinux: public Target {
         std::map<std::string, size_t> call_builtin_functions;
     protected:       
         
-        ExpressionResult evaluate_expression(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+//      ExpressionResult evaluate_expression(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void variable_declarations(TargetContext & target_context, std::ostream & out);
         void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions);
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         

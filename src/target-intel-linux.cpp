@@ -3,6 +3,7 @@
 #include "text.h"
 #include "log.h"
 #include "target-intel-support-functions.h"
+#include "target-intel-expression.h"
 
 using namespace std;
 
@@ -50,7 +51,7 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
     target_context.next();
-    evaluate_expression(target_context, out, static_data);
+    evaluate_expression_intel(target_context, out, static_data, call_builtin_functions);
 
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
@@ -58,6 +59,7 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
     out << '\t' << '\t' << NASM_JMP << ' ' << scope_name << EXIT_SUFFIX << endl;
 }
 
+/* *
 ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){     
     auto const & object = * target_context.current();
     auto const & object_name = object.getValue();
@@ -115,6 +117,7 @@ ExpressionResult TargetIntelLinux::evaluate_expression(TargetContext & target_co
 
     return {is_literal, object_data_type, object_data_type_size};
 }
+/* */
 
 void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {   
     size_t argc = 0; 
@@ -126,7 +129,7 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
 
     target_context.next();
     do {        
-        auto result = evaluate_expression(target_context, out, static_data);
+        auto result = evaluate_expression_intel(target_context, out, static_data, call_builtin_functions);
 
         switch(result.data_type) {
             case DataType::TEXT:
@@ -183,7 +186,7 @@ void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostre
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
     target_context.next();
-    auto result = evaluate_expression(target_context, out, static_data);
+    auto result = evaluate_expression_intel(target_context, out, static_data, call_builtin_functions);
     if(object_data_type_size == __SIZEOF_POINTER__) {
         size_qualifier = QWORD;
         size_register = NASM_RAX;
@@ -246,7 +249,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
-    scopes.push(move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
+    scopes.push(std::move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
 
     // Write the tokens to a file
     assert(target_context.next()->getType() == TokenType::PROGRAM);

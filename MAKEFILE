@@ -1,6 +1,6 @@
 # Compiler
 
-CC = clang++
+CC = g++
 
 # Directories
 SRC_DIR = src

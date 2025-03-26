@@ -44,9 +44,9 @@ unique_ptr<Token> Tokenizer::next() {
     std::smatch match;
 
     if(current_token.get() != nullptr) {
-        auto value = move(current_token);
+        auto value = std::move(current_token);
         current_token.reset();
-        return move(value);
+        return std::move(value);
     }
 
     buffer.clear();
@@ -81,13 +81,13 @@ unique_ptr<Token> Tokenizer::next() {
         }
         
         if(regex_match(buffer, match, string_regex)) {        
-            return move(make_unique<Token>(TokenType::TEXT_LITERAL, buffer));
+            return std::move(make_unique<Token>(TokenType::TEXT_LITERAL, buffer));
         } 
         
     } else {
         
         if(get_keyword_type(buffer) != TokenType::INVALID) {
-            return move(make_unique<Token>(get_keyword_type(buffer), buffer));
+            return std::move(make_unique<Token>(get_keyword_type(buffer), buffer));
         }
          
         while(index < source.size() && (isalnum(source[index]) || source[index] == '_' || source[index] == '.')) {
@@ -99,32 +99,32 @@ unique_ptr<Token> Tokenizer::next() {
         if (!buffer.empty()) {
             
             if(regex_match(buffer, match, integer_regex)) {
-                return move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer));
     
             } else if(regex_match(buffer, match, hex_integer_regex)) {
-                return move(make_unique<Token>(TokenType::HEX_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::HEX_LITERAL, buffer));
     
             } else if(regex_match(buffer, match, float_regex)) {
-                return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
     
             } else if(regex_match(buffer, match, char_regex)) {
-                return move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
     
             } else if(regex_match(buffer, match, boolean_regex)) {
-                return move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer));
     
             } else if(is_multi_char_keyword(buffer)) {
-                return move(make_unique<Token>(get_keyword_type(buffer), buffer));
+                return std::move(make_unique<Token>(get_keyword_type(buffer), buffer));
     
             } else if (regex_match(buffer, match, identifier_regex)) {
-                return move(make_unique<Token>(TokenType::IDENTIFIER, buffer));
+                return std::move(make_unique<Token>(TokenType::IDENTIFIER, buffer));
     
             } 
         }        
     }
 
 
-    return move(make_unique<Token>(TokenType::INVALID, buffer));
+    return std::move(make_unique<Token>(TokenType::INVALID, buffer));
 
 }
 

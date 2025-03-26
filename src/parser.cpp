@@ -16,7 +16,7 @@ bool Parser::is_builtin_function(const string & name) {
 }
 
 void Parser::push_scope(const std::string name, DataType data_type) {
-    scopes.push(move(make_unique<ParsedScope>(
+    scopes.push(std::move(make_unique<ParsedScope>(
         data_type,
         name
     )));
@@ -28,7 +28,7 @@ void Parser::pop_scope() {
 bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
 
     vector<unique_ptr<Token>> tokens;
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     
 
     if(tokens.back()->getType() == TokenType::PROGRAM) {
@@ -46,7 +46,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
             return print_parse_error(MSG_NOT_END_OF_FILE, tokenizer);
         } 
 
-        tokens.push_back(move(tokenizer.next()));
+        tokens.push_back(std::move(tokenizer.next()));
         bool is_eof = tokens.back()->getType() == TokenType::END_OF_FILE;
 
         if(!is_eof) {
@@ -84,7 +84,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
     } else {
         auto const & root_target = current_scope->objects.at(target_name);
 
-        tokens.push_back(move(tokenizer.next()));
+        tokens.push_back(std::move(tokenizer.next()));
         if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
             return print_expected_token(LEFT_PARENT, tokenizer);        
         }    
@@ -94,7 +94,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
             return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
         }
 
-        tokens.push_back(move(tokenizer.next()));
+        tokens.push_back(std::move(tokenizer.next()));
         if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
             return print_expected_token(RIGHT_PARENT, tokenizer); 
         }
@@ -107,7 +107,7 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
     auto & current_scope = scopes.top();
     bool has_more = true;
 
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);        
     }    
@@ -122,7 +122,7 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
         has_more = token->getType() == TokenType::COMMA;
 
         if(!has_more) {
-            tokens.push_back(move(token));
+            tokens.push_back(std::move(token));
         }        
     } while(has_more);
 
@@ -135,7 +135,7 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
 
 bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);
     }    
@@ -145,7 +145,7 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
         return print_parse_error(MSG_RETURN_DATATYPE_MISTMATCH, tokenizer);
     }   
 
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
@@ -174,17 +174,17 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
 }
 
 bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
-    tokens.push_back(move(tokenizer.next()));
+    tokens.push_back(std::move(tokenizer.next()));
     
     if(tokens.back()->getType() == TokenType::BEGIN) {
         bool is_valid_statement;
         
-        tokens.push_back(move(tokenizer.next()));
+        tokens.push_back(std::move(tokenizer.next()));
 
         while(tokens.back()->getType() != TokenType::END) {
             //TODO: Process statement 
             is_valid_statement = parse_statement(tokenizer, tokens);
-            tokens.push_back(move(tokenizer.next()));                      
+            tokens.push_back(std::move(tokenizer.next()));                      
 
             if(!is_valid_statement) {
                 return false;
@@ -199,12 +199,12 @@ bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Tok
 }
 
 bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
-    unique_ptr<Token> token(move(tokenizer.next()));
+    unique_ptr<Token> token(std::move(tokenizer.next()));
     size_t offset = 0;
 
     if(token->getType() == TokenType::VAR) {
-        tokens.push_back(move(token));
-        token = move(tokenizer.next());
+        tokens.push_back(std::move(token));
+        token = std::move(tokenizer.next());
         string name;
         DataType data_type;
         std::map<std::string, std::shared_ptr<ParsedObject>> & scope_objects = scopes.top()->objects; 
@@ -219,14 +219,14 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
                 return print_duplicated_object(name, tokenizer);
             }
 
-            tokens.push_back(move(token));
-            token = move(tokenizer.next());
+            tokens.push_back(std::move(token));
+            token = std::move(tokenizer.next());
             if(token->getType() != TokenType::COLON){
                 return print_expected_token(COLON, tokenizer);
             }
 
-            tokens.push_back(move(token));
-            token = move(tokenizer.next());  
+            tokens.push_back(std::move(token));
+            token = std::move(tokenizer.next());  
             if(!is_type_token(token)) {
                 return print_parse_error(MSG_INVALID_TYPE, tokenizer);
             }
@@ -236,13 +236,13 @@ bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::uniqu
                 return print_parse_error(MSG_INVALID_TYPE, tokenizer);
             }  
 
-            tokens.push_back(move(token));
+            tokens.push_back(std::move(token));
             scope_objects.insert({name, make_shared<ParsedObject>(ParsedObject{offset, name, ObjectType::VARIABLE, data_type})});
             offset += data_type_size(data_type);
-            token = move(tokenizer.next());
+            token = std::move(tokenizer.next());
         }
     } 
 
-    tokenizer.push_back(move(token));
+    tokenizer.push_back(std::move(token));
     return true;
 }

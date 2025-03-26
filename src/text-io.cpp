@@ -19,8 +19,8 @@ optional<string> read_text_file(const char *path) {
     // Close the file
     file.close();
 
-    optional<string> result(move(content));
-    return move(result);
+    optional<string> result(std::move(content));
+    return std::move(result);
 }
 
 // Create a function that writes a file and returns null if it can´t create the file or write content
