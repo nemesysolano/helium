@@ -20,6 +20,7 @@ class TargetIntelLinux: public Target {
         void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions);
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         
         void print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);     
+        void trace_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
         void function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);  
         void assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function); 

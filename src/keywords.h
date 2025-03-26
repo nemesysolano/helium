@@ -8,6 +8,7 @@ extern const char * END;
 extern const char * PRINT;
 extern const char * VAR;
 extern const char * RETURN;
+extern const char * TRACE;
 extern const char * INTEGER;
 extern const char * BIGINT;
 extern const char * FLOAT;

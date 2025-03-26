@@ -43,6 +43,19 @@ void TargetIntelLinux::variable_declarations(TargetContext & target_context, std
    
 }
 
+void TargetIntelLinux::trace_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
+    const auto & scope_name = target_context.scopes.top().get()->name;    
+    assert(target_context.current()->getType() == TokenType::TRACE);
+ 
+    target_context.next();
+    assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
+
+    target_context.next();
+    assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);    
+
+    out << '\t' << '\t' << "; trace" << endl;
+}
+
 void TargetIntelLinux::return_statement(TargetContext & target_context, std::ostream & out, const map<string, size_t> &static_data) {
     const auto & scope_name = target_context.scopes.top().get()->name;    
     assert(target_context.current()->getType() == TokenType::RETURN);
@@ -234,6 +247,10 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 
             case TokenType::PRINT:        
                 print_statement(target_context, out, static_data);
+                break;
+
+            case TokenType::TRACE:
+                trace_statement(target_context, out, static_data);
                 break;
 
             default:

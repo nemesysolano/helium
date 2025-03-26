@@ -17,6 +17,7 @@ enum class TokenType {
     PROGRAM,
     VAR,
     RETURN,
+    TRACE,
     INTEGER,
     BIGINT,
     FLOAT,

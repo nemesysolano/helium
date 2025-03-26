@@ -5,7 +5,7 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mult**_
+**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mult**_ | _**trace**__
 
 **return** ::= return (_**expression**_)
 
@@ -16,6 +16,8 @@
 **sum** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
 
 **mult** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**trace** ::= trace()
 
 **expression** ::= _**literal**_ | _**identifier**_ ; Expression type must match scope's.
 

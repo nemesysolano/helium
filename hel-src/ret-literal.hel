@@ -1,4 +1,5 @@
 program
 begin
+    trace()
     return(0x21)     
 end

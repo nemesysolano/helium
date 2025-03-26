@@ -3,7 +3,9 @@ var
     records: bigint
     registros: bigint
 begin
+    trace()
     records(0x21)
     registros(records)
+    trace()
     return(records) 
 end

@@ -8,6 +8,7 @@ const char * END = "END";
 const char * PRINT = "PRINT";
 const char * VAR = "VAR";
 const char * RETURN = "RETURN";
+const char * TRACE = "TRACE";
 const char * INTEGER = "INTEGER";
 const char * BIGINT = "BIGINT";
 const char * FLOAT = "FLOAT";
@@ -29,7 +30,8 @@ const char * empty_string = "";
 using namespace std;
 const char * multi_char_keywords[] = { 
     PROGRAM, BEGIN, END, PRINT,
-    VAR, RETURN, INTEGER , BIGINT, FLOAT , TEXT, BOOLEAN,
+    VAR, RETURN, TRACE, INTEGER, 
+    BIGINT, FLOAT , TEXT, BOOLEAN,
 };
 
 const char * built_type_tokens [] = {

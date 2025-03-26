@@ -103,6 +103,22 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
     }
 }
 
+bool Parser::parse_trace(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+    tokens.push_back(std::move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
+        return print_expected_token(LEFT_PARENT, tokenizer);        
+    }       
+
+    //TODO: More keywords might be added on the future.
+
+    tokens.push_back(std::move(tokenizer.next()));
+    if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
+        return print_expected_token(RIGHT_PARENT, tokenizer); 
+    }
+    
+    return true;
+}
+
 bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
     bool has_more = true;
@@ -167,6 +183,8 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
             return parse_call(tokenizer, tokens);
         case TokenType::PRINT:
             return parse_print(tokenizer, tokens);
+        case TokenType::TRACE:
+            return parse_trace(tokenizer, tokens);
         default:
             return false;
     }
