@@ -17,7 +17,7 @@ const regex float_regex("^-?\\d+\\.\\d+$");
 const regex char_regex("^'([^'\\\\]|\\\\.)'$");
 const regex boolean_regex("^(true|false)$");
 
-Token::Token(Token && other) : type(other.type), value(other.value) {
+Token::Token(Token && other) : type(other.type), value(other.value), line(other.line) {
     other.value = nullptr;
 }
 
@@ -25,6 +25,7 @@ Token & Token::operator=(Token && other) {
     if (this != &other) {
         type = other.type;
         value = other.value;
+        line = other.line;
         other.value = nullptr;
     }
     return *this;
@@ -42,6 +43,7 @@ void Tokenizer::next_char() {
 
 unique_ptr<Token> Tokenizer::next() {
     std::smatch match;
+    size_t line_number;
 
     if(current_token.get() != nullptr) {
         auto value = std::move(current_token);
@@ -54,16 +56,18 @@ unique_ptr<Token> Tokenizer::next() {
         next_char();
     }
    
+    line_number = this->line;
     if (index >= source.size() || source[index] == '\0') {
-        return make_unique<Token>(TokenType::END_OF_FILE, empty_string);
+        return make_unique<Token>(TokenType::END_OF_FILE, empty_string, line_number);
     }
 
     bool is_string = source[index] == '"';
     buffer.push_back(source[index]);
     next_char();
-
+    
+    line_number = this->line;
     if(is_string) {
-        // Try to read a C string literal taking into account escaped characters (e.g. '\r', '\n', '\t' and '\'", etc.)
+        // Try to read a C string literal taking into account escaped characters (e.g. '\r', '\n', '\t' and '\'", etc.)        
         while (index < source.size() && source[index] != '"') {
             if(source[index] == '\\') {
                 next_char();
@@ -81,13 +85,13 @@ unique_ptr<Token> Tokenizer::next() {
         }
         
         if(regex_match(buffer, match, string_regex)) {        
-            return std::move(make_unique<Token>(TokenType::TEXT_LITERAL, buffer));
+            return std::move(make_unique<Token>(TokenType::TEXT_LITERAL, buffer, line_number));
         } 
         
     } else {
         
         if(get_keyword_type(buffer) != TokenType::INVALID) {
-            return std::move(make_unique<Token>(get_keyword_type(buffer), buffer));
+            return std::move(make_unique<Token>(get_keyword_type(buffer), buffer, line_number));
         }
          
         while(index < source.size() && (isalnum(source[index]) || source[index] == '_' || source[index] == '.')) {
@@ -99,32 +103,32 @@ unique_ptr<Token> Tokenizer::next() {
         if (!buffer.empty()) {
             
             if(regex_match(buffer, match, integer_regex)) {
-                return std::move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::INTEGER_LITERAL, buffer, line_number));
     
             } else if(regex_match(buffer, match, hex_integer_regex)) {
-                return std::move(make_unique<Token>(TokenType::HEX_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::HEX_LITERAL, buffer, line_number));
     
             } else if(regex_match(buffer, match, float_regex)) {
-                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer, line_number));
     
             } else if(regex_match(buffer, match, char_regex)) {
-                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::FLOAT_LITERAL, buffer, line_number));
     
             } else if(regex_match(buffer, match, boolean_regex)) {
-                return std::move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer));
+                return std::move(make_unique<Token>(TokenType::BOOLEAN_LITERAL, buffer, line_number));
     
             } else if(is_multi_char_keyword(buffer)) {
-                return std::move(make_unique<Token>(get_keyword_type(buffer), buffer));
+                return std::move(make_unique<Token>(get_keyword_type(buffer), buffer, line_number));
     
             } else if (regex_match(buffer, match, identifier_regex)) {
-                return std::move(make_unique<Token>(TokenType::IDENTIFIER, buffer));
+                return std::move(make_unique<Token>(TokenType::IDENTIFIER, buffer, line_number));
     
             } 
         }        
     }
 
 
-    return std::move(make_unique<Token>(TokenType::INVALID, buffer));
+    return std::move(make_unique<Token>(TokenType::INVALID, buffer, line_number));
 
 }
 

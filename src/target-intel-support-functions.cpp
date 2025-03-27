@@ -32,7 +32,7 @@ void call_print_float(std::ostream & out, const char * input_register, size_t si
 
 void call_print_integer(std::ostream & out, const char * input_register) {
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_EDI << DELIMITER << input_register << endl;
-    out << '\t' << '\t' << NASM_CALL << ' ' << print_bigint << endl;
+    out << '\t' << '\t' << NASM_CALL << ' ' << print_integer << endl;
 }
 
 void call_print_bigint(std::ostream & out, const char * input_register) {

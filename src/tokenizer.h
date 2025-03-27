@@ -9,9 +9,9 @@ class Token {
     private:
         TokenType type;
         std::string * value;
-
+        size_t line;
     public:
-        Token(TokenType type, const std::string & value) : type(type), value(new std::string(value)) {}
+        Token(TokenType type, const std::string & value, size_t line) : type(type), value(new std::string(value)), line(line) {}
         // No copy constructor neither copy assignment
         Token(const Token & other) = delete;
         Token & operator=(const Token & other) = delete;
@@ -21,8 +21,9 @@ class Token {
         Token & operator=(Token && other);
 
         // Getters
-        TokenType getType() const { return type; }
-        const std::string & getValue() const { return *value; }
+        inline TokenType getType() const { return type; }
+        inline const std::string & getValue() const { return *value; }
+        inline size_t getLine() const { return line; }
 
         // Destructor
         ~Token() {

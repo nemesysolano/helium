@@ -174,9 +174,12 @@ void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & 
 void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     assert(target_context.next()->getType() == TokenType::BEGIN);
     
-    clear_intel_trace_registers(out);
-
     while(target_context.current()->getType() != TokenType::END) {
+        out << '\t' << '\t' << ';' << ' ' << 
+            target_context.current()->getValue() << ':' << ' ' <<
+            target_context.current()->getLine() + 1 << endl;
+
+        clear_intel_trace_registers(out);
 
         switch(target_context.current()->getType()) {            
             case TokenType::RETURN:

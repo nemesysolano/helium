@@ -16,7 +16,6 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
     auto const * size_register = NASM_EAX;
     bool is_literal = false;    
 
-    out << '\t' << '\t' << NASM_SUB << ' ' << NASM_RAX << SEP << NASM_RAX << endl;
     if(is_literal_token_type(object.getType())){
         is_literal = true;
         if(object_data_type == DataType::TEXT || object_data_type == DataType::FLOAT || object_data_type == DataType::BIGINT) {            

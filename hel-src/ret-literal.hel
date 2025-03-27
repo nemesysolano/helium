@@ -1,5 +1,5 @@
 program
 begin
     trace()
-    return(0x21)     
+    return(0x22)     
 end

@@ -4,7 +4,7 @@ var
     registros: bigint
 begin
     trace()
-    records(0x21)
+    records(0x22)
     registros(records)
     trace()
     return(records) 
