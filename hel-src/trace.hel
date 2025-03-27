@@ -1,0 +1,20 @@
+program
+var
+    x: bigint
+    y: integer
+    z: float
+    t: text
+begin
+    x(0x7)
+    trace()
+
+    y(1)
+    trace()
+
+    z(3.141529)
+    trace()
+
+    t("Rafael Solano Martinez")
+    trace()
+    return(0x0)
+end

@@ -1,18 +1,36 @@
 #include <stdio.h>
 #include "print.h"
 #include "numeric.h"
+#include "debug.h"
+#include "types.h"
 
 double A = 3.141529;
-char * B = "21";
-int main() {
+char * B = "lorem ipsum";
 
-    // long sum1 = sum_long(20, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    long sum1 = sum_long(6, 2, 3, 4, 5, 6, 7);
-    // int sum2 = sum_int(5, 1, 2, 3, 4, 5);
-    // double sum3 = sum_double(5, 1, 2, 3, 4, 5);
-    
-    print_bigint(sum1);
-    // print_integer(sum2);
-    // print_float(sum3, 12, 6);
-    return 0;
+
+int main() {
+    long long_content = 0x1234567890;
+    __asm__ volatile ("movq %0, %%r10" :: "r" (long_content));
+    __asm__ volatile ("movq %0, %%r11" :: "r" ((size_t)BIGINT));
+    trace();
+
+    long int_content = 0x1234567890;
+    __asm__ volatile ("movq %0, %%r10" :: "r" (int_content));
+    __asm__ volatile ("movq %0, %%r11" :: "r" ((size_t)INTEGER));
+    trace();    
+
+    double float_content = 3.141529;
+    __asm__ volatile ("movq %0, %%r10" :: "r" (*(size_t *)&float_content));
+    __asm__ volatile ("movq %0, %%r11" :: "r" ((size_t)FLOAT));
+    trace();
+
+    char * text_content = "lorem ipsum";
+    __asm__ volatile ("movq %0, %%r10" :: "r" ((size_t)text_content));
+    __asm__ volatile ("movq %0, %%r11" :: "r" ((size_t)TEXT));
+    trace();
+
+    long bool_content = 1;
+    __asm__ volatile ("movq %0, %%r10" :: "r" (bool_content));
+    __asm__ volatile ("movq %0, %%r11" :: "r" ((size_t)BOOLEAN));
+    trace();
 }

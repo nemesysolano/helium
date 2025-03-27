@@ -12,6 +12,6 @@ void call_intel_sum(TargetContext & target_context, std::ostream & out, const st
 }
 
 void clear_intel_trace_registers(std::ostream & out) {
-    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RAX << SEP << NASM_RAX << endl;
-    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RBX << SEP << NASM_RBX << endl;
+    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_R10 << SEP << NASM_R10 << endl;
+    out << '\t' << '\t' << NASM_XOR << ' ' << NASM_R11 << SEP << NASM_R11 << endl;
 }

@@ -60,5 +60,7 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
 
     }
 
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R10 << SEP << NASM_RAX << endl;
+    out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R11 << SEP << (int)object_data_type << endl;
     return {is_literal, object_data_type, object_data_type_size};   
 }

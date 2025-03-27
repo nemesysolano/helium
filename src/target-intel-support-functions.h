@@ -18,5 +18,5 @@ void call_print_string(std::ostream & out, const char * input_register);
 void call_print_bool(std::ostream & out, const char * input_register);
 void call_print_space(std::ostream & out, const char * input_register);
 void call_print_newline(std::ostream & out);
-
+void call_trace(std::ostream & out);
 #endif

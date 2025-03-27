@@ -11,6 +11,8 @@ const char * print_string = "print_string";
 const char * print_bool = "print_bool";
 const char * print_space = "print_space";
 const char * print_newline = "print_newline";
+const char * trace = "trace";
+
 const static char * DELIMITER = ", ";
 
 void support_functions(std::ostream & out) {
@@ -21,6 +23,7 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << print_bool << endl;
     out << EXTERN << ' ' << print_space << endl;
     out << EXTERN << ' ' << print_newline << endl;
+    out << EXTERN << ' ' << trace << endl;
 }
 
 void call_print_float(std::ostream & out, const char * input_register, size_t size, size_t decimals) { // movq    xmm0, rax
@@ -53,6 +56,11 @@ void call_print_bool(std::ostream & out, const char * input_register) {
 void call_print_space(std::ostream & out, const char * input_register) {
 
 }
+
+void call_trace(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << trace << endl;
+}
+
 
 void call_print_newline(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << print_newline << endl;

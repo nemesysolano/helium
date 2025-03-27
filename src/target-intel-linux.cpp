@@ -53,7 +53,8 @@ void TargetIntelLinux::trace_statement(TargetContext & target_context, std::ostr
     target_context.next();
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);    
 
-    out << '\t' << '\t' << "; trace" << endl;
+    call_trace(out);
+    clear_intel_trace_registers(out);
 }
 
 void TargetIntelLinux::return_statement(TargetContext & target_context, std::ostream & out, const map<string, size_t> &static_data) {
@@ -74,6 +75,7 @@ void TargetIntelLinux::return_statement(TargetContext & target_context, std::ost
 
 void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {   
     size_t argc = 0; 
+    clear_intel_trace_registers(out);
     const auto & scope_name = target_context.scopes.top().get()->name;    
     assert(target_context.current()->getType() == TokenType::PRINT);
     
@@ -110,7 +112,9 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
     if(argc > 1) {
         call_print_newline(out);
     }
+    clear_intel_trace_registers(out);
 }
+
 
 void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     const auto & object  = * target_context.current();
@@ -124,7 +128,7 @@ void TargetIntelLinux::function_call(TargetContext & target_context, std::ostrea
 
 }
 
-void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){
+void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){    
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
     const auto object_data_type = to_data_type(object.getType());
@@ -162,6 +166,7 @@ void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ost
 void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){ //TODO: Only handles
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
+    clear_intel_trace_registers(out);
 
     if(builtin_function.count(object_name) > 0 ) {
         builtin_call(target_context, out, static_data, builtin_function);
@@ -179,8 +184,6 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
             target_context.current()->getValue() << ':' << ' ' <<
             target_context.current()->getLine() + 1 << endl;
 
-        clear_intel_trace_registers(out);
-
         switch(target_context.current()->getType()) {            
             case TokenType::RETURN:
                 return_statement(target_context, out, static_data);
@@ -190,7 +193,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
                 call_statement(target_context, out, static_data, builtin_functions);
                 break;
 
-            case TokenType::PRINT:        
+            case TokenType::PRINT:                        
                 print_statement(target_context, out, static_data);
                 break;
 

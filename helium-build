@@ -69,7 +69,7 @@ if [ $STATUS -ne 0 ]; then
 fi
 
 cd $SCRIPT_DIR
-SUPPORT_OBJS="${SUPPORT_SRC_DIR}/bin/numeric.o ${SUPPORT_SRC_DIR}/bin/print.o"
+SUPPORT_OBJS="${SUPPORT_SRC_DIR}/bin/numeric.o ${SUPPORT_SRC_DIR}/bin/print.o ${SUPPORT_SRC_DIR}/bin/debug.o"
 
 gcc  -no-pie $OUTPUT $SUPPORT_OBJS -o "${EXECUTABLE}" 
 STATUS=$?
