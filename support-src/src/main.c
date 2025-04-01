@@ -37,13 +37,13 @@ void test_trace() {
 
 int main() {
     // Test the sum functions
-    long sum_of_longs = sum_long(2L, 3L, 5L, 7L, 11L, 13L);
-    int sub_of_ints = sum_int(3, 5, 7, 11, 13, 17);
-    double sum_of_doubles = sum_double(3, 5, 7, 11, 13, 17);
+    long product_of_longs = mul_long(2L, 3L, 5L, 7L, 11L, 13L);
+    int product_of_ints = mul_int(2, 3, 5, 7, 11, 13);
+    double product_of_doubles = mul_double(2, 3, 5, 7, 11, 13);
 
     // Print the results
-    printf("Sum of longs: %ld\n", sum_of_longs);
-    printf("Sum of ints: %d\n", sub_of_ints);
-    printf("Sum of doubles: %f\n", sum_of_doubles);
+    printf("Product of longs: %ld\n", product_of_longs);
+    printf("Product of ints: %d\n", product_of_ints);
+    printf("Product of doubles: %f\n", product_of_doubles);
     return 0;
 }

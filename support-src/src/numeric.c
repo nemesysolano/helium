@@ -20,6 +20,26 @@ double sum_double(double a, double b, double c, double d, double e, double f) {
     return sum;
 }
 
+long mul_long(long a, long b, long c, long d, long e, long f){
+    long mul = a * b * c * d * e * f;    
+    return mul;
+}
+
+
+int mul_int(int a, int b, int c, int d, int e, int f){
+    int mul = a * b * c * d * e * f;    
+    return mul;
+}
+
+
+double mul_double(double a, double b, double c, double d, double e, double f) {
+    double mul = a * b * c * d * e * f;    
+    __asm__ volatile (
+        "movq %xmm0, %rax\n"
+    );
+    return mul;
+}
+
 void clear_int_param_registers() {
     __asm__ volatile (
        "xor %rdi, %rdi\n"
