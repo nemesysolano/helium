@@ -1,6 +1,7 @@
 #ifndef __TARGET_INTEL_INSTRUCTIONS__
 #define __TARGET_INTEL_INSTRUCTIONS__
 extern const char * NASM_MOV;
+extern const char * NASM_MOVSD;
 extern const char * NASM_MOVQ;
 extern const char * NASM_PUSH;
 extern const char * NASM_POP;

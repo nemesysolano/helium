@@ -4,6 +4,7 @@
 #include "enums.h"
 #include "text.h"
 #include "structs.h"
+#include "log.h"
 
 using namespace std;
 ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
@@ -16,10 +17,10 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
     auto const * size_register = NASM_EAX;
     bool is_literal = false;    
 
-    if(is_literal_token_type(object.getType())){
+    
+    if(is_literal_token_type(object_type)){        
         is_literal = true;
         if(object_data_type == DataType::TEXT || object_data_type == DataType::FLOAT || object_data_type == DataType::BIGINT) {            
-            
             switch(object_data_type) {
                 case DataType::TEXT:
                     out << '\t' << '\t' << NASM_LEA << ' ' << NASM_RAX << SEP << STATIC_PREFIX << static_data.at(object.getValue()) << endl;                                        
@@ -45,7 +46,7 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
                     break;                
             }
         }
-    } else {        
+    } else {      
         auto object_offset = target_context.scopes.top()->objects.at(object_name)->offset;        
         object_data_type = target_context.scopes.top()->objects.at(object_name)->data_type;
         object_data_type_size = target_context.scopes.top()->objects.at(object_name)->size;

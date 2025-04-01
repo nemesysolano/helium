@@ -4,11 +4,16 @@
 #include "log.h"
 #include "target-intel-support-functions.h"
 #include "target-intel-expression.h"
+#include "names.h"
 
 using namespace std;
 
 size_t nearest_multiple_of_16(size_t value) {
     return (value + 15) & ~15;
+}
+
+TargetIntelLinux::TargetIntelLinux() { 
+    init_intel_builtin_functions(call_builtin_functions); 
 }
 
 void TargetIntelLinux::variable_declarations(TargetContext & target_context, std::ostream & out) {
@@ -116,34 +121,39 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
 }
 
 
-void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
+void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
-    size_t pointer =  builtin_functions.at(object_name);
-    intel_builtin_function builtin_function = (intel_builtin_function)pointer;
-    builtin_function(target_context, out, static_data, builtin_functions);
+
+    assert(call_builtin_functions.count(object_name) > 0);
+
+    size_t pointer =  call_builtin_functions.at(object_name);
+
+    intel_builtin_function builtin_function = call_intel_sum; //(intel_builtin_function)pointer;
+    builtin_function(target_context, out, static_data, call_builtin_functions);
 }
 
-void TargetIntelLinux::function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+void TargetIntelLinux::function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
 
 }
 
-void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){    
+void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data){  
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
-    const auto object_data_type = to_data_type(object.getType());
+    const std::shared_ptr<TargetObject> & target_object = target_context.scopes.top()->objects.at(object_name);
+    const auto object_data_type =  target_object->data_type;  
     const auto object_data_type_size = data_type_size(object_data_type);
-    const auto object_offset = target_context.scopes.top()->objects.at(object_name)->offset; 
+    const auto object_offset = target_object->offset; 
     const char * size_qualifier = DWORD;
     const char * size_register = NASM_EAX;
 
-    assert(target_context.current()->getType() == TokenType::IDENTIFIER);
-    
+    assert(target_context.current()->getType() == TokenType::IDENTIFIER);    
     target_context.next();
     assert(target_context.current()->getType() == TokenType::LEFT_PARENT);
 
     target_context.next();
     auto result = evaluate_expression_intel(target_context, out, static_data, call_builtin_functions);
+
     if(object_data_type_size == __SIZEOF_POINTER__) {
         size_qualifier = QWORD;
         size_register = NASM_RAX;
@@ -154,29 +164,28 @@ void TargetIntelLinux::assigment_call(TargetContext & target_context, std::ostre
     assert(target_context.current()->getType() == TokenType::RIGHT_PARENT);
 }
 
-void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+void TargetIntelLinux::userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
     
 /* if target_context.current() is a variable */
-    assigment_call(target_context, out, static_data, builtin_function);
+    assigment_call(target_context, out, static_data);
 /* else */
-    function_call(target_context, out, static_data, builtin_function);
+    function_call(target_context, out, static_data);
 /* endif */
 }
 
-void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function){ //TODO: Only handles
+void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data){ //TODO: Only handles
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
-    clear_intel_trace_registers(out);
-
-    if(builtin_function.count(object_name) > 0 ) {
-        builtin_call(target_context, out, static_data, builtin_function);
+    
+    if(call_builtin_functions.count(object_name) > 0 ) {            
+        builtin_call(target_context, out, static_data);
     } else {
-        userdefined_call(target_context, out, static_data, builtin_function);
+        userdefined_call(target_context, out, static_data);
     }
 
 }
 
-void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
+void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data) {
     assert(target_context.next()->getType() == TokenType::BEGIN);
     
     while(target_context.current()->getType() != TokenType::END) {
@@ -190,7 +199,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
                 break;
 
             case TokenType::IDENTIFIER: 
-                call_statement(target_context, out, static_data, builtin_functions);
+                call_statement(target_context, out, static_data);
                 break;
 
             case TokenType::PRINT:                        
@@ -211,7 +220,7 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
 
 }
 
-bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
+bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) {
     stack <unique_ptr<TargetScope>> scopes;
     TargetContext target_context = {tokens, scopes, 0};
     scopes.push(std::move(make_unique<TargetScope>(DataType::BIGINT, GLOBAL_SCOPE_NAME)));
@@ -239,7 +248,7 @@ bool TargetIntelLinux::write(std::ostream & out, const std::vector<std::unique_p
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_RBP << SEP << NASM_RSP << endl;    
     //
     variable_declarations(target_context, out);
-    statements(target_context, out, static_data, builtin_functions);
+    statements(target_context, out, static_data);
     //
     out << '\t' << '\t' << NASM_XOR << ' ' << NASM_RAX << SEP << 0 << endl;
     out << '\t' << GLOBAL_SCOPE_NAME << EXIT_SUFFIX << ':' << endl;

@@ -1,5 +1,6 @@
 #include "target-intel-instructions.h"
 const char * NASM_MOV = "MOV";
+const char * NASM_MOVSD = "MOVSD";
 const char * NASM_MOVQ = "MOVQ";
 const char * NASM_PUSH = "PUSH";
 const char * NASM_POP = "POP";

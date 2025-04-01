@@ -43,7 +43,3 @@ void trace() {
     }
 }
 
-/*
-__asm__ volatile ("movq %0, %%rax" :: "r" (content));
-__asm__ volatile ("movq %0, %%rdi" :: "r" (type));
-*/

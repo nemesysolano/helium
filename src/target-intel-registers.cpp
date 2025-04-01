@@ -38,9 +38,22 @@ const char * NASM_RDI = "RDI";
 const char * NASM_ESI = "ESI";
 const char * NASM_EDI = "EDI";
 
-// 64 bits temporary register not saved across calls
+// 64 bits extension registers
+const char * NASM_R8 = "R8";
+const char * NASM_R9 = "R9";
 const char * NASM_R10 = "R10";
 const char * NASM_R11 = "R11";
 
+// 32 bits extension registers
+const char * NASM_R8D = "R8D";
+const char * NASM_R9D = "R9D";
+const char * NASM_R10D = "R10D";
+const char * NASM_R11D = "R11D";
 
+// XMM Registers
 const char * NASM_XMM0 = "XMM0";
+const char * NASM_XMM1 = "XMM1";
+const char * NASM_XMM2 = "XMM2";
+const char * NASM_XMM3 = "XMM3";
+const char * NASM_XMM4 = "XMM4";
+const char * NASM_XMM5 = "XMM5";

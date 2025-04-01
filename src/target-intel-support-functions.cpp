@@ -12,7 +12,10 @@ const char * print_bool = "print_bool";
 const char * print_space = "print_space";
 const char * print_newline = "print_newline";
 const char * trace = "trace";
-
+const char * sum_long = "sum_long";
+const char * sum_int = "sum_int";
+const char * sum_double = "sum_double";
+const char * clear_int_param_registers = "clear_int_param_registers";
 const static char * DELIMITER = ", ";
 
 void support_functions(std::ostream & out) {
@@ -24,6 +27,10 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << print_space << endl;
     out << EXTERN << ' ' << print_newline << endl;
     out << EXTERN << ' ' << trace << endl;
+    out << EXTERN << ' ' << sum_long << endl;
+    out << EXTERN << ' ' << sum_int << endl;
+    out << EXTERN << ' ' << sum_double << endl;
+    out << EXTERN << ' ' << clear_int_param_registers << endl;
 }
 
 void call_print_float(std::ostream & out, const char * input_register, size_t size, size_t decimals) { // movq    xmm0, rax
@@ -64,4 +71,19 @@ void call_trace(std::ostream & out) {
 
 void call_print_newline(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << print_newline << endl;
+}
+
+void call_sum_long(std::ostream & out){
+    out << '\t' << '\t' << NASM_CALL << ' ' << sum_long << endl;
+}
+void call_sum_int(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << sum_int << endl;
+}
+
+void call_sum_double(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << sum_double << endl;
+}
+
+void call_clear_int_param_registers(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << clear_int_param_registers << endl;
 }

@@ -12,7 +12,8 @@ using namespace std;
 set<TokenType> parser_breaking_tokens = {TokenType::END_OF_FILE, TokenType::INVALID};
 
 bool Parser::is_builtin_function(const string & name) {
-    return builtin_functions.count(name) > 0;
+    size_t count = builtin_functions.count(name);
+    return count > 0;
 }
 
 void Parser::push_scope(const std::string name, DataType data_type) {
@@ -53,7 +54,7 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
             return print_expected_token(END_OF_FILE, tokenizer);
         }
 
-        target->write(out, tokens, static_data, builtin_functions);        
+        target->write(out, tokens, static_data);        
         return true;
     } else {
         print_expected_token(PROGRAM, tokenizer);
@@ -64,23 +65,26 @@ bool Parser::parse(Tokenizer & tokenizer, std::ostream & out) {
 bool Parser::parse_builtin_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
     auto const & target_name = tokens.back()->getValue();
+    
     size_t pointer =  builtin_functions.at(target_name);
     builtin_parser builtin_function_parser = (builtin_parser)pointer;
 
-    return builtin_function_parser(current_scope, tokenizer, tokens, cyclic_hash, static_data);
-
+    bool result = builtin_function_parser(current_scope, tokenizer, tokens, cyclic_hash, static_data);
+    return result;
 }
 
 bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   
     auto & current_scope = scopes.top();
     auto const & target_name = tokens.back()->getValue();
     auto identifier_is_building_function = is_builtin_function(target_name);
+
     if(current_scope->objects.count(target_name) == 0 && !identifier_is_building_function) {
         print_parse_error(MSG_INVALID_CALL_TARGET, tokenizer);
     }
-
-    if(identifier_is_building_function) {
-        return parse_builtin_call(tokenizer, tokens);
+    
+    if(identifier_is_building_function) {      
+        auto parse_builtin_call_result = parse_builtin_call(tokenizer, tokens);
+        return parse_builtin_call_result;
     } else {
         auto const & root_target = current_scope->objects.at(target_name);
 
@@ -90,6 +94,7 @@ bool Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token
         }    
 
         auto data_type = evaluate_expression(current_scope, tokenizer, tokens, cyclic_hash, static_data);
+
         if(data_type != root_target->data_type) {
             return print_parse_error(MSG_ASSIGMENT_DATATYPE_MISTMATCH, tokenizer);
         }
@@ -151,6 +156,7 @@ bool Parser::parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Toke
 
 bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
     auto & current_scope = scopes.top();
+
     tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
         return print_expected_token(LEFT_PARENT, tokenizer);
@@ -174,7 +180,7 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
     if(!is_statement_token(tokens.back())) {
         return print_parse_error(MSG_INVALID_STATEMENT, tokenizer);
     }
-
+    
     auto type = tokens.back()->getType();
     switch(type) {
         case TokenType::RETURN: 
@@ -200,13 +206,12 @@ bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Tok
         tokens.push_back(std::move(tokenizer.next()));
 
         while(tokens.back()->getType() != TokenType::END) {
-            //TODO: Process statement 
             is_valid_statement = parse_statement(tokenizer, tokens);
             tokens.push_back(std::move(tokenizer.next()));                      
 
             if(!is_valid_statement) {
                 return false;
-            }
+            }            
         }
 
         return true;

@@ -8,7 +8,10 @@ extern const char * print_string;
 extern const char * print_bool;
 extern const char * print_space;
 extern const char * print_newline;
-
+extern const char * sum_long;
+extern const char * sum_int;
+extern const char * sum_double;
+extern const char * clear_int_param_registers;
 void support_functions(std::ostream & out);
 
 void call_print_float(std::ostream & out, const char * input_register, size_t size, size_t decimals);
@@ -19,4 +22,8 @@ void call_print_bool(std::ostream & out, const char * input_register);
 void call_print_space(std::ostream & out, const char * input_register);
 void call_print_newline(std::ostream & out);
 void call_trace(std::ostream & out);
+void call_sum_long(std::ostream & out);
+void call_sum_int(std::ostream & out);
+void call_sum_double(std::ostream & out);
+void call_clear_int_param_registers(std::ostream & out);
 #endif

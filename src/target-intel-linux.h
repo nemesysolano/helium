@@ -16,19 +16,19 @@ class TargetIntelLinux: public Target {
     protected:       
         
         void variable_declarations(TargetContext & target_context, std::ostream & out);
-        void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions);
+        void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         
         void print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);     
         void trace_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
-        void builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
-        void function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);  
-        void assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function); 
-        void userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
-        void call_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function);
+        void builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+        void function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);  
+        void assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data); 
+        void userdefined_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+        void call_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void sum_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);           
     public:
-        inline TargetIntelLinux() { init_intel_builtin_functions(call_builtin_functions); }
-        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) override;
+        TargetIntelLinux();
+        virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) override;
 
 };
 #endif // __TARGET_INTEL_LINUX_H__

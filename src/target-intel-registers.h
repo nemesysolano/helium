@@ -37,9 +37,24 @@ extern const char * NASM_RDI;
 extern const char * NASM_ESI;
 extern const char * NASM_EDI;
 
-// 64 bits temporary register not saved across calls
+// 64 bits extension registers
+extern const char * NASM_R8;
+extern const char * NASM_R9;
 extern const char * NASM_R10;
 extern const char * NASM_R11;
 
+// 32 bits extension registers
+extern const char * NASM_R8D;
+extern const char * NASM_R9D;
+extern const char * NASM_R10D;
+extern const char * NASM_R11D;
+
+// XMM Registers
 extern const char * NASM_XMM0;
+extern const char * NASM_XMM1;
+extern const char * NASM_XMM2;
+extern const char * NASM_XMM3;
+extern const char * NASM_XMM4;
+extern const char * NASM_XMM5;
+
 #endif

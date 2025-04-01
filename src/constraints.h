@@ -1,0 +1,4 @@
+#ifndef HELIUM_CONSTRAINTS_H
+#define MAX_REGISTER_ARGUMENTS 6
+
+#endif

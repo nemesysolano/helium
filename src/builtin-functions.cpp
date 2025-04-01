@@ -6,16 +6,15 @@
 #include "parser.h"
 #include "error-messages.h"
 #include "keywords.h"
-#include "expression.h"
-
+#include "constraints.h"
+#include "names.h"
+#include "log.h"
 using namespace std;
-const std::string BUILTIN_SUM("SUM");
 
 bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data) {
     bool has_more = true;
     DataType first_data_type = DataType::UNDEFINED;
     size_t iterations = 0;
-    const size_t max_arguments = 6;
 
     tokens.push_back(std::move(tokenizer.next()));
     if(tokens.back()->getType() != TokenType::LEFT_PARENT) {
@@ -29,27 +28,28 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
         }    
 
         auto token(tokenizer.next());
-
         has_more = token->getType() == TokenType::COMMA;
+
         if(iterations == 0) {
             first_data_type = data_type;
         } else if(data_type != first_data_type) {
             return print_parse_error(MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES, tokenizer);
         }
 
-        iterations++;
-        if(max_arguments < iterations) {
-            return print_parse_error(MSG_TOO_MANY_SUM_ARGUMENTS, tokenizer);
-        }
-        
         if(!has_more) {
             tokens.push_back(std::move(token));
-        }        
+        } else {
+            iterations++;
+            if(iterations == MAX_REGISTER_ARGUMENTS) {
+                return print_parse_error(MSG_TOO_MANY_SUM_ARGUMENTS, tokenizer);
+            }                     
+        }
     } while(has_more);
 
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
+
     return true;        
 }
 
