@@ -164,10 +164,10 @@ mul_double:                             # @mul_double
 .Lfunc_end5:
 	.size	mul_double, .Lfunc_end5-mul_double
                                         # -- End function
-	.globl	clear_int_param_registers       # -- Begin function clear_int_param_registers
+	.globl	clear_int_sum_param_registers   # -- Begin function clear_int_sum_param_registers
 	.p2align	4, 0x90
-	.type	clear_int_param_registers,@function
-clear_int_param_registers:              # @clear_int_param_registers
+	.type	clear_int_sum_param_registers,@function
+clear_int_sum_param_registers:          # @clear_int_sum_param_registers
 # %bb.0:
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -183,7 +183,71 @@ clear_int_param_registers:              # @clear_int_param_registers
 	popq	%rbp
 	retq
 .Lfunc_end6:
-	.size	clear_int_param_registers, .Lfunc_end6-clear_int_param_registers
+	.size	clear_int_sum_param_registers, .Lfunc_end6-clear_int_sum_param_registers
+                                        # -- End function
+	.globl	clear_double_sum_param_registers # -- Begin function clear_double_sum_param_registers
+	.p2align	4, 0x90
+	.type	clear_double_sum_param_registers,@function
+clear_double_sum_param_registers:       # @clear_double_sum_param_registers
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	#APP
+	pxor	%xmm0, %xmm0
+	pxor	%xmm1, %xmm1
+	pxor	%xmm2, %xmm2
+	pxor	%xmm3, %xmm3
+	pxor	%xmm4, %xmm4
+	pxor	%xmm5, %xmm5
+
+	#NO_APP
+	popq	%rbp
+	retq
+.Lfunc_end7:
+	.size	clear_double_sum_param_registers, .Lfunc_end7-clear_double_sum_param_registers
+                                        # -- End function
+	.globl	clear_int_mul_param_registers   # -- Begin function clear_int_mul_param_registers
+	.p2align	4, 0x90
+	.type	clear_int_mul_param_registers,@function
+clear_int_mul_param_registers:          # @clear_int_mul_param_registers
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	#APP
+	movq	$1, %rdi
+	movq	$1, %rsi
+	movq	$1, %rdx
+	movq	$1, %rcx
+	movq	$1, %r8
+	movq	$1, %r9
+
+	#NO_APP
+	popq	%rbp
+	retq
+.Lfunc_end8:
+	.size	clear_int_mul_param_registers, .Lfunc_end8-clear_int_mul_param_registers
+                                        # -- End function
+	.globl	clear_double_mul_param_registers # -- Begin function clear_double_mul_param_registers
+	.p2align	4, 0x90
+	.type	clear_double_mul_param_registers,@function
+clear_double_mul_param_registers:       # @clear_double_mul_param_registers
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	#APP
+	movq	$1, %rdx
+	movq	%rdx, %xmm0
+	movq	%rdx, %xmm1
+	movq	%rdx, %xmm2
+	movq	%rdx, %xmm3
+	movq	%rdx, %xmm4
+	movq	%rdx, %xmm5
+
+	#NO_APP
+	popq	%rbp
+	retq
+.Lfunc_end9:
+	.size	clear_double_mul_param_registers, .Lfunc_end9-clear_double_mul_param_registers
                                         # -- End function
 	.ident	"Ubuntu clang version 18.1.3 (1ubuntu1)"
 	.section	".note.GNU-stack","",@progbits

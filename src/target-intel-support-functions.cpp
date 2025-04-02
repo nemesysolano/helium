@@ -18,7 +18,10 @@ const char * sum_double = "sum_double";
 const char * mul_long = "mul_long";
 const char * mul_int = "mul_int";
 const char * mul_double = "mul_double";
-const char * clear_int_param_registers = "clear_int_param_registers";
+const char * clear_int_sum_param_registers = "clear_int_sum_param_registers";
+const char * clear_double_sum_param_registers = "clear_double_sum_param_registers";
+const char * clear_int_mul_param_registers = "clear_int_mul_param_registers";
+const char * clear_double_mul_param_registers = "clear_double_mul_param_registers";
 const static char * DELIMITER = ", ";
 
 void support_functions(std::ostream & out) {
@@ -36,7 +39,10 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << mul_long << endl;
     out << EXTERN << ' ' << mul_int << endl;
     out << EXTERN << ' ' << mul_double << endl;    
-    out << EXTERN << ' ' << clear_int_param_registers << endl;
+    out << EXTERN << ' ' << clear_int_sum_param_registers << endl;
+    out << EXTERN << ' ' << clear_double_sum_param_registers << endl;
+    out << EXTERN << ' ' << clear_int_mul_param_registers << endl;
+    out << EXTERN << ' ' << clear_double_mul_param_registers << endl;
 }
 
 void call_print_float(std::ostream & out, const char * input_register, size_t size, size_t decimals) { // movq    xmm0, rax
@@ -103,6 +109,19 @@ void call_mul_double(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << mul_double << endl;
 }
 
-void call_clear_int_param_registers(std::ostream & out) {
-    out << '\t' << '\t' << NASM_CALL << ' ' << clear_int_param_registers << endl;
+void call_clear_int_sum_param_registers(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << clear_int_sum_param_registers << endl;
+}
+
+void call_clear_double_sum_param_registers(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << clear_double_sum_param_registers << endl;
+}
+
+
+void call_clear_int_mul_param_registers(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << clear_int_mul_param_registers << endl;
+}
+
+void call_clear_double_mul_param_registers(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << clear_double_mul_param_registers << endl;
 }

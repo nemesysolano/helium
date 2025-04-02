@@ -18,5 +18,8 @@ begin
     f(6.0)
     sum(a, b, c, d, e, f)
     trace()
+
+    sum(1.0, 2.0)
+    trace()
     return(0x5)
 end

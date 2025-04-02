@@ -1,0 +1,23 @@
+program
+var
+    a: bigint
+    b: bigint
+    c: bigint
+    d: bigint
+begin    
+    mul(0x2, 0x3, 0x5, 0x7)
+    trace()
+    
+    a(0x2)
+    b(0x3)
+    c(0x5)
+    d(0x7)
+
+    mul(a, b, c, d)
+    trace()
+
+    mul(a, 0x3, c, d)
+    trace()
+
+    return(0x5)
+end

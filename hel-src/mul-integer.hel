@@ -1,0 +1,24 @@
+program
+var
+    a: integer
+    b: integer
+    c: integer
+    d: integer
+    f: integer
+    e: integer
+begin    
+    mul(2, 3, 5, 7, 11, 13)
+    trace()
+    
+    a(2)
+    b(3)
+    c(5)
+    d(7)
+    f(11)
+    e(13)
+
+    mul(a, b, c, d, f, e)
+    trace()
+
+    return(0x5)
+end

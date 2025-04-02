@@ -26,12 +26,13 @@ void call_intel_numeric_reducer(
     const std::map<std::string, size_t> & call_builtin_functions,
     call_intel_reducer call_long_reducer,
     call_intel_reducer call_int_reducer,
-    call_intel_reducer call_double_reducer
+    call_intel_reducer call_double_reducer,
+    register_cleaner clear_int_registers,
+    register_cleaner clear_double_registers
 ) {
     DataType data_type = DataType::UNDEFINED;
     const char * * registers;
     size_t iterations = 0;
-    size_t type_size = 0;
     const char * return_register;
     const char * mov = NASM_MOV;
     clear_intel_trace_registers(out);
@@ -50,18 +51,19 @@ void call_intel_numeric_reducer(
                 case DataType::BIGINT:
                     return_register = NASM_RAX;
                     registers = QWORD_REGISTERS;
-                    call_clear_int_param_registers(out);
+                    clear_int_registers(out);
                     break;
 
                 case DataType::INTEGER:
                     return_register = NASM_EAX;
                     registers = DWORD_REGISTERS;
-                    call_clear_int_param_registers(out);
+                    clear_int_registers(out);
                     break;
 
                 case DataType::FLOAT:
                     return_register = NASM_RAX;
                     registers = QWORD_XMM_REGISTERS;
+                    clear_double_registers(out);
                     mov = NASM_MOVQ;
                     break;
                 default:
@@ -102,14 +104,18 @@ void call_intel_numeric_reducer(
 void call_intel_sum(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
     call_intel_numeric_reducer(
         target_context, out, static_data, call_builtin_functions,
-        call_sum_long, call_sum_int, call_sum_double
+        call_sum_long, call_sum_int, call_sum_double,
+        call_clear_int_sum_param_registers,
+        call_clear_double_sum_param_registers
     );    
 }
 
 void call_intel_mul(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
     call_intel_numeric_reducer(
         target_context, out, static_data, call_builtin_functions,
-        call_mul_long, call_mul_int, call_mul_double
+        call_mul_long, call_mul_int, call_mul_double,
+        call_clear_int_mul_param_registers,
+        call_clear_double_mul_param_registers
     );    
 }
 

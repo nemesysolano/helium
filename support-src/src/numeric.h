@@ -9,6 +9,10 @@ long mul_long(long a, long b, long c, long d, long e, long f);
 int mul_int(int a, int b, int c, int d, int e, int f);
 double mul_double(double a, double b, double c, double d, double e, double f);
 
-void clear_int_param_registers();
+void clear_int_sum_param_registers();
+void clear_double_sum_param_registers();
+
+void clear_int_mul_param_registers();
+void clear_double_mul_param_registers();
 
 #endif

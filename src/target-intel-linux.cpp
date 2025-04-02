@@ -124,12 +124,12 @@ void TargetIntelLinux::print_statement(TargetContext & target_context, std::ostr
 void TargetIntelLinux::builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
     const auto & object  = * target_context.current();
     const auto & object_name = object.getValue();
-
+    
     assert(call_builtin_functions.count(object_name) > 0);
 
     size_t pointer =  call_builtin_functions.at(object_name);
 
-    intel_builtin_function builtin_function = call_intel_sum; //(intel_builtin_function)pointer;
+    intel_builtin_function builtin_function = (intel_builtin_function)pointer;
     builtin_function(target_context, out, static_data, call_builtin_functions);
 }
 
