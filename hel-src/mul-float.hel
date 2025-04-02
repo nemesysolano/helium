@@ -1,0 +1,24 @@
+program
+var
+    a: float
+    b: float
+    c: float
+    d: float
+    f: float
+    e: float
+begin    
+    mul(2.0, 3.0, 5.0, 7.0, 11.0, 13.0)
+    trace()
+    
+    a(2.0)
+    b(3.0)
+    c(5.0)
+    d(7.0)
+    f(11.0)
+    e(13.0)
+
+    mul(a, b, 5.0, d, f, e)
+    trace()
+
+    return(0x5)
+end
