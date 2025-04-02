@@ -73,6 +73,7 @@
         "print": "cpp",
         "queue": "cpp",
         "ratio": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "cinttypes": "cpp"
     }
 }

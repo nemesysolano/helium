@@ -15,6 +15,10 @@ extern const char * MSG_INVALID_PRINT_ARGUMENT;
 extern const char * MSG_INVALID_SUM_ARGUMENT;
 extern const char * MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES;
 extern const char * MSG_TOO_MANY_SUM_ARGUMENTS;
+extern const char * MSG_INVALID_MUL_ARGUMENT;
+extern const char * MSG_MUL_ARGUMENTS_HAVE_DIFFERENT_TYPES;
+extern const char * MSG_TOO_MANY_MUL_ARGUMENTS;
+
 bool print_expected_token(const char * expected, Tokenizer & tokenizer);
 bool print_parse_error(const char * message, Tokenizer & tokenizer);
 bool print_duplicated_object(const std::string & name, Tokenizer & tokenizer);

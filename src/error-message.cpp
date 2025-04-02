@@ -14,6 +14,9 @@ const char * MSG_INVALID_PRINT_ARGUMENT = "Invalid argument for print statement"
 const char * MSG_INVALID_SUM_ARGUMENT = "Sum arguments must be numeric";
 const char * MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES = "sum arguments must have the same data type";
 const char * MSG_TOO_MANY_SUM_ARGUMENTS = "sum statement can have up to 6 arguments";
+const char * MSG_INVALID_MUL_ARGUMENT = "Multiplication arguments must be numeric";
+const char * MSG_MUL_ARGUMENTS_HAVE_DIFFERENT_TYPES = "multiplication arguments must have the same data type";
+const char * MSG_TOO_MANY_MUL_ARGUMENTS = "multiplication statement can have up to 6 arguments";
 
 bool print_expected_token(const char * expected, Tokenizer & tokenizer) {
     cout << "Syntax Error: Expected " << expected << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << endl;        

@@ -2,4 +2,5 @@
 #define __NAMES_H__
 #include <string>
     extern const std::string BUILTIN_SUM;
+    extern const std::string BUILTIN_MUL;
 #endif

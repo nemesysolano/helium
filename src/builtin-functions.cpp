@@ -9,9 +9,18 @@
 #include "constraints.h"
 #include "names.h"
 #include "log.h"
+
 using namespace std;
 
-bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data) {
+bool parse_numeric_reducer(
+    const std::unique_ptr<ParsedScope> & scope, 
+    Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, 
+    CyclicHash & cyclic_hash, 
+    std::map<std::string, size_t> & static_data,
+    const char * invalid_type_message,
+    const char * mixed_types_message,
+    const char * too_many_arguments_message
+) {
     bool has_more = true;
     DataType first_data_type = DataType::UNDEFINED;
     size_t iterations = 0;
@@ -24,7 +33,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
     do {
         auto data_type = evaluate_expression(scope, tokenizer, tokens, cyclic_hash, static_data);
         if(!(data_type == DataType::INTEGER || data_type == DataType::BIGINT || data_type == DataType::FLOAT)) {
-            return print_parse_error(MSG_INVALID_SUM_ARGUMENT, tokenizer);
+            return print_parse_error(invalid_type_message, tokenizer);
         }    
 
         auto token(tokenizer.next());
@@ -33,7 +42,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
         if(iterations == 0) {
             first_data_type = data_type;
         } else if(data_type != first_data_type) {
-            return print_parse_error(MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES, tokenizer);
+            return print_parse_error(mixed_types_message, tokenizer);
         }
 
         if(!has_more) {
@@ -41,7 +50,7 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
         } else {
             iterations++;
             if(iterations == MAX_REGISTER_ARGUMENTS) {
-                return print_parse_error(MSG_TOO_MANY_SUM_ARGUMENTS, tokenizer);
+                return print_parse_error(too_many_arguments_message, tokenizer);
             }                     
         }
     } while(has_more);
@@ -50,9 +59,29 @@ bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
 
-    return true;        
+    return true;   
+}
+
+
+bool parse_sum(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data) {
+    return parse_numeric_reducer(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_SUM_ARGUMENT,
+        MSG_SUM_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_SUM_ARGUMENTS
+    );        
+}
+
+bool parse_mul(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data) {
+    return parse_numeric_reducer(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_MUL_ARGUMENT,
+        MSG_MUL_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_MUL_ARGUMENTS
+    );   
 }
 
 void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions) {
     builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
+    builtin_functions.emplace(BUILTIN_MUL, (size_t)parse_mul);
 }
