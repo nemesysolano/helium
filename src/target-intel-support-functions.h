@@ -25,5 +25,9 @@ void call_trace(std::ostream & out);
 void call_sum_long(std::ostream & out);
 void call_sum_int(std::ostream & out);
 void call_sum_double(std::ostream & out);
+void call_mul_long(std::ostream & out);
+void call_mul_int(std::ostream & out);
+void call_mul_double(std::ostream & out);
+
 void call_clear_int_param_registers(std::ostream & out);
 #endif

@@ -19,7 +19,15 @@ const char * QWORD_REGISTERS[MAX_REGISTER_ARGUMENTS] = { NASM_RDI, NASM_RSI, NAS
 const char * DWORD_REGISTERS[MAX_REGISTER_ARGUMENTS] = { NASM_EDI, NASM_ESI, NASM_EDX, NASM_ECX, NASM_R8D, NASM_R9D };
 const char * QWORD_XMM_REGISTERS[MAX_REGISTER_ARGUMENTS] = {NASM_XMM0, NASM_XMM1, NASM_XMM2, NASM_XMM3, NASM_XMM4, NASM_XMM5 };
 
-void call_intel_sum(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+void call_intel_numeric_reducer(
+    TargetContext & target_context, 
+    std::ostream & out, 
+    const std::map<std::string, size_t> & static_data, 
+    const std::map<std::string, size_t> & call_builtin_functions,
+    call_intel_reducer call_long_reducer,
+    call_intel_reducer call_int_reducer,
+    call_intel_reducer call_double_reducer
+) {
     DataType data_type = DataType::UNDEFINED;
     const char * * registers;
     size_t iterations = 0;
@@ -70,20 +78,19 @@ void call_intel_sum(TargetContext & target_context, std::ostream & out, const st
         assert(target_context.current()->getType() == TokenType::RIGHT_PARENT || iterations < MAX_REGISTER_ARGUMENTS);
     } while(target_context.current()->getType() != TokenType::RIGHT_PARENT);
 
-    out << '\t' << '\t' << ';' << "tracing sum result" << endl;
     switch(data_type) {
         case DataType::BIGINT:
-            call_sum_long(out);
+            call_long_reducer(out);
             out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R10 << SEP << NASM_RAX << endl;
             break;
 
         case DataType::INTEGER:
-            call_sum_int(out);
+            call_int_reducer(out);
             out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R10 << SEP << NASM_RAX << endl;            
             break;
 
         case DataType::FLOAT:
-            call_sum_double(out);
+            call_double_reducer(out);
             out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R10 << SEP << NASM_RAX << endl;            
             break;
             
@@ -92,8 +99,24 @@ void call_intel_sum(TargetContext & target_context, std::ostream & out, const st
     }
 }
 
+void call_intel_sum(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_numeric_reducer(
+        target_context, out, static_data, call_builtin_functions,
+        call_sum_long, call_sum_int, call_sum_double
+    );    
+}
+
+void call_intel_mul(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_numeric_reducer(
+        target_context, out, static_data, call_builtin_functions,
+        call_mul_long, call_mul_int, call_mul_double
+    );    
+}
+
+
 void init_intel_builtin_functions(std::map<std::string, size_t> & call_builtin_functions) {
     call_builtin_functions.emplace(BUILTIN_SUM, (size_t)call_intel_sum);
+    call_builtin_functions.emplace(BUILTIN_MUL, (size_t)call_intel_mul);
 
 }
 
