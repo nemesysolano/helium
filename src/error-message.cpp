@@ -17,6 +17,12 @@ const char * MSG_TOO_MANY_SUM_ARGUMENTS = "sum statement can have up to 6 argume
 const char * MSG_INVALID_MUL_ARGUMENT = "Multiplication arguments must be numeric";
 const char * MSG_MUL_ARGUMENTS_HAVE_DIFFERENT_TYPES = "multiplication arguments must have the same data type";
 const char * MSG_TOO_MANY_MUL_ARGUMENTS = "multiplication statement can have up to 6 arguments";
+const char * MSG_INVALID_SUB_ARGUMENT = "Subtraction arguments must be numeric";
+const char * MSG_SUB_ARGUMENTS_HAVE_DIFFERENT_TYPES = "subtraction arguments must have the same data type";
+const char * MSG_TOO_MANY_SUB_ARGUMENTS = "subtraction statement can have up to 6 arguments";
+const char * MSG_INVALID_DIV_ARGUMENT = "Division arguments must be numeric";
+const char * MSG_DIV_ARGUMENTS_HAVE_DIFFERENT_TYPES = "division arguments must have the same data type";
+const char * MSG_TOO_MANY_DIV_ARGUMENTS = "division statement can have up to 6 arguments";
 
 bool print_expected_token(const char * expected, Tokenizer & tokenizer) {
     cout << "Syntax Error: Expected " << expected << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << endl;        

@@ -1,0 +1,31 @@
+program
+var
+    a: float
+    b: float
+    c: float
+begin    
+    div(6.0, 2.0)
+    trace() 
+
+    div(6.0, 3.0)
+    trace() 
+
+    div(6.0, -2.0)
+    trace() 
+
+    div(-6.0, 3.0)
+    trace() 
+
+    a(6.0)
+    b(2.0)
+    c(3.0)
+    div(a, b)
+    trace()
+
+    div(a,c)
+    trace()
+
+    div(a, 3.0)
+    trace()
+    return(0x7)
+end

@@ -1,0 +1,26 @@
+program
+var
+    a: bigint
+    b: bigint
+    c: bigint
+begin    
+    div(0x6, 0x2)
+    trace() 
+
+    div(0x6, 0x3)
+    trace() 
+
+    a(0x6)
+    b(0x2)
+    c(0x3)
+    div(a, b)
+    trace()
+
+    div(a,c)
+    trace()
+
+    div(a, 0x3)
+    trace()
+
+    return(0x7)
+end

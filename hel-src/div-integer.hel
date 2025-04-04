@@ -1,0 +1,32 @@
+program
+var
+    a: integer
+    b: integer
+    c: integer
+begin    
+    div(6,2)
+    trace() 
+
+    div(6,3)
+    trace() 
+
+    div(6,-2)
+    trace() 
+
+    div(-6,3)
+    trace() 
+
+    a(6)
+    b(2)
+    c(3)
+    div(a, b)
+    trace()
+
+    div(a,c)
+    trace()
+
+    div(a, 3)
+    trace()
+    
+    return(0x7)
+end

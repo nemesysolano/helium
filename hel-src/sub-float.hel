@@ -1,0 +1,27 @@
+program
+var
+    a: float
+    b: float
+begin    
+    sub(3.0, 2.0)
+    trace() 
+
+    sub(5.0, 3.0)
+    trace() 
+
+    sub(2.0, 3.0)
+    trace() 
+
+    sub(3.0, 5.0)
+    trace() 
+
+    a(7.0)
+    b(5.0)
+    sub(a, b)
+    trace()
+
+    sub(b, a)
+    trace()
+
+    return(0x11)
+end

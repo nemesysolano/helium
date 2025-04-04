@@ -1,0 +1,27 @@
+program
+var
+    a: integer
+    b: integer
+begin    
+    sub(3,2)
+    trace() 
+
+    sub(5,3)
+    trace() 
+
+    sub(2,3)
+    trace() 
+
+    sub(3,5)
+    trace() 
+
+    a(7)
+    b(5)
+    sub(a, b)
+    trace()
+
+    sub(b, a)
+    trace()
+
+    return(0x5)
+end

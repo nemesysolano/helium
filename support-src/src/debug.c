@@ -12,15 +12,27 @@ void trace() {
     __asm__ volatile ("movq %%r10, %0" : "=r" (content));
     __asm__ volatile ("movq %%r11, %0" : "=r" (type));
     #endif    
+    
+    int integer = (int)content;
+    long bigint = (long)content;
+
 
     DataType data_type = (DataType)type;
     switch(data_type) {
-        case INTEGER:
-            printf("TRACE INTEGER: %ld\n", content);
+        case INTEGER:            
+            printf(
+                "TRACE INTEGER: %c%ld\n", 
+                integer < 0 ? '-' : ' ', 
+                integer * (integer < 0 ? -1L : 1L)
+            );
             break;
 
         case BIGINT:
-            printf("TRACE BIGINT: 0x%lx\n", content);
+            printf(
+                "TRACE BIGINT: %c0x%lx\n", 
+                bigint < 0 ? '-' : ' ', 
+                bigint * (bigint < 0 ? -1L : 1L)
+            );
             break;
 
         case FLOAT:

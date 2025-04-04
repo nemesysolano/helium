@@ -119,11 +119,29 @@ void call_intel_mul(TargetContext & target_context, std::ostream & out, const st
     );    
 }
 
+void call_intel_div(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_numeric_reducer(
+        target_context, out, static_data, call_builtin_functions,
+        call_div_long, call_div_int, call_div_double,
+        call_clear_int_mul_param_registers,
+        call_clear_double_mul_param_registers
+    );
+}
+
+void call_intel_sub(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_numeric_reducer(
+        target_context, out, static_data, call_builtin_functions,
+        call_sub_long, call_sub_int, call_sub_double,
+        call_clear_int_mul_param_registers,
+        call_clear_double_mul_param_registers
+    );    
+}
 
 void init_intel_builtin_functions(std::map<std::string, size_t> & call_builtin_functions) {
     call_builtin_functions.emplace(BUILTIN_SUM, (size_t)call_intel_sum);
     call_builtin_functions.emplace(BUILTIN_MUL, (size_t)call_intel_mul);
-
+    call_builtin_functions.emplace(BUILTIN_DIV, (size_t)call_intel_div);
+    call_builtin_functions.emplace(BUILTIN_SUB, (size_t)call_intel_sub);
 }
 
 void clear_intel_trace_registers(std::ostream & out) {

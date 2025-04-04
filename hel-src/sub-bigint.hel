@@ -1,0 +1,27 @@
+program
+var
+    a: bigint
+    b: bigint
+begin    
+    sub(0x3,0x2)
+    trace() 
+
+    sub(0x5,0x3)
+    trace() 
+
+    sub(0x2,0x3)
+    trace() 
+
+    sub(0x3,0x5)
+    trace() 
+
+    a(0x7)
+    b(0x5)
+    sub(0xa, 0xb)
+    trace()
+
+    sub(0xb, 0xa)
+    trace()
+
+    return(0x5)
+end

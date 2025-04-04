@@ -7,7 +7,7 @@ trace:                                  # @trace
 # %bb.0:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$64, %rsp
 	#APP
 	movq	%r10, %rax
 	#NO_APP
@@ -16,28 +16,54 @@ trace:                                  # @trace
 	movq	%r11, %rax
 	#NO_APP
 	movq	%rax, -16(%rbp)
-	movl	-16(%rbp), %eax
+	movl	-8(%rbp), %eax
 	movl	%eax, -36(%rbp)
-	movl	-36(%rbp), %eax
+	movq	-8(%rbp), %rax
+	movq	%rax, -48(%rbp)
+	movl	-16(%rbp), %eax
+	movl	%eax, -52(%rbp)
+	movl	-52(%rbp), %eax
 	decl	%eax
 	movl	%eax, %ecx
-	movq	%rcx, -48(%rbp)                 # 8-byte Spill
+	movq	%rcx, -64(%rbp)                 # 8-byte Spill
 	subl	$4, %eax
 	ja	.LBB0_6
 # %bb.8:
-	movq	-48(%rbp), %rax                 # 8-byte Reload
+	movq	-64(%rbp), %rax                 # 8-byte Reload
 	leaq	.LJTI0_0(%rip), %rcx
 	movslq	(%rcx,%rax,4), %rax
 	addq	%rcx, %rax
 	jmpq	*%rax
 .LBB0_1:
-	movq	-8(%rbp), %rsi
+	movl	-36(%rbp), %ecx
+	movl	$32, %esi
+	movl	$45, %eax
+	cmpl	$0, %ecx
+	cmovll	%eax, %esi
+	movslq	-36(%rbp), %rdx
+	movl	-36(%rbp), %edi
+	movl	$1, %eax
+	movq	$-1, %rcx
+	cmpl	$0, %edi
+	cmovlq	%rcx, %rax
+	imulq	%rax, %rdx
 	leaq	.L.str(%rip), %rdi
 	movb	$0, %al
 	callq	printf@PLT
 	jmp	.LBB0_7
 .LBB0_2:
-	movq	-8(%rbp), %rsi
+	movq	-48(%rbp), %rcx
+	movl	$32, %esi
+	movl	$45, %eax
+	cmpq	$0, %rcx
+	cmovll	%eax, %esi
+	movq	-48(%rbp), %rdx
+	movq	-48(%rbp), %rdi
+	movl	$1, %eax
+	movq	$-1, %rcx
+	cmpq	$0, %rdi
+	cmovlq	%rcx, %rax
+	imulq	%rax, %rdx
 	leaq	.L.str.1(%rip), %rdi
 	movb	$0, %al
 	callq	printf@PLT
@@ -74,7 +100,7 @@ trace:                                  # @trace
 	movb	$0, %al
 	callq	printf@PLT
 .LBB0_7:
-	addq	$48, %rsp
+	addq	$64, %rsp
 	popq	%rbp
 	retq
 .Lfunc_end0:
@@ -91,13 +117,13 @@ trace:                                  # @trace
 	.type	.L.str,@object                  # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:
-	.asciz	"TRACE INTEGER: %ld\n"
-	.size	.L.str, 20
+	.asciz	"TRACE INTEGER: %c%ld\n"
+	.size	.L.str, 22
 
 	.type	.L.str.1,@object                # @.str.1
 .L.str.1:
-	.asciz	"TRACE BIGINT: 0x%lx\n"
-	.size	.L.str.1, 21
+	.asciz	"TRACE BIGINT: %c0x%lx\n"
+	.size	.L.str.1, 23
 
 	.type	.L.str.2,@object                # @.str.2
 .L.str.2:

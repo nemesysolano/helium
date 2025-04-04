@@ -45,5 +45,14 @@ int main() {
     printf("Product of longs: %ld\n", product_of_longs);
     printf("Product of ints: %d\n", product_of_ints);
     printf("Product of doubles: %f\n", product_of_doubles);
+
+    printf("size of long: %zu\n", sizeof(long));
+    printf("size of int: %zu\n", sizeof(int));
+    printf("size of long int: %zu\n", sizeof(long int));
+    printf("size of double: %zu\n", sizeof(double));
+    printf("size of size_t: %zu\n", sizeof(size_t));
+    printf("size of char*: %zu\n", sizeof(char*));
     return 0;
+
+
 }

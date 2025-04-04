@@ -18,6 +18,12 @@ extern const char * MSG_TOO_MANY_SUM_ARGUMENTS;
 extern const char * MSG_INVALID_MUL_ARGUMENT;
 extern const char * MSG_MUL_ARGUMENTS_HAVE_DIFFERENT_TYPES;
 extern const char * MSG_TOO_MANY_MUL_ARGUMENTS;
+extern const char * MSG_INVALID_SUB_ARGUMENT;
+extern const char * MSG_SUB_ARGUMENTS_HAVE_DIFFERENT_TYPES;
+extern const char * MSG_TOO_MANY_SUB_ARGUMENTS;
+extern const char * MSG_INVALID_DIV_ARGUMENT;
+extern const char * MSG_DIV_ARGUMENTS_HAVE_DIFFERENT_TYPES;
+extern const char * MSG_TOO_MANY_DIV_ARGUMENTS;
 
 bool print_expected_token(const char * expected, Tokenizer & tokenizer);
 bool print_parse_error(const char * message, Tokenizer & tokenizer);

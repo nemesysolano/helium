@@ -5,7 +5,7 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mult**_ | _**trace**__
+**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mul**_ | _**trace**_
 
 **return** ::= return (_**expression**_)
 
@@ -15,7 +15,11 @@
 
 **sum** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
 
-**mult** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
+**mul** ::= mul(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**sub** ::= sub(_**expression**_, _**expression**_)
+
+**div** ::= div(_**expression**_, _**expression**_)
 
 **trace** ::= trace()
 
@@ -41,10 +45,10 @@
 1. When _**identifier**_ is a variable, then call the proper _print\_*_ function from support library.
 2. When _**integer_literal**_ then call  _print\_long_.
 
-## sum, mult ##
+## sum, mul ##
 
 Both functions accept a list of numbers of the same type, and the result type matches the type of the arguments.
 
-## subtract, div ##
+## sub, div ##
 
 Both functions are binary (accepting only two arguments of the same type), and the result type matches the type of the arguments.

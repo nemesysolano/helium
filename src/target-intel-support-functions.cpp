@@ -18,6 +18,12 @@ const char * sum_double = "sum_double";
 const char * mul_long = "mul_long";
 const char * mul_int = "mul_int";
 const char * mul_double = "mul_double";
+const char * sub_long = "sub_long";
+const char * sub_int = "sub_int";
+const char * sub_double = "sub_double";
+const char * div_long = "div_long";
+const char * div_int = "div_int";
+const char * div_double = "div_double";
 const char * clear_int_sum_param_registers = "clear_int_sum_param_registers";
 const char * clear_double_sum_param_registers = "clear_double_sum_param_registers";
 const char * clear_int_mul_param_registers = "clear_int_mul_param_registers";
@@ -38,7 +44,13 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << sum_double << endl;
     out << EXTERN << ' ' << mul_long << endl;
     out << EXTERN << ' ' << mul_int << endl;
-    out << EXTERN << ' ' << mul_double << endl;    
+    out << EXTERN << ' ' << mul_double << endl;
+    out << EXTERN << ' ' << sub_long << endl;
+    out << EXTERN << ' ' << sub_int << endl;
+    out << EXTERN << ' ' << sub_double << endl;        
+    out << EXTERN << ' ' << div_long << endl;
+    out << EXTERN << ' ' << div_int << endl;
+    out << EXTERN << ' ' << div_double << endl;            
     out << EXTERN << ' ' << clear_int_sum_param_registers << endl;
     out << EXTERN << ' ' << clear_double_sum_param_registers << endl;
     out << EXTERN << ' ' << clear_int_mul_param_registers << endl;
@@ -107,6 +119,30 @@ void call_mul_int(std::ostream & out) {
 
 void call_mul_double(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << mul_double << endl;
+}
+
+void call_sub_long(std::ostream & out){
+    out << '\t' << '\t' << NASM_CALL << ' ' << sub_long << endl;
+}
+
+void call_sub_int(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << sub_int << endl;
+}
+
+void call_sub_double(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << sub_double << endl;
+}
+
+void call_div_long(std::ostream & out){
+    out << '\t' << '\t' << NASM_CALL << ' ' << div_long << endl;
+}
+
+void call_div_int(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << div_int << endl;
+}
+
+void call_div_double(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << div_double << endl;
 }
 
 void call_clear_int_sum_param_registers(std::ostream & out) {

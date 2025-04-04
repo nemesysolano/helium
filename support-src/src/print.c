@@ -13,7 +13,7 @@ void print_float(double f, int width, int decimals){
 }
 
 void print_integer(int i) {
-    printf("%d", i);
+    printf("%d", i);    
 }
 
 void print_bigint(long l) {

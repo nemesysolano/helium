@@ -138,6 +138,30 @@ main:                                   # @main
 	leaq	.L.str.3(%rip), %rdi
 	movb	$1, %al
 	callq	printf@PLT
+	leaq	.L.str.4(%rip), %rdi
+	movl	$8, %esi
+	movb	$0, %al
+	callq	printf@PLT
+	leaq	.L.str.5(%rip), %rdi
+	movl	$4, %esi
+	movb	$0, %al
+	callq	printf@PLT
+	leaq	.L.str.6(%rip), %rdi
+	movl	$8, %esi
+	movb	$0, %al
+	callq	printf@PLT
+	leaq	.L.str.7(%rip), %rdi
+	movl	$8, %esi
+	movb	$0, %al
+	callq	printf@PLT
+	leaq	.L.str.8(%rip), %rdi
+	movl	$8, %esi
+	movb	$0, %al
+	callq	printf@PLT
+	leaq	.L.str.9(%rip), %rdi
+	movl	$8, %esi
+	movb	$0, %al
+	callq	printf@PLT
 	xorl	%eax, %eax
 	addq	$32, %rsp
 	popq	%rbp
@@ -182,6 +206,36 @@ B:
 .L.str.3:
 	.asciz	"Product of doubles: %f\n"
 	.size	.L.str.3, 24
+
+	.type	.L.str.4,@object                # @.str.4
+.L.str.4:
+	.asciz	"size of long: %zu\n"
+	.size	.L.str.4, 19
+
+	.type	.L.str.5,@object                # @.str.5
+.L.str.5:
+	.asciz	"size of int: %zu\n"
+	.size	.L.str.5, 18
+
+	.type	.L.str.6,@object                # @.str.6
+.L.str.6:
+	.asciz	"size of long int: %zu\n"
+	.size	.L.str.6, 23
+
+	.type	.L.str.7,@object                # @.str.7
+.L.str.7:
+	.asciz	"size of double: %zu\n"
+	.size	.L.str.7, 21
+
+	.type	.L.str.8,@object                # @.str.8
+.L.str.8:
+	.asciz	"size of size_t: %zu\n"
+	.size	.L.str.8, 21
+
+	.type	.L.str.9,@object                # @.str.9
+.L.str.9:
+	.asciz	"size of char*: %zu\n"
+	.size	.L.str.9, 20
 
 	.ident	"Ubuntu clang version 18.1.3 (1ubuntu1)"
 	.section	".note.GNU-stack","",@progbits

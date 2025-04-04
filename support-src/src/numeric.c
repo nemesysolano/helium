@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include "numeric.h"
 #include <stdio.h>
+#include <stdint.h>
 
 long sum_long(long a, long b, long c, long d, long e, long f) {
     long sum = a + b + c + d + e + f;    
@@ -39,6 +40,61 @@ double mul_double(double a, double b, double c, double d, double e, double f) {
         "movq %xmm0, %rax\n"
     );
     return mul;
+}
+
+long sub_long(long a, long b){
+    long sub = a - b;
+    return sub;
+}
+
+int sub_int(int a, int b) {
+    int sub = a - b;
+    return sub;
+}
+
+double sub_double(double a, double b) {
+    double sub = a - b;
+    __asm__ volatile (
+        "movq %xmm0, %rax\n"
+    );
+    return sub;
+}
+
+long div_long(long a, long b) {
+    if(b == 0) {
+        if(a > 0) {
+            return INTMAX_MAX;
+        } else if(a < 0) {
+            return INTMAX_MIN;
+        } else {
+            return 0;
+        }
+    }
+
+    long div = a / b;
+    return div;
+}
+
+int div_int(int a, int b) {
+    if(b == 0) {
+        if(a > 0) {
+            return INT32_MAX;
+        } else if(a < 0) {
+            return INT32_MIN;
+        } else {
+            return 0;
+        }
+    }
+    int div = a / b;
+    return div;
+}
+
+double div_double(double a, double b) {
+    double div = a / b;
+    __asm__ volatile (
+        "movq %xmm0, %rax\n"
+    );
+    return div;
 }
 
 void clear_int_sum_param_registers() {
