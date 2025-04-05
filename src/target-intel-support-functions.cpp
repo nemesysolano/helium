@@ -24,6 +24,16 @@ const char * sub_double = "sub_double";
 const char * div_long = "div_long";
 const char * div_int = "div_int";
 const char * div_double = "div_double";
+const char * lt_long = "lt_long";
+const char * lt_int = "lt_int";
+const char * lt_double = "lt_double"; 
+const char * gt_long = "gt_long";
+const char * gt_int = "gt_int";
+const char * gt_double = "gt_double"; 
+const char * ne_long = "ne_long";
+const char * ne_int = "ne_int";
+const char * eq_long = "eq_long";
+const char * eq_int = "eq_int";
 const char * clear_int_sum_param_registers = "clear_int_sum_param_registers";
 const char * clear_double_sum_param_registers = "clear_double_sum_param_registers";
 const char * clear_int_mul_param_registers = "clear_int_mul_param_registers";
@@ -50,7 +60,17 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << sub_double << endl;        
     out << EXTERN << ' ' << div_long << endl;
     out << EXTERN << ' ' << div_int << endl;
-    out << EXTERN << ' ' << div_double << endl;            
+    out << EXTERN << ' ' << div_double << endl;       
+    out << EXTERN << ' ' << lt_long << endl;       
+    out << EXTERN << ' ' << lt_int << endl;       
+    out << EXTERN << ' ' << lt_double << endl;       
+    out << EXTERN << ' ' << gt_long << endl;       
+    out << EXTERN << ' ' << gt_int << endl;       
+    out << EXTERN << ' ' << gt_double << endl;       
+    out << EXTERN << ' ' << ne_long << endl;       
+    out << EXTERN << ' ' << ne_int << endl;       
+    out << EXTERN << ' ' << eq_long << endl;       
+    out << EXTERN << ' ' << eq_int << endl;       
     out << EXTERN << ' ' << clear_int_sum_param_registers << endl;
     out << EXTERN << ' ' << clear_double_sum_param_registers << endl;
     out << EXTERN << ' ' << clear_int_mul_param_registers << endl;
@@ -145,6 +165,35 @@ void call_div_double(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << div_double << endl;
 }
 
+void call_lt_long(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << lt_long << endl;       
+}
+
+void call_lt_int(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << lt_int << endl;       
+}
+
+void call_lt_double(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << lt_double << endl;       
+}
+
+void call_gt_long(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << gt_long << endl;       
+}
+
+void call_gt_int(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << gt_int << endl;       
+}
+
+void call_gt_double(std::ostream & out) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << gt_double << endl;       
+}
+
+out << '\t' << '\t' << NASM_CALL << ' ' << ne_long << endl;       
+out << '\t' << '\t' << NASM_CALL << ' ' << ne_int << endl;       
+out << '\t' << '\t' << NASM_CALL << ' ' << eq_long << endl;       
+out << '\t' << '\t' << NASM_CALL << ' ' << eq_int << endl;
+/* */
 void call_clear_int_sum_param_registers(std::ostream & out) {
     out << '\t' << '\t' << NASM_CALL << ' ' << clear_int_sum_param_registers << endl;
 }
