@@ -1,0 +1,20 @@
+program
+var
+    a: integer
+    b: integer
+begin
+    lt(1,2)
+    trace()
+
+    a(1)
+    b(2)
+    lt(a,b)
+    trace()
+
+    lt(2,1)
+    trace()
+
+    lt(b,a)
+    trace()
+    return(0x1)
+end

@@ -1,0 +1,30 @@
+program
+var
+    a: bigint
+    b: bigint
+    c: bigint
+begin
+    a(0x2)
+    b(0x2)
+    c(0x3)
+
+    ne(a, b)
+    trace()
+
+    ne(0x2, b)
+    trace()
+
+    ne(a, 0x2)
+    trace()
+
+    ne(a, c)
+    trace()
+
+    ne(0x2, c)
+    trace()
+
+    ne(0x2, 0x3)
+    trace()
+    
+    return(0x5)
+end

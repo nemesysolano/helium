@@ -1,0 +1,30 @@
+program
+var
+    a: float
+    b: float
+    c: float
+begin
+    a(2.002)
+    b(2.002)
+    c(3.001)
+
+    ne(a, b)
+    trace()
+
+    ne(2.002, b)
+    trace()
+
+    ne(a, 2.002)
+    trace()
+
+    ne(a, c)
+    trace()
+
+    ne(2.002, c)
+    trace()
+
+    ne(2.002, 3.001)
+    trace()
+    
+    return(0x2)
+end

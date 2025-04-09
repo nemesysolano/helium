@@ -81,16 +81,18 @@ test_trace:                             # @test_trace
 	.section	.rodata.cst8,"aM",@progbits,8
 	.p2align	3, 0x0                          # -- Begin function main
 .LCPI1_0:
-	.quad	0x4000000000000000              # double 2
+	.quad	0x3ff0000000000000              # double 1
 .LCPI1_1:
-	.quad	0x4008000000000000              # double 3
+	.quad	0x4000000000000000              # double 2
 .LCPI1_2:
-	.quad	0x4014000000000000              # double 5
+	.quad	0x4008000000000000              # double 3
 .LCPI1_3:
-	.quad	0x401c000000000000              # double 7
+	.quad	0x4014000000000000              # double 5
 .LCPI1_4:
-	.quad	0x4026000000000000              # double 11
+	.quad	0x401c000000000000              # double 7
 .LCPI1_5:
+	.quad	0x4026000000000000              # double 11
+.LCPI1_6:
 	.quad	0x402a000000000000              # double 13
 	.text
 	.globl	main
@@ -100,7 +102,7 @@ main:                                   # @main
 # %bb.0:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$32, %rsp
+	subq	$48, %rsp
 	movl	$0, -4(%rbp)
 	movl	$2, %edi
 	movl	$3, %esi
@@ -118,12 +120,12 @@ main:                                   # @main
 	movl	$13, %r9d
 	callq	mul_int@PLT
 	movl	%eax, -20(%rbp)
-	movsd	.LCPI1_0(%rip), %xmm0           # xmm0 = [2.0E+0,0.0E+0]
-	movsd	.LCPI1_1(%rip), %xmm1           # xmm1 = [3.0E+0,0.0E+0]
-	movsd	.LCPI1_2(%rip), %xmm2           # xmm2 = [5.0E+0,0.0E+0]
-	movsd	.LCPI1_3(%rip), %xmm3           # xmm3 = [7.0E+0,0.0E+0]
-	movsd	.LCPI1_4(%rip), %xmm4           # xmm4 = [1.1E+1,0.0E+0]
-	movsd	.LCPI1_5(%rip), %xmm5           # xmm5 = [1.3E+1,0.0E+0]
+	movsd	.LCPI1_1(%rip), %xmm0           # xmm0 = [2.0E+0,0.0E+0]
+	movsd	.LCPI1_2(%rip), %xmm1           # xmm1 = [3.0E+0,0.0E+0]
+	movsd	.LCPI1_3(%rip), %xmm2           # xmm2 = [5.0E+0,0.0E+0]
+	movsd	.LCPI1_4(%rip), %xmm3           # xmm3 = [7.0E+0,0.0E+0]
+	movsd	.LCPI1_5(%rip), %xmm4           # xmm4 = [1.1E+1,0.0E+0]
+	movsd	.LCPI1_6(%rip), %xmm5           # xmm5 = [1.3E+1,0.0E+0]
 	callq	mul_double@PLT
 	movsd	%xmm0, -32(%rbp)
 	movq	-16(%rbp), %rsi
@@ -138,32 +140,32 @@ main:                                   # @main
 	leaq	.L.str.3(%rip), %rdi
 	movb	$1, %al
 	callq	printf@PLT
+	movl	$1, %edi
+	movl	$2, %esi
+	callq	lt_long@PLT
+	movl	%eax, -36(%rbp)
+	movl	$1, %edi
+	movl	$2, %esi
+	callq	lt_int@PLT
+	movl	%eax, -40(%rbp)
+	movsd	.LCPI1_0(%rip), %xmm0           # xmm0 = [1.0E+0,0.0E+0]
+	movsd	.LCPI1_1(%rip), %xmm1           # xmm1 = [2.0E+0,0.0E+0]
+	callq	lt_double@PLT
+	movl	%eax, -44(%rbp)
+	movl	-36(%rbp), %esi
 	leaq	.L.str.4(%rip), %rdi
-	movl	$8, %esi
 	movb	$0, %al
 	callq	printf@PLT
+	movl	-40(%rbp), %esi
 	leaq	.L.str.5(%rip), %rdi
-	movl	$4, %esi
 	movb	$0, %al
 	callq	printf@PLT
+	movl	-44(%rbp), %esi
 	leaq	.L.str.6(%rip), %rdi
-	movl	$8, %esi
-	movb	$0, %al
-	callq	printf@PLT
-	leaq	.L.str.7(%rip), %rdi
-	movl	$8, %esi
-	movb	$0, %al
-	callq	printf@PLT
-	leaq	.L.str.8(%rip), %rdi
-	movl	$8, %esi
-	movb	$0, %al
-	callq	printf@PLT
-	leaq	.L.str.9(%rip), %rdi
-	movl	$8, %esi
 	movb	$0, %al
 	callq	printf@PLT
 	xorl	%eax, %eax
-	addq	$32, %rsp
+	addq	$48, %rsp
 	popq	%rbp
 	retq
 .Lfunc_end1:
@@ -209,33 +211,18 @@ B:
 
 	.type	.L.str.4,@object                # @.str.4
 .L.str.4:
-	.asciz	"size of long: %zu\n"
-	.size	.L.str.4, 19
+	.asciz	"Long compare: %d\n"
+	.size	.L.str.4, 18
 
 	.type	.L.str.5,@object                # @.str.5
 .L.str.5:
-	.asciz	"size of int: %zu\n"
-	.size	.L.str.5, 18
+	.asciz	"Int compare: %d\n"
+	.size	.L.str.5, 17
 
 	.type	.L.str.6,@object                # @.str.6
 .L.str.6:
-	.asciz	"size of long int: %zu\n"
-	.size	.L.str.6, 23
-
-	.type	.L.str.7,@object                # @.str.7
-.L.str.7:
-	.asciz	"size of double: %zu\n"
-	.size	.L.str.7, 21
-
-	.type	.L.str.8,@object                # @.str.8
-.L.str.8:
-	.asciz	"size of size_t: %zu\n"
-	.size	.L.str.8, 21
-
-	.type	.L.str.9,@object                # @.str.9
-.L.str.9:
-	.asciz	"size of char*: %zu\n"
-	.size	.L.str.9, 20
+	.asciz	"Double compare: %d\n"
+	.size	.L.str.6, 20
 
 	.ident	"Ubuntu clang version 18.1.3 (1ubuntu1)"
 	.section	".note.GNU-stack","",@progbits
@@ -245,3 +232,6 @@ B:
 	.addrsig_sym mul_int
 	.addrsig_sym mul_double
 	.addrsig_sym printf
+	.addrsig_sym lt_long
+	.addrsig_sym lt_int
+	.addrsig_sym lt_double

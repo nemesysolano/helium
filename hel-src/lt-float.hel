@@ -1,0 +1,20 @@
+program
+var
+    a: float
+    b: float
+begin
+    lt(1.0, 2.0)
+    trace()
+
+    a(1.0)
+    b(2.0)
+    lt(a, b)
+    trace()
+
+    lt(2.0, 1.0)
+    trace()
+
+    lt(b,a)
+    trace()
+    return(0x1)
+end

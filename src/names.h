@@ -5,4 +5,8 @@
     extern const std::string BUILTIN_MUL;
     extern const std::string BUILTIN_SUB;
     extern const std::string BUILTIN_DIV;
+    extern const std::string BUILTIN_LT;
+    extern const std::string BUILTIN_GT;
+    extern const std::string BUILTIN_NE;
+    extern const std::string BUILTIN_EQ;
 #endif

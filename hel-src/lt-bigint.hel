@@ -1,0 +1,20 @@
+program
+var
+    a: bigint
+    b: bigint
+begin
+    lt(0x1, 0x2)
+    trace()
+
+    a(0x1)
+    b(0x2)
+    lt(a, b)
+    trace()
+
+    lt(0x2, 0x1)
+    trace()
+
+    lt(b, a)
+    trace()
+    return(0x1)
+end

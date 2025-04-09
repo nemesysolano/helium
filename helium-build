@@ -69,9 +69,9 @@ if [ $STATUS -ne 0 ]; then
 fi
 
 cd $SCRIPT_DIR
-SUPPORT_OBJS="${SUPPORT_SRC_DIR}/bin/numeric.o ${SUPPORT_SRC_DIR}/bin/print.o ${SUPPORT_SRC_DIR}/bin/debug.o"
+SUPPORT_OBJS="${SUPPORT_SRC_DIR}/bin/numeric.o ${SUPPORT_SRC_DIR}/bin/print.o ${SUPPORT_SRC_DIR}/bin/debug.o ${SUPPORT_SRC_DIR}/bin/comparison.o"
 
-gcc  -no-pie $OUTPUT $SUPPORT_OBJS -o "${EXECUTABLE}" 
+gcc -no-pie $OUTPUT $SUPPORT_OBJS -lm  -o "${EXECUTABLE}" 
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Failed to link $OUTPUT"

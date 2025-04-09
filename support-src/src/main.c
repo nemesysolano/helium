@@ -3,7 +3,7 @@
 #include "numeric.h"
 #include "debug.h"
 #include "types.h"
-
+#include "comparison.h"
 double A = 3.141529;
 char * B = "lorem ipsum";
 
@@ -46,12 +46,13 @@ int main() {
     printf("Product of ints: %d\n", product_of_ints);
     printf("Product of doubles: %f\n", product_of_doubles);
 
-    printf("size of long: %zu\n", sizeof(long));
-    printf("size of int: %zu\n", sizeof(int));
-    printf("size of long int: %zu\n", sizeof(long int));
-    printf("size of double: %zu\n", sizeof(double));
-    printf("size of size_t: %zu\n", sizeof(size_t));
-    printf("size of char*: %zu\n", sizeof(char*));
+    int long_compare = lt_long(1, 2);
+    int int_compare = lt_int(1, 2);
+    int double_compare = lt_double(1.0, 2.0); 
+
+    printf("Long compare: %d\n", long_compare);
+    printf("Int compare: %d\n", int_compare);
+    printf("Double compare: %d\n", double_compare);
     return 0;
 
 

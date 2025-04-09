@@ -1,0 +1,30 @@
+program
+var
+    a: bigint
+    b: bigint
+    c: bigint
+begin
+    a(0x2)
+    b(0x2)
+    c(0x3)
+
+    eq(a, b)
+    trace()
+
+    eq(0x2, b)
+    trace()
+
+    eq(a, 0x2)
+    trace()
+
+    eq(a, c)
+    trace()
+
+    eq(0x2, c)
+    trace()
+
+    eq(0x2, 0x3)
+    trace()
+    
+    return(0x5)
+end

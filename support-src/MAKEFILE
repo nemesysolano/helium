@@ -23,7 +23,7 @@ ASMS = $(SRCS:$(SRC_DIR)/%.c=$(ASM_DIR)/%.s)
 CFLAGS = -Wall -fno-asynchronous-unwind-tables -c  -Wextra
 
 # Linker flags
-LDFLAGS =
+LDFLAGS = -lm
 
 # Default target
 all: $(TARGET) $(ASMS)

@@ -1,0 +1,30 @@
+program
+var
+    a: float
+    b: float
+    c: float
+begin
+    a(2.05)
+    b(2.05)
+    c(2.01)
+
+    eq(a, b)
+    trace()
+
+    eq(2.05, b)
+    trace()
+
+    eq(a, 2.05)
+    trace()
+
+    eq(a, c)
+    trace()
+
+    eq(2.05, c)
+    trace()
+
+    eq(2.05, 3.05)
+    trace()
+    
+    return(0x7)
+end

@@ -19,7 +19,7 @@ OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
 CFLAGS = -DGLIBCXX_DEBUG -Wall -Wextra  -O2 -std=c++20 -g 
 
 # Linker flags
-LDFLAGS = 
+LDFLAGS = -lm
 
 # Default target
 all: $(TARGET)

@@ -12,6 +12,28 @@
 
 using namespace std;
 
+bool parse_comparator_binary(
+    const std::unique_ptr<ParsedScope> & scope, 
+    Tokenizer & tokenizer, 
+    std::vector<std::unique_ptr<Token>> & tokens, 
+    CyclicHash & cyclic_hash, 
+    std::map<std::string, size_t> & static_data,
+    const char * invalid_type_message,
+    const char * mixed_types_message,
+    const char * too_many_arguments_message
+) {
+    return  parse_numeric_binary (
+        scope, 
+        tokenizer,
+        tokens, 
+        cyclic_hash, 
+        static_data,
+        invalid_type_message,
+        mixed_types_message,
+        too_many_arguments_message
+    );
+}
+
 bool parse_numeric_binary (
     const std::unique_ptr<ParsedScope> & scope, 
     Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, 
@@ -138,9 +160,49 @@ bool parse_div(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer
     ); 
 }
 
+bool parse_lt(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
+bool parse_gt(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
+bool parse_ne(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
+bool parse_eq(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
 void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions) {
     builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
     builtin_functions.emplace(BUILTIN_MUL, (size_t)parse_mul);
     builtin_functions.emplace(BUILTIN_SUB, (size_t)parse_sub);
     builtin_functions.emplace(BUILTIN_DIV, (size_t)parse_div);
+    builtin_functions.emplace(BUILTIN_LT, (size_t)parse_lt);
+    builtin_functions.emplace(BUILTIN_GT, (size_t)parse_gt);
+    builtin_functions.emplace(BUILTIN_NE, (size_t)parse_ne);
+    builtin_functions.emplace(BUILTIN_EQ, (size_t)parse_eq);
 }

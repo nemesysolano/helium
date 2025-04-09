@@ -1,0 +1,30 @@
+program
+var
+    a: integer
+    b: integer
+    c: integer
+begin
+    a(2)
+    b(2)
+    c(3)
+
+    ne(a, b)
+    trace()
+
+    ne(2, b)
+    trace()
+
+    ne(a, 2)
+    trace()
+
+    ne(a, c)
+    trace()
+
+    ne(2, c)
+    trace()
+
+    ne(2, 3)
+    trace()
+    
+    return(0x2)
+end
