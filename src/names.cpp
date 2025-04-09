@@ -9,3 +9,5 @@ const std::string BUILTIN_LT("lt");
 const std::string BUILTIN_GT("gt");
 const std::string BUILTIN_NE("ne");
 const std::string BUILTIN_EQ("eq");
+const std::string BUILTIN_LE("le");
+const std::string BUILTIN_GE("ge");

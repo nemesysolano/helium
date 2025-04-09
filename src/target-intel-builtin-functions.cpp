@@ -243,6 +243,19 @@ void call_intel_eq(TargetContext & target_context, std::ostream & out, const std
     );
 }
 
+void call_intel_le(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_comparator(
+        target_context, out, static_data, call_builtin_functions,
+        call_intel_le_long, call_intel_le_int, call_intel_le_double
+    );
+}
+
+void call_intel_ge(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions){
+    call_intel_comparator(
+        target_context, out, static_data, call_builtin_functions,
+        call_intel_ge_long, call_intel_ge_int, call_intel_ge_double
+    );
+}
 
 void call_intel_sum_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions){
     out << '\t' << '\t' << NASM_CALL << ' ' << sum_long << endl;
@@ -340,6 +353,29 @@ void call_intel_eq_double(TargetContext & target_context, std::ostream & out, co
     out << '\t' << '\t' << NASM_CALL << ' ' << eq_double << endl;
 }
 
+void call_intel_le_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << le_long << endl;
+}
+
+void call_intel_le_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << le_int << endl;
+}
+
+void call_intel_le_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << le_double << endl;
+}
+
+void call_intel_ge_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << ge_long << endl;
+}
+
+void call_intel_ge_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << ge_int << endl;
+}
+void call_intel_ge_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions) {
+    out << '\t' << '\t' << NASM_CALL << ' ' << ge_double << endl;
+}
+
 void init_intel_builtin_functions(std::map<std::string, size_t> & call_builtin_functions) {
     call_builtin_functions.emplace(BUILTIN_SUM, (size_t)call_intel_sum);
     call_builtin_functions.emplace(BUILTIN_MUL, (size_t)call_intel_mul);
@@ -349,6 +385,8 @@ void init_intel_builtin_functions(std::map<std::string, size_t> & call_builtin_f
     call_builtin_functions.emplace(BUILTIN_GT, (size_t)call_intel_gt);
     call_builtin_functions.emplace(BUILTIN_NE, (size_t)call_intel_ne);
     call_builtin_functions.emplace(BUILTIN_EQ, (size_t)call_intel_eq);
+    call_builtin_functions.emplace(BUILTIN_LE, (size_t)call_intel_le);
+    call_builtin_functions.emplace(BUILTIN_GE, (size_t)call_intel_ge);
 }
 
 void clear_intel_trace_registers(std::ostream & out) {

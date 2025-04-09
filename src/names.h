@@ -9,4 +9,6 @@
     extern const std::string BUILTIN_GT;
     extern const std::string BUILTIN_NE;
     extern const std::string BUILTIN_EQ;
+    extern const std::string BUILTIN_LE;
+    extern const std::string BUILTIN_GE;
 #endif

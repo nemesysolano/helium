@@ -1,0 +1,25 @@
+program
+var
+    a: float
+    b: float
+begin
+    a(1.99)
+    b(1.97)
+    
+    gt(1.99, 1.97)
+    trace()
+    
+    ge(1.99, 1.97)
+    trace()
+
+    ge(1.99, b)
+    trace()
+
+    ge(a, 1.97)
+    trace()
+
+    lt(1.99, 1.97)
+    trace()
+
+    return(0x3)
+end

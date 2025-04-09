@@ -1,0 +1,25 @@
+program
+var
+    a: integer
+    b: integer
+begin
+    a(1)
+    b(2)
+    
+    lt(1, 2)
+    trace()
+    
+    le(1, 2)
+    trace()
+
+    le(1, b)
+    trace()
+
+    le(a, 2)
+    trace()
+
+    gt(1, 2)
+    trace()
+
+    return(0x2)
+end

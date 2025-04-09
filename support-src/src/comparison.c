@@ -58,6 +58,30 @@ int eq_double(double a, double b) {
     return diff < FLOAT_EPSILON * fmin(fabs(a), fabs(b));
 }
 
+int le_long(long a, long b) {
+    return a <= b;
+}
+int le_int(int a, int b) {
+    return a <= b;
+}
+
+int le_double(double a, double b) {
+   return lt_double(a, b) || eq_double(a, b);
+}
+
+int ge_long(long a, long b) {
+    return a >= b;
+}
+
+int ge_int(int a, int b) {
+    return a >= b;
+}
+
+int ge_double(double a, double b){
+    return gt_double(a, b) || eq_double(a, b);
+}
+
+
 double trucate(double a, int decimals) {
     int adjusted_decimals;
 

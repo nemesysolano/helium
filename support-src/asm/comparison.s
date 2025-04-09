@@ -275,11 +275,157 @@ eq_int:                                 # @eq_int
 .Lfunc_end11:
 	.size	eq_int, .Lfunc_end11-eq_int
                                         # -- End function
+	.globl	le_long                         # -- Begin function le_long
+	.p2align	4, 0x90
+	.type	le_long,@function
+le_long:                                # @le_long
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rdi, -8(%rbp)
+	movq	%rsi, -16(%rbp)
+	movq	-8(%rbp), %rax
+	cmpq	-16(%rbp), %rax
+	setle	%al
+	andb	$1, %al
+	movzbl	%al, %eax
+	popq	%rbp
+	retq
+.Lfunc_end12:
+	.size	le_long, .Lfunc_end12-le_long
+                                        # -- End function
+	.globl	le_int                          # -- Begin function le_int
+	.p2align	4, 0x90
+	.type	le_int,@function
+le_int:                                 # @le_int
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movl	%edi, -4(%rbp)
+	movl	%esi, -8(%rbp)
+	movl	-4(%rbp), %eax
+	cmpl	-8(%rbp), %eax
+	setle	%al
+	andb	$1, %al
+	movzbl	%al, %eax
+	popq	%rbp
+	retq
+.Lfunc_end13:
+	.size	le_int, .Lfunc_end13-le_int
+                                        # -- End function
+	.globl	le_double                       # -- Begin function le_double
+	.p2align	4, 0x90
+	.type	le_double,@function
+le_double:                              # @le_double
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$32, %rsp
+	movsd	%xmm0, -8(%rbp)
+	movsd	%xmm1, -16(%rbp)
+	movsd	-8(%rbp), %xmm0                 # xmm0 = mem[0],zero
+	movsd	-16(%rbp), %xmm1                # xmm1 = mem[0],zero
+	callq	lt_double
+	movl	%eax, %ecx
+	movb	$1, %al
+	cmpl	$0, %ecx
+	movb	%al, -17(%rbp)                  # 1-byte Spill
+	jne	.LBB14_2
+# %bb.1:
+	movsd	-8(%rbp), %xmm0                 # xmm0 = mem[0],zero
+	movsd	-16(%rbp), %xmm1                # xmm1 = mem[0],zero
+	callq	eq_double
+	cmpl	$0, %eax
+	setne	%al
+	movb	%al, -17(%rbp)                  # 1-byte Spill
+.LBB14_2:
+	movb	-17(%rbp), %al                  # 1-byte Reload
+	andb	$1, %al
+	movzbl	%al, %eax
+	addq	$32, %rsp
+	popq	%rbp
+	retq
+.Lfunc_end14:
+	.size	le_double, .Lfunc_end14-le_double
+                                        # -- End function
+	.globl	ge_long                         # -- Begin function ge_long
+	.p2align	4, 0x90
+	.type	ge_long,@function
+ge_long:                                # @ge_long
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	%rdi, -8(%rbp)
+	movq	%rsi, -16(%rbp)
+	movq	-8(%rbp), %rax
+	cmpq	-16(%rbp), %rax
+	setge	%al
+	andb	$1, %al
+	movzbl	%al, %eax
+	popq	%rbp
+	retq
+.Lfunc_end15:
+	.size	ge_long, .Lfunc_end15-ge_long
+                                        # -- End function
+	.globl	ge_int                          # -- Begin function ge_int
+	.p2align	4, 0x90
+	.type	ge_int,@function
+ge_int:                                 # @ge_int
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movl	%edi, -4(%rbp)
+	movl	%esi, -8(%rbp)
+	movl	-4(%rbp), %eax
+	cmpl	-8(%rbp), %eax
+	setge	%al
+	andb	$1, %al
+	movzbl	%al, %eax
+	popq	%rbp
+	retq
+.Lfunc_end16:
+	.size	ge_int, .Lfunc_end16-ge_int
+                                        # -- End function
+	.globl	ge_double                       # -- Begin function ge_double
+	.p2align	4, 0x90
+	.type	ge_double,@function
+ge_double:                              # @ge_double
+# %bb.0:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$32, %rsp
+	movsd	%xmm0, -8(%rbp)
+	movsd	%xmm1, -16(%rbp)
+	movsd	-8(%rbp), %xmm0                 # xmm0 = mem[0],zero
+	movsd	-16(%rbp), %xmm1                # xmm1 = mem[0],zero
+	callq	gt_double
+	movl	%eax, %ecx
+	movb	$1, %al
+	cmpl	$0, %ecx
+	movb	%al, -17(%rbp)                  # 1-byte Spill
+	jne	.LBB17_2
+# %bb.1:
+	movsd	-8(%rbp), %xmm0                 # xmm0 = mem[0],zero
+	movsd	-16(%rbp), %xmm1                # xmm1 = mem[0],zero
+	callq	eq_double
+	cmpl	$0, %eax
+	setne	%al
+	movb	%al, -17(%rbp)                  # 1-byte Spill
+.LBB17_2:
+	movb	-17(%rbp), %al                  # 1-byte Reload
+	andb	$1, %al
+	movzbl	%al, %eax
+	addq	$32, %rsp
+	popq	%rbp
+	retq
+.Lfunc_end17:
+	.size	ge_double, .Lfunc_end17-ge_double
+                                        # -- End function
 	.section	.rodata.cst8,"aM",@progbits,8
 	.p2align	3, 0x0                          # -- Begin function trucate
-.LCPI12_0:
+.LCPI18_0:
 	.quad	0x4024000000000000              # double 10
-.LCPI12_1:
+.LCPI18_1:
 	.quad	0x3ff0000000000000              # double 1
 	.text
 	.globl	trucate
@@ -293,26 +439,26 @@ trucate:                                # @trucate
 	movsd	%xmm0, -8(%rbp)
 	movl	%edi, -12(%rbp)
 	cmpl	$2, -12(%rbp)
-	jge	.LBB12_2
+	jge	.LBB18_2
 # %bb.1:
 	movl	$2, -16(%rbp)
-	jmp	.LBB12_6
-.LBB12_2:
+	jmp	.LBB18_6
+.LBB18_2:
 	cmpl	$12, -12(%rbp)
-	jle	.LBB12_4
+	jle	.LBB18_4
 # %bb.3:
 	movl	$12, -16(%rbp)
-	jmp	.LBB12_5
-.LBB12_4:
+	jmp	.LBB18_5
+.LBB18_4:
 	movl	-12(%rbp), %eax
 	movl	%eax, -16(%rbp)
-.LBB12_5:
-	jmp	.LBB12_6
-.LBB12_6:
+.LBB18_5:
+	jmp	.LBB18_6
+.LBB18_6:
 	cvtsi2sdl	-16(%rbp), %xmm1
-	movsd	.LCPI12_1(%rip), %xmm0          # xmm0 = [1.0E+0,0.0E+0]
+	movsd	.LCPI18_1(%rip), %xmm0          # xmm0 = [1.0E+0,0.0E+0]
 	mulsd	%xmm0, %xmm1
-	movsd	.LCPI12_0(%rip), %xmm0          # xmm0 = [1.0E+1,0.0E+0]
+	movsd	.LCPI18_0(%rip), %xmm0          # xmm0 = [1.0E+1,0.0E+0]
 	callq	pow@PLT
 	movsd	%xmm0, -24(%rbp)
 	movsd	-8(%rbp), %xmm0                 # xmm0 = mem[0],zero
@@ -322,11 +468,13 @@ trucate:                                # @trucate
 	addq	$32, %rsp
 	popq	%rbp
 	retq
-.Lfunc_end12:
-	.size	trucate, .Lfunc_end12-trucate
+.Lfunc_end18:
+	.size	trucate, .Lfunc_end18-trucate
                                         # -- End function
 	.ident	"Ubuntu clang version 18.1.3 (1ubuntu1)"
 	.section	".note.GNU-stack","",@progbits
 	.addrsig
+	.addrsig_sym lt_double
+	.addrsig_sym gt_double
 	.addrsig_sym eq_double
 	.addrsig_sym pow

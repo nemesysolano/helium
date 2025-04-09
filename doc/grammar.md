@@ -5,21 +5,13 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**_ | _**sum**_ | _**mul**_ | _**trace**_
+**statement** ::= _**return**_ | _**call**_ |**trace**_
 
 **return** ::= return (_**expression**_)
 
 **print** ::= print(_**expression**_ [, _**expression**_]<sup>*</sup>)
 
 **call** ::= _**identifier**_(_**expression**_)
-
-**sum** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
-
-**mul** ::= mul(_**expression**_ [, _**expression**_]<sup>*</sup>)
-
-**sub** ::= sub(_**expression**_, _**expression**_)
-
-**div** ::= div(_**expression**_, _**expression**_)
 
 **trace** ::= trace()
 
@@ -32,6 +24,28 @@
 **variable_declarations** ::= var (_**identifier**_: _**type**_)<sup>+</sup>
 
 **type** ::= integer | bigint | float | text | boolean
+
+## Built-in Functions ##
+
+**sum** ::= sum(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**mul** ::= mul(_**expression**_ [, _**expression**_]<sup>*</sup>)
+
+**sub** ::= sub(_**expression**_, _**expression**_)
+
+**div** ::= div(_**expression**_, _**expression**_)
+
+**lt** ::= lt(_**expression**_, _**expression**_)
+
+**gt** ::= gt(_**expression**_, _**expression**_)
+
+**ne** ::= ne(_**expression**_, _**expression**_)
+
+**eq** ::= eq(_**expression**_, _**expression**_)
+
+**le** ::= le(_**expression**_, _**expression**_)
+
+**ge** ::= ge(_**expression**_, _**expression**_)
 
 ## Semantics ##
 

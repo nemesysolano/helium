@@ -196,6 +196,24 @@ bool parse_eq(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer,
     ); 
 }
 
+bool parse_le(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
+bool parse_ge(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, CyclicHash & cyclic_hash, std::map<std::string, size_t> & static_data){
+    return parse_comparator_binary(
+        scope, tokenizer, tokens, cyclic_hash, static_data,
+        MSG_INVALID_COMP_ARGUMENT,
+        MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES,
+        MSG_TOO_MANY_COMP_ARGUMENTS
+    ); 
+}
+
 void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions) {
     builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
     builtin_functions.emplace(BUILTIN_MUL, (size_t)parse_mul);
@@ -205,4 +223,6 @@ void init_builtin_functions_map(std::map<std::string, size_t> & builtin_function
     builtin_functions.emplace(BUILTIN_GT, (size_t)parse_gt);
     builtin_functions.emplace(BUILTIN_NE, (size_t)parse_ne);
     builtin_functions.emplace(BUILTIN_EQ, (size_t)parse_eq);
+    builtin_functions.emplace(BUILTIN_LE, (size_t)parse_le);    
+    builtin_functions.emplace(BUILTIN_GE, (size_t)parse_ge);
 }

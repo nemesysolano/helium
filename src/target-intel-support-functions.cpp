@@ -36,6 +36,15 @@ const char * ne_double = "ne_double";
 const char * eq_long = "eq_long";
 const char * eq_int = "eq_int";
 const char * eq_double = "eq_double";
+
+const char * le_long = "le_long";
+const char * le_int = "le_int";
+const char * le_double = "le_double";
+const char * ge_long = "ge_long";
+const char * ge_int = "ge_int";
+const char * ge_double = "ge_double";
+
+
 const char * truncate = "truncate";
 const char * clear_int_sum_param_registers = "clear_int_sum_param_registers";
 const char * clear_double_sum_param_registers = "clear_double_sum_param_registers";
@@ -76,6 +85,12 @@ void support_functions(std::ostream & out) {
     out << EXTERN << ' ' << eq_long << endl;       
     out << EXTERN << ' ' << eq_int << endl;      
     out << EXTERN << ' ' << eq_double << endl; 
+    out << EXTERN << ' ' << le_long << endl;
+    out << EXTERN << ' ' << le_int << endl;
+    out << EXTERN << ' ' << le_double << endl;
+    out << EXTERN << ' ' << ge_long << endl;
+    out << EXTERN << ' ' << ge_int << endl;
+    out << EXTERN << ' ' << ge_double << endl;    
     out << EXTERN << ' ' << truncate << endl;
     out << EXTERN << ' ' << clear_int_sum_param_registers << endl;
     out << EXTERN << ' ' << clear_double_sum_param_registers << endl;

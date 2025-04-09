@@ -19,8 +19,8 @@ void call_intel_lt(TargetContext & target_context, std::ostream & out, const std
 void call_intel_gt(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions);
 void call_intel_ne(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions);
 void call_intel_eq(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions);
-
-
+void call_intel_le(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions);
+void call_intel_ge(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_builtin_functions);
 void call_intel_sum_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
 void call_intel_sum_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
 void call_intel_sum_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
@@ -45,6 +45,13 @@ void call_intel_ne_double(TargetContext & target_context, std::ostream & out, co
 void call_intel_eq_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
 void call_intel_eq_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
 void call_intel_eq_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_le_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_le_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_le_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_ge_long(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_ge_int(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+void call_intel_ge_double(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & call_intel_builtin_functions);
+
 void call_truncate(std::ostream & out, int decimals);
 void clear_intel_trace_registers(std::ostream & out);
 
