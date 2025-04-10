@@ -27,6 +27,9 @@ extern const char * MSG_TOO_MANY_DIV_ARGUMENTS;
 extern const char * MSG_INVALID_COMP_ARGUMENT;
 extern const char * MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES;
 extern const char * MSG_TOO_MANY_COMP_ARGUMENTS;
+extern const char * MSG_IF_DATATYPE_MISTMATCH;
+extern const char * MSG_THEN_BLOCK_EMPTY;
+extern const char * MSG_ELSE_BLOCK_EMPTY;
 
 bool print_expected_token(const char * expected, Tokenizer & tokenizer);
 bool print_parse_error(const char * message, Tokenizer & tokenizer);

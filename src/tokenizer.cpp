@@ -155,7 +155,13 @@ TokenType get_keyword_type(const string & buffer) {
         return TokenType::PRINT;
     } else if(iequals(buffer, RETURN)) {
         return TokenType::RETURN;
-    }else if(iequals(buffer, TRACE)) {
+    } else if(iequals(buffer, IF)) {
+        return TokenType::IF;
+    } else if(iequals(buffer, THEN)) {
+        return TokenType::THEN;
+    } else if(iequals(buffer, ELSE)) {
+        return TokenType::ELSE;
+    } else if(iequals(buffer, TRACE)) {
         return TokenType::TRACE;
     }  else if(iequals(buffer, RIGHT_SQUARE_BRACKET)) {
         return TokenType::RIGHT_SQUARE_BRACKET;

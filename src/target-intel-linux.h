@@ -10,6 +10,7 @@
 #include <memory>
 #include "target-intel-builtin-functions.h"
 #include "structs.h"
+#include <set>
 
 class TargetIntelLinux: public Target {
         std::map<std::string, size_t> call_builtin_functions;
@@ -17,9 +18,11 @@ class TargetIntelLinux: public Target {
         
         void variable_declarations(TargetContext & target_context, std::ostream & out);
         void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+        void statements(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, TokenType start_delimiter, const std::set<TokenType> & end_delimiters);         
         void return_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> &static_data);         
         void print_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);     
         void trace_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
+        void if_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void builtin_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);
         void function_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data);  
         void assigment_call(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data); 

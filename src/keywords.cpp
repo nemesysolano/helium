@@ -1,6 +1,7 @@
 #include "keywords.h"
 #include "text.h"
 #include <iostream>
+#include <map>
 
 const char * PROGRAM = "PROGRAM";
 const char * BEGIN = "BEGIN";
@@ -10,6 +11,9 @@ const char * VAR = "VAR";
 const char * RETURN = "RETURN";
 const char * TRACE = "TRACE";
 const char * INTEGER = "INTEGER";
+const char * IF = "IF";
+const char * THEN = "THEN";
+const char * ELSE = "ELSE";
 const char * BIGINT = "BIGINT";
 const char * FLOAT = "FLOAT";
 const char * TEXT = "TEXT";
@@ -32,6 +36,7 @@ const char * multi_char_keywords[] = {
     PROGRAM, BEGIN, END, PRINT,
     VAR, RETURN, TRACE, INTEGER, 
     BIGINT, FLOAT , TEXT, BOOLEAN,
+    IF, THEN, ELSE, NULL
 };
 
 const char * built_type_tokens [] = {

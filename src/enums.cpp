@@ -1,6 +1,9 @@
 #include "enums.h"
 #include <set>
 using namespace std;
+
+set<TokenType> main_block_end_delimiters = { TokenType::END };
+set<TokenType> then_block_end_delimiters = { TokenType::END, TokenType::ELSE };
 DataType to_data_type(TokenType token_type) {
     switch(token_type) {
         case TokenType::INTEGER:
@@ -52,7 +55,14 @@ size_t data_type_size(DataType data_type) {
     }
 }
 
-static set statement_token_types = {TokenType::RETURN, TokenType::TRACE, TokenType::IDENTIFIER, TokenType::PRINT};
+static set statement_token_types = {
+    TokenType::RETURN, 
+    TokenType::TRACE, 
+    TokenType::IDENTIFIER, 
+    TokenType::PRINT,
+    TokenType::IF
+};
+
 bool is_statement_token_type(TokenType token_type) {
     return statement_token_types.count(token_type) > 0; 
 }

@@ -26,7 +26,9 @@ const char * MSG_TOO_MANY_DIV_ARGUMENTS = "division statement can have up to 6 a
 const char * MSG_INVALID_COMP_ARGUMENT = "Comparison arguments must be numeric";
 const char * MSG_COMP_ARGUMENTS_HAVE_DIFFERENT_TYPES = "comparison arguments must have the same data type";
 const char * MSG_TOO_MANY_COMP_ARGUMENTS = "comparison statement can have up to 6 arguments";
-
+const char * MSG_IF_DATATYPE_MISTMATCH = "if statement must have a boolean expression";
+const char * MSG_THEN_BLOCK_EMPTY = "then block must have at least one statement";
+const char * MSG_ELSE_BLOCK_EMPTY = "else block must have at least one statement";
 
 bool print_expected_token(const char * expected, Tokenizer & tokenizer) {
     cout << "Syntax Error: Expected " << expected << " at line " << tokenizer.get_line() << " column " << tokenizer.get_column() << endl;        

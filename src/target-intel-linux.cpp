@@ -185,10 +185,35 @@ void TargetIntelLinux::call_statement(TargetContext & target_context, ostream & 
 
 }
 
-void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data) {
-    assert(target_context.next()->getType() == TokenType::BEGIN);
+void TargetIntelLinux::if_statement(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data) {
+    const auto & scope_name = target_context.scopes.top().get()->name;    
+    assert(target_context.current()->getType() == TokenType::IF);
     
-    while(target_context.current()->getType() != TokenType::END) {
+    target_context.next();
+    auto result = evaluate_expression_intel(target_context, out, static_data, call_builtin_functions);
+
+    assert(result.data_type == DataType::BOOLEAN);
+
+    target_context.next();
+    statements(target_context, out, static_data, TokenType::THEN, then_block_end_delimiters);
+    assert(then_block_end_delimiters.count(target_context.current()->getType()) == 0);
+
+    if(target_context.current()->getType() == TokenType::ELSE) {
+        statements(target_context, out, static_data, TokenType::ELSE, main_block_end_delimiters);
+
+    }
+
+    target_context.next();    
+}
+
+void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data) {
+    return statements(target_context, out, static_data, TokenType::BEGIN, main_block_end_delimiters);
+}
+
+void TargetIntelLinux::statements(TargetContext & target_context, ostream & out, const map<string, size_t> & static_data, TokenType start_delimiter, const set<TokenType> & end_delimiters) {
+    assert(target_context.next()->getType() == start_delimiter);
+    
+    while(end_delimiters.count(target_context.current()->getType()) == 0) {
         out << '\t' << '\t' << ';' << ' ' << 
             target_context.current()->getValue() << ':' << ' ' <<
             target_context.current()->getLine() + 1 << endl;
@@ -209,14 +234,16 @@ void TargetIntelLinux::statements(TargetContext & target_context, ostream & out,
             case TokenType::TRACE:
                 trace_statement(target_context, out, static_data);
                 break;
-
+            case TokenType::IF:
+                if_statement(target_context, out, static_data);
+                break;
             default:
                 break;
         }
         target_context.next();
     }
 
-    assert(target_context.next()->getType() == TokenType::END);
+    assert(end_delimiters.count(target_context.current()->getType()) != 0);
 
 }
 

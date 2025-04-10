@@ -2,6 +2,7 @@
 #define __ENUMS_H__
 #include <cstring>
 #include <iostream>
+#include <set>
 
 enum ObjectType { VARIABLE, FUNCTION };
 
@@ -18,6 +19,11 @@ enum class TokenType {
     VAR,
     RETURN,
     TRACE,
+    //
+    IF,
+    THEN,
+    ELSE,
+    //
     INTEGER,
     BIGINT,
     FLOAT,
@@ -43,10 +49,13 @@ enum class TokenType {
     //Identifier
     IDENTIFIER
 };
+extern std::set<TokenType> main_block_end_delimiters;
+extern std::set<TokenType> then_block_end_delimiters;
 
 DataType to_data_type(TokenType token_type) ;
 size_t data_type_size(DataType data_type);
 bool is_statement_token_type(TokenType token_type);
 bool is_literal_token_type(TokenType type);
 std::ostream & operator << (std::ostream & out, DataType data_type);
+
 #endif
