@@ -1,7 +1,6 @@
 # Compiler
 
-CC = clang
-
+CC = gcc
 # Directories
 SRC_DIR = src
 BIN_DIR = bin
@@ -30,7 +29,7 @@ all: $(TARGET) $(ASMS)
 
 # Build the target
 $(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Build object files
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c

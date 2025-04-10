@@ -1,0 +1,18 @@
+program
+var
+    i1: integer
+    i2: integer
+begin
+    i1(2)
+    i2(3)
+
+    if lt(i1, i2) then
+        print(i1, " is less than ", i2 )
+    end
+
+    if gt(i2, i1) then
+        print(i2, " is greater than ", i1 )
+    end
+
+    return(0x1)
+end

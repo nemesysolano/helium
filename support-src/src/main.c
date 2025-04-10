@@ -5,7 +5,7 @@
 #include "types.h"
 #include "comparison.h"
 double A = 3.141529;
-char * B = "lorem ipsum";
+const char * B = "lorem ipsum";
 
 void test_trace() {
     long long_content = 0x1234567890;
