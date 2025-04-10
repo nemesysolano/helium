@@ -5,7 +5,7 @@
 
 **statements_group** ::= begin _**statement**_<sup>*</sup> end
 
-**statement** ::= _**return**_ | _**call**_ |**trace**_
+**statement** ::= _**return**_ | _**call**_ | _**trace**_ | _**if**_
 
 **return** ::= return (_**expression**_)
 
@@ -14,6 +14,8 @@
 **call** ::= _**identifier**_(_**expression**_)
 
 **trace** ::= trace()
+
+**if** ::= if _**expression**_ then _**statement**_<sup>+</sup> [else _**statement**_<sup>+</sup>] end
 
 **expression** ::= _**literal**_ | _**identifier**_ ; Expression type must match scope's.
 
@@ -66,3 +68,7 @@ Both functions accept a list of numbers of the same type, and the result type ma
 ## sub, div ##
 
 Both functions are binary (accepting only two arguments of the same type), and the result type matches the type of the arguments.
+
+## if ##
+
+The if expression must evaulate to boolean
