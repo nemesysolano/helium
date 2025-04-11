@@ -22,6 +22,8 @@ struct ParseStatementsGroupResult {
 struct ParseCallResult {
     bool is_valid;
     DataType result_type;
+
+    ParseCallResult(bool is_valid, DataType result_type): is_valid(is_valid), result_type(result_type) {}
 };
 
 class Parser {
@@ -35,11 +37,11 @@ class Parser {
         bool variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);        
         bool parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_print(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
-        bool parse_builtin_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
-        bool parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        std::unique_ptr<ParseCallResult> parse_builtin_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        std::unique_ptr<ParseCallResult> parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_trace(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         bool parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
-        bool parse_statements_group(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
+        std::unique_ptr<ParseStatementsGroupResult> parse_statements_group(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens);
         void push_scope(const std::string name, DataType data_type);
         void pop_scope();
         bool is_builtin_function(const std::string & name);
