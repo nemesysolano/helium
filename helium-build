@@ -2,7 +2,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SUPPORT_SRC_DIR="${SCRIPT_DIR}/support-src"
 
-WITH_LEAK_CHECK=0
+WITH_LEAK_CHECK=1
 
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <source>"

@@ -16,6 +16,10 @@ TargetIntelLinux::TargetIntelLinux() {
     init_intel_builtin_functions(call_builtin_functions); 
 }
 
+TargetIntelLinux::~TargetIntelLinux() {
+    call_builtin_functions.clear();
+}
+
 void TargetIntelLinux::variable_declarations(TargetContext & target_context, std::ostream & out) {
     Token * token = target_context.next();
     const auto & current_scope = target_context.scopes.top();

@@ -12,6 +12,18 @@
 #include "text.h"
 #include "structs.h"
 #include "builtin-functions.h"
+
+struct ParseStatementsGroupResult {
+    bool is_valid;
+    int statements_count;
+    ParseStatementsGroupResult(bool is_valid, int statements_count): is_valid(is_valid), statements_count(statements_count) {}
+};
+
+struct ParseCallResult {
+    bool is_valid;
+    DataType result_type;
+};
+
 class Parser {
     private:
         std::map<std::string, size_t> builtin_functions;

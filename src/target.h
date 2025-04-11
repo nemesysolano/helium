@@ -46,6 +46,7 @@ class Target {
     public: // 
         virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) = 0 ;
         bool          write(const char * file, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data);
+        virtual ~Target() = default;
 };
 
 #endif // __TARGET_H__

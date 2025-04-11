@@ -196,8 +196,9 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
     }
     
 }
-
 bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
+    int statements_count = 0;
+
     tokens.push_back(std::move(tokenizer.next()));
     
     if(tokens.back()->getType() == TokenType::BEGIN) {
@@ -209,9 +210,10 @@ bool Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Tok
             is_valid_statement = parse_statement(tokenizer, tokens);
             tokens.push_back(std::move(tokenizer.next()));                      
 
+            statements_count++;
             if(!is_valid_statement) {
                 return false;
-            }            
+            }                        
         }
 
         return true;

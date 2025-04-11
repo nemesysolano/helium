@@ -32,6 +32,6 @@ class TargetIntelLinux: public Target {
     public:
         TargetIntelLinux();
         virtual bool write(std::ostream & out, const std::vector<std::unique_ptr<Token>> & tokens, const std::map<std::string, size_t> & static_data) override;
-
+        virtual ~TargetIntelLinux();
 };
 #endif // __TARGET_INTEL_LINUX_H__
