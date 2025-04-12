@@ -214,15 +214,16 @@ bool parse_ge(const std::unique_ptr<ParsedScope> & scope, Tokenizer & tokenizer,
     ); 
 }
 
-void init_builtin_functions_map(std::map<std::string, size_t> & builtin_functions) {
-    builtin_functions.emplace(BUILTIN_SUM, (size_t)parse_sum);
-    builtin_functions.emplace(BUILTIN_MUL, (size_t)parse_mul);
-    builtin_functions.emplace(BUILTIN_SUB, (size_t)parse_sub);
-    builtin_functions.emplace(BUILTIN_DIV, (size_t)parse_div);
-    builtin_functions.emplace(BUILTIN_LT, (size_t)parse_lt);
-    builtin_functions.emplace(BUILTIN_GT, (size_t)parse_gt);
-    builtin_functions.emplace(BUILTIN_NE, (size_t)parse_ne);
-    builtin_functions.emplace(BUILTIN_EQ, (size_t)parse_eq);
-    builtin_functions.emplace(BUILTIN_LE, (size_t)parse_le);    
-    builtin_functions.emplace(BUILTIN_GE, (size_t)parse_ge);
+
+void init_builtin_functions_map(std::map<std::string, std::unique_ptr<BuiltinFunction>> & builtin_functions) {
+    builtin_functions.emplace(BUILTIN_SUM, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::INTEGER, DataType::FLOAT, DataType::BIGINT},(size_t)parse_sum)));
+    builtin_functions.emplace(BUILTIN_MUL, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::INTEGER, DataType::FLOAT, DataType::BIGINT},(size_t)parse_mul)));
+    builtin_functions.emplace(BUILTIN_SUB, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::INTEGER, DataType::FLOAT, DataType::BIGINT},(size_t)parse_sub)));
+    builtin_functions.emplace(BUILTIN_DIV, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::INTEGER, DataType::FLOAT, DataType::BIGINT},(size_t)parse_div)));
+    builtin_functions.emplace(BUILTIN_LT, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_lt)));
+    builtin_functions.emplace(BUILTIN_GT, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_gt)));
+    builtin_functions.emplace(BUILTIN_NE, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_ne)));
+    builtin_functions.emplace(BUILTIN_EQ, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_eq)));
+    builtin_functions.emplace(BUILTIN_LE, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_le)));    
+    builtin_functions.emplace(BUILTIN_GE, unique_ptr<BuiltinFunction>(new BuiltinFunction({DataType::BOOLEAN}, (size_t)parse_ge)));
 }

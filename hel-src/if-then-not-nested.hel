@@ -8,10 +8,18 @@ begin
 
     if lt(i1, i2) then
         print(i1, " is less than ", i2 )
+        print(i1, " is not equals to ", i2)
     end
 
     if gt(i2, i1) then
         print(i2, " is greater than ", i1 )
+        print(i2, " is not equals to ", i1)
+    end
+
+    if eq(i1, i1) then
+        print(i1, " is equals to ", i1)
+    else
+        print(i1, " is not equals to ", i1)
     end
 
     return(0x1)

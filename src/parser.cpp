@@ -66,11 +66,64 @@ std::unique_ptr<ParseCallResult> Parser::parse_builtin_call(Tokenizer & tokenize
     auto & current_scope = scopes.top();
     auto const & target_name = tokens.back()->getValue();
     
-    size_t pointer =  builtin_functions.at(target_name);
+    auto const & builtin_function = builtin_functions.at(target_name);
+    size_t pointer =  builtin_function->pointer;
     builtin_parser builtin_function_parser = (builtin_parser)pointer;
         
     bool result = builtin_function_parser(current_scope, tokenizer, tokens, cyclic_hash, static_data);
-    return std::move(make_unique<ParseCallResult>(result, current_scope->data_type));
+    
+    return std::move(make_unique<ParseCallResult>(result, builtin_function->result_types));
+}
+
+
+bool Parser::parse_if(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {
+    tokens.push_back(std::move(tokenizer.next()));
+    log();
+    auto parse_call_result(parse_call(tokenizer, tokens));  
+    if(!(parse_call_result->is_valid && parse_call_result->result_type == DataType::BOOLEAN)) {
+        return print_parse_error(MSG_IF_DATATYPE_MISTMATCH, tokenizer);
+    }
+    
+    auto parse_then_statements_group(parse_statements_group(
+        tokenizer, 
+        tokens, 
+        TokenType::THEN, 
+        then_block_end_delimiters
+    ));
+
+    if(!(
+        parse_then_statements_group->is_valid && 
+        parse_then_statements_group->statements_count > 0
+    )) {
+        return print_parse_error(MSG_THEN_BLOCK_EMPTY, tokenizer);
+    }
+    log_message("then block");
+
+    auto has_else = tokens.at(tokens.size()-1)->getType() == TokenType::ELSE;
+
+    if(has_else) {
+        auto else_token(std::move(tokens.at(tokens.size()-1)));
+        tokens.pop_back();
+        tokenizer.push_back(std::move(else_token));
+        
+        auto parse_else_statements_group(parse_statements_group(
+            tokenizer, 
+            tokens, 
+            TokenType::ELSE, 
+            main_block_end_delimiters
+        ));
+
+        if(!(
+            parse_else_statements_group->is_valid && 
+            parse_else_statements_group->statements_count > 0
+        )) {
+            return print_parse_error(MSG_ELSE_BLOCK_EMPTY, tokenizer);
+        }
+        log_message("else block");
+    }
+
+    log();
+    return true;
 }
 
 std::unique_ptr<ParseCallResult> Parser::parse_call(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {   
@@ -103,7 +156,7 @@ std::unique_ptr<ParseCallResult> Parser::parse_call(Tokenizer & tokenizer, std::
         if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
             return std::move(make_unique<ParseCallResult>(print_expected_token(RIGHT_PARENT, tokenizer), DataType::UNDEFINED));
         }
-        
+                
         return std::move(make_unique<ParseCallResult>(true, data_type));
     }
 }
@@ -171,7 +224,7 @@ bool Parser::parse_return(Tokenizer & tokenizer, std::vector<std::unique_ptr<Tok
     if(tokens.back()->getType() != TokenType::RIGHT_PARENT) {
         return print_expected_token(RIGHT_PARENT, tokenizer); 
     }
-
+    log();
     return true;
 }
 
@@ -191,22 +244,30 @@ bool Parser::parse_statement(Tokenizer & tokenizer, std::vector<std::unique_ptr<
             return parse_print(tokenizer, tokens);
         case TokenType::TRACE:
             return parse_trace(tokenizer, tokens);
+        case TokenType::IF:
+            return parse_if(tokenizer, tokens);            
         default:
             return false;
     }
     
 }
+
 unique_ptr<ParseStatementsGroupResult> Parser::parse_statements_group(Tokenizer & tokenizer, vector<unique_ptr<Token>> & tokens) {
+    return std::move(parse_statements_group(tokenizer, tokens, TokenType::BEGIN, main_block_end_delimiters));
+}
+
+std::unique_ptr<ParseStatementsGroupResult> Parser::parse_statements_group(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens, TokenType start_delimiter, const std::set<TokenType> & end_delimiters) {
     int statements_count = 0;
 
     tokens.push_back(std::move(tokenizer.next()));
-    
-    if(tokens.back()->getType() == TokenType::BEGIN) {
+    log_message(tokens.back()->getValue());
+
+    if(tokens.back()->getType() == start_delimiter) {
         bool is_valid_statement;
         
         tokens.push_back(std::move(tokenizer.next()));
 
-        while(tokens.back()->getType() != TokenType::END) {
+        while(end_delimiters.count(tokens.back()->getType()) == 0) {
             is_valid_statement = parse_statement(tokenizer, tokens);
             tokens.push_back(std::move(tokenizer.next()));                      
 
@@ -219,8 +280,8 @@ unique_ptr<ParseStatementsGroupResult> Parser::parse_statements_group(Tokenizer 
         return std::move(make_unique<ParseStatementsGroupResult>(true, statements_count));
         
     } else {
-        return std::move(make_unique<ParseStatementsGroupResult>(print_expected_token(BEGIN, tokenizer), statements_count));    
-    }
+        return std::move(make_unique<ParseStatementsGroupResult>(print_expected_token(token_type_to_string.at(start_delimiter), tokenizer), statements_count));    
+    }   
 }
 
 bool Parser::variable_declarations(Tokenizer & tokenizer, std::vector<std::unique_ptr<Token>> & tokens) {

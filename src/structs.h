@@ -24,4 +24,25 @@ struct ExpressionResult {
     size_t size;
 };
 
+struct ParseStatementsGroupResult {
+    bool is_valid;
+    int statements_count;
+    ParseStatementsGroupResult(bool is_valid, int statements_count): is_valid(is_valid), statements_count(statements_count) {}
+};
+
+struct ParseCallResult {
+    bool is_valid;
+    std::set<DataType> result_types;
+    DataType result_type;
+
+    ParseCallResult(bool is_valid, DataType result_type): is_valid(is_valid), result_type(result_type) { result_types.insert(result_type); }  
+    ParseCallResult(bool is_valid, std::set<DataType> result_types): is_valid(is_valid), result_types(result_types) { result_type = result_types.size() == 0 ? DataType::UNDEFINED : *result_types.begin(); }  
+};
+
+struct BuiltinFunction {
+    std::set<DataType> result_types;
+    size_t pointer;
+    BuiltinFunction(std::set<DataType> result_types, size_t pointer): result_types(result_types), pointer(pointer) {}     
+};
+
 #endif

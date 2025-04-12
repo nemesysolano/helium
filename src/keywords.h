@@ -1,6 +1,8 @@
 #ifndef __KEYWORDS_H__
 #define __KEYWORDS_H__
 #include <string>
+#include <map>  
+#include "enums.h"
 
 extern const char * PROGRAM;
 extern const char * BEGIN ;
@@ -28,6 +30,7 @@ extern const char * COLON;
 extern const char * COMMA;
 extern const char * empty_string ;
 extern const char * END_OF_FILE;
+extern std::map<TokenType, const char *> token_type_to_string;
 
 bool is_multi_char_keyword(const std::string & value);
 bool is_single_char_keyword(const char character);

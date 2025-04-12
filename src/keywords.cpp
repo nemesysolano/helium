@@ -2,6 +2,10 @@
 #include "text.h"
 #include <iostream>
 #include <map>
+#include <set>
+#include "enums.h"
+
+using namespace std;
 
 const char * PROGRAM = "PROGRAM";
 const char * BEGIN = "BEGIN";
@@ -31,7 +35,7 @@ const char * single_char_tokens = "()[];:,.";
 
 //Empty string
 const char * empty_string = "";
-using namespace std;
+
 const char * multi_char_keywords[] = { 
     PROGRAM, BEGIN, END, PRINT,
     VAR, RETURN, TRACE, INTEGER, 
@@ -41,6 +45,24 @@ const char * multi_char_keywords[] = {
 
 const char * built_type_tokens [] = {
     INTEGER, BIGINT, FLOAT, TEXT, BOOLEAN, NULL
+};
+
+map<TokenType, const char *> token_type_to_string = {
+    {TokenType::PROGRAM, PROGRAM},
+    {TokenType::BEGIN, BEGIN},
+    {TokenType::END, END},
+    {TokenType::PRINT, PRINT},
+    {TokenType::VAR, VAR},
+    {TokenType::RETURN, RETURN},
+    {TokenType::TRACE, TRACE},
+    {TokenType::INTEGER, INTEGER},
+    {TokenType::BIGINT, BIGINT},
+    {TokenType::FLOAT, FLOAT},
+    {TokenType::TEXT, TEXT},
+    {TokenType::BOOLEAN, BOOLEAN},
+    {TokenType::IF, IF},
+    {TokenType::THEN, THEN},
+    {TokenType::ELSE, ELSE},
 };
 
 bool is_built_type_token(const string & value) {
