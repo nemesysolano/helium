@@ -16,11 +16,5 @@ begin
         print(i2, " is not equals to ", i1)
     end
 
-    if eq(i1, i1) then
-        print(i1, " is equals to ", i1)
-    else
-        print(i1, " is not equals to ", i1)
-    end
-
     return(0x1)
 end

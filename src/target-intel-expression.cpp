@@ -7,7 +7,7 @@
 #include "log.h"
 
 using namespace std;
-ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_function) {
+ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::ostream & out, const std::map<std::string, size_t> & static_data, const std::map<std::string, size_t> & builtin_functions) {
     auto const & object = * target_context.current();
     auto const & object_name = object.getValue();
     auto object_type = object.getType();
@@ -46,10 +46,12 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
                     break;                
             }
         }
-    } else {      
-        auto object_offset = target_context.scopes.top()->objects.at(object_name)->offset;        
-        object_data_type = target_context.scopes.top()->objects.at(object_name)->data_type;
-        object_data_type_size = target_context.scopes.top()->objects.at(object_name)->size;
+    }  else {      
+        std::shared_ptr<TargetObject> & target_object = target_context.scopes.top()->objects.at(object_name);
+        
+        auto object_offset = target_object->offset;        
+        object_data_type = target_object->data_type;
+        object_data_type_size = target_object->size;
 
         if(object_data_type_size == __SIZEOF_POINTER__) {
             size_qualifier = QWORD;
@@ -58,7 +60,6 @@ ExpressionResult evaluate_expression_intel(TargetContext & target_context, std::
 
         out << '\t' << '\t' << NASM_MOV << ' ' << size_register << SEP << '[' << NASM_RBP << '-' << object_offset <<  ']' << endl;
         out << '\t' << '\t' << NASM_MOV << ' ' << size_qualifier << '[' <<  NASM_RBP << '-' << object_offset <<  ']' << SEP << size_register << endl;
-
     }
 
     out << '\t' << '\t' << NASM_MOV << ' ' << NASM_R10 << SEP << NASM_RAX << endl;
